@@ -45,3 +45,12 @@ yarn.lock
 
 # 其他機密或暫存：
 *.pem
+
+# —— 忽略所有常見圖片檔 —— #
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+
