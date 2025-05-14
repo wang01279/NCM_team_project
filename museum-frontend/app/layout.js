@@ -19,10 +19,10 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <ToastProvider>
           <Navbar />
-          <div style={{ border: '2px solid green', height: '100%' }}>
+          {/* <div style={{ border: '2px solid green', height: '100%' }}> */}
             {children}
-          </div>
-          <Footer />
+          {/* </div> */}
+          {/* <Footer /> */}
         </ToastProvider>
       </body>
     </html>
