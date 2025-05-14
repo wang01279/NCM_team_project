@@ -2,12 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import '../_styles/header_style.scss'
-import '@/app/_styles/globals.scss'
-import '@/app/_styles/formCustom.scss'
-import '@/app/_styles/authModal.scss'
-import AuthModal from '@/app/_components/authModal'
-// import { IconName } from "react-icons/fa";
+import '../_styles/navbar.scss'
+import AuthModal from '@/app/_components/Auth/AuthModal'
 import {
   FaUserCircle,
   FaCommentDots,
