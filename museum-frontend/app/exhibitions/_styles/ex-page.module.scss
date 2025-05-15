@@ -1,0 +1,107 @@
+@use '../../../app/_styles/foundation/palette' as *;
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  list-style: none;
+  margin-bottom: 2rem;
+  padding: 0;
+}
+
+.tabItem {
+  text-decoration: none;
+  color: $primary;
+  font-weight: bold;
+  font-size: 1rem;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.tabItem:hover {
+  color: $secondary;
+}
+
+.tabItem::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: $secondary;
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
+}
+
+.tabItem:hover::after,
+.active::after {
+  width: 60%;
+}
+
+.active {
+  color: $secondary;
+}
+
+/* ---------------- 輪播區(保留BS-5樣式) ---------------- */
+
+/* ---------------- 展覽卡片 ---------------- */
+.exhibitionCard {
+  color: $dark;
+  position: relative;
+  background-color: $main-bg;
+  overflow: hidden;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.exhibitionCard:hover {
+  box-shadow: 0 8px 24px $dark;
+  transform: translateY(-4px);
+}
+
+.exhibitionCard:hover::before {
+  opacity: 1;
+}
+
+/* ✅ 圖片放大 */
+.imageContainer {
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  z-index: 2;
+}
+
+.exhibitionImg {
+  transition: transform 0.4s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.exhibitionCard:hover .exhibitionImg {
+  transform: scale(1.05);
+}
+
+/* ✅ 文字內容樣式 */
+.infoContainer {
+  position: relative;
+  z-index: 2;
+  transition:
+    color 0.4s ease,
+    opacity 0.4s ease;
+}
+
+.exhibitionCard:hover .infoContainer h5 {
+  color: $primary;
+}
+
+.exhibitionCard:hover .infoContainer {
+  opacity: 1;
+}
