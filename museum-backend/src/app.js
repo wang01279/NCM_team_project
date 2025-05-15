@@ -12,6 +12,8 @@ import session from 'express-session';
 import passport from './config/passport.js';
 import { saveMessage } from './services/chatService.js';
 import jwt from 'jsonwebtoken';
+import courseRoutes from './routes/courseRoutes.js';
+import artistRoutes from './routes/artistRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

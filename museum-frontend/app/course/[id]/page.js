@@ -15,24 +15,24 @@ import RelatedCourses from '@/app/_components/RelatedCourses'
 
 // API functions
 const fetchCourse = async (id) => {
-  const response = await axios.get(`/api/courses/${id}`)
-  return response.data
-}
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/courses/${id}`);
+  return response.data;
+};
 
 const fetchArtist = async (artistId) => {
-  const response = await axios.get(`/api/artists/${artistId}`)
-  return response.data
-}
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/artists/${artistId}`);
+  return response.data;
+};
 
 const fetchArtistExperiences = async (artistId) => {
-  const response = await axios.get(`/api/artists/${artistId}/experiences`)
-  return response.data
-}
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/artists/${artistId}/experiences`);
+  return response.data;
+};
 
-const fetchRelatedCourses = async (courseId, category) => {
-  const response = await axios.get(`/api/courses/related?courseId=${courseId}&category=${category}`)
-  return response.data
-}
+const fetchRelatedCourses = async (courseId, categoryId) => {
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/courses/related?courseId=${courseId}&category=${categoryId}`);
+  return response.data;
+};
 
 export default function CourseDetailPage() {
   const params = useParams()
@@ -58,10 +58,11 @@ export default function CourseDetailPage() {
       const artistData = await fetchArtist(courseData.artist_id)
       const experiencesData = await fetchArtistExperiences(courseData.artist_id)
       
-      // 嘗試獲取相關課程，但不影響主要課程數據的加載
+
+      // 嘗試獲取相關課程
       let relatedCoursesData = []
       try {
-        relatedCoursesData = await fetchRelatedCourses(id, courseData.category)
+        relatedCoursesData = await fetchRelatedCourses(id, courseData.categories[0]?.id)
       } catch (err) {
         console.error('Failed to fetch related courses:', err)
         // 相關課程加載失敗不影響主要功能
