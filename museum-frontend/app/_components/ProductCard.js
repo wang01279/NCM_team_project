@@ -16,8 +16,8 @@ const ProductCard = ({
   const isCurrentlyFavorite = favoriteProducts && favoriteProducts.includes(id)
   const isOutOfStock = status === '庫存不足'
 
-  const imageHeight = 200 // 設定圖片的期望高度，與 SCSS 中 .product-img 的固定高度一致
-  const imageWidth = 300 // 設定圖片的期望寬度，您可以根據您的圖片比例和佈局需求調整這個值
+  const imageHeight = 200
+  const imageWidth = 300
 
   return (
     <div className={`col-12 col-sm-6 col-md-4 col-lg-3`}>
@@ -26,13 +26,16 @@ const ProductCard = ({
           <Image
             src={imageUrl}
             alt={name}
-            width={imageWidth} // 設定 <Image /> 的寬度
-            height={imageHeight} // 設定 <Image /> 的高度
-            objectFit="contain" // 保持圖片原始比例，縮放以完全包含在容器內，可能會留白
+            width={imageWidth}
+            height={imageHeight}
+            objectFit="contain"
             onError={(e) => {
               console.error('Image failed to load:', imageUrl)
-              e.currentTarget.onerror = null
-              e.currentTarget.src = '/image/placeholder.png'
+              e.currentTarget.onerror = null // 關鍵：移除 onerror 監聽器
+              // e.currentTarget.src = null; // 選項 1：將 src 設定為 null，圖片將不顯示
+              // e.currentTarget.style.display = 'none'; // 選項 2：直接隱藏圖片元素
+              // 選項 3：設定一個預設的替代圖片 (確保該圖片存在且路徑正確)
+              // e.currentTarget.src = '/image/no-image.png';
             }}
           />
           <div className="img-overlay">
