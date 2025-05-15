@@ -1,0 +1,22 @@
+@use '../../../app/_styles/foundation/palette' as *;
+/* 細節頁樣式 */
+
+.heroBanner img {
+  width: 100%;
+  height: 65vh;
+  object-fit: cover;
+  object-position: center;
+  /* border-bottom: 6px solid #d8c1ae; */
+}
+
+.exhibitionInfo h2 {
+  font-family: 'Noto Serif TC', serif;
+  color: $main-text;
+}
+
+.exhibitionDescription {
+  max-width: 768px;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: $sub-text;
+}
