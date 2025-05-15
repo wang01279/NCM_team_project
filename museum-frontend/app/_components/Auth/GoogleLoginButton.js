@@ -7,11 +7,10 @@ import { FaGoogle } from 'react-icons/fa'
 export default function GoogleLoginButton({ onLoginSuccess }) {
   const handleGoogleLogin = async () => {
     try {
-      // 这里实现 Google 登录逻辑
-      // 例如：打开 Google OAuth 弹窗或重定向到 Google 登录页面
-      window.location.href = 'http://localhost:3005/api/members/auth/google'
+      // 使用環境變數中的 API URL
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/members/auth/google`
     } catch (error) {
-      console.error('Google 登录失败:', error)
+      console.error('Google 登入失敗:', error)
     }
   }
 
@@ -25,4 +24,4 @@ export default function GoogleLoginButton({ onLoginSuccess }) {
       <span>使用 Google 帳號登入</span>
     </Button>
   )
-} 
+}

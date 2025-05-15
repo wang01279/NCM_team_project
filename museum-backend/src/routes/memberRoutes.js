@@ -53,16 +53,17 @@ router.post("/register", async (req, res) => {
     }
 
     // 驗證密碼長度
-    if (password.length < 6) {
+    if (password.length < 8) {
       return res.status(400).json({
         success: false,
-        message: "密碼長度至少為6個字符",
+        message: "密碼長度至少為8個字符",
       });
     }
 
     const result = await register(email, password, name, avatar);
     res.json(result);
   } catch (error) {
+    console.error('註冊錯誤:', error);
     res.status(400).json({
       success: false,
       message: error.message,
@@ -436,7 +437,7 @@ router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
     session: false,
-    failureRedirect: "http://localhost:3000/login?error=Google登入失敗"
+    failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=Google登入失敗`
   }),
   (req, res) => {
     try {
@@ -462,16 +463,12 @@ router.get(
         role: req.user.role
       };
 
-      console.log('準備重定向，用戶資料:', userData);
-
       // 重定向到前端，並帶上 token 和用戶信息
-      const redirectUrl = `http://localhost:3000/member/center?token=${token}&user=${encodeURIComponent(JSON.stringify(userData))}`;
-      console.log('重定向 URL:', redirectUrl);
-      
+      const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/member/center?token=${token}&user=${encodeURIComponent(JSON.stringify(userData))}`;
       res.redirect(redirectUrl);
     } catch (error) {
       console.error('Google callback error:', error);
-      res.redirect(`http://localhost:3000/login?error=${encodeURIComponent(error.message)}`);
+      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=${encodeURIComponent(error.message)}`);
     }
   }
 );

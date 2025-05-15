@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import '../_styles/navbar.scss'
 import AuthModal from '@/app/_components/Auth/AuthModal'
+import { useAuth } from '@/app/_hooks/useAuth'
 import {
   FaUserCircle,
   FaCommentDots,
@@ -22,13 +23,12 @@ export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const { showToast } = useToast()
+  const { member, isLoggedIn, isLoading, logout } = useAuth()
+  
   /* ---------------------- State ---------------------- */
   const [isScrolled, setIsScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [member, setMember] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
 
   /* -------------------- Effects ---------------------- */
   // 1. 監聽捲動：縮小／還原 Header
@@ -45,70 +45,6 @@ export default function Navbar() {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
   }, [menuOpen])
 
-  // 3. 檢查登入狀態並獲取會員資料
-  useEffect(() => {
-    const loadMemberData = async () => {
-      try {
-        const token = localStorage.getItem('token')
-        if (!token) {
-          setMember(null)
-          setIsLoggedIn(false)
-          setIsLoading(false)
-          return
-        }
-
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/members/me`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-
-        const data = await response.json()
-        if (data.success) {
-          setMember(data.data)
-          setIsLoggedIn(true)
-        } else {
-          console.error('獲取會員資料失敗:', data.message)
-          localStorage.removeItem('token')
-          setMember(null)
-          setIsLoggedIn(false)
-        }
-      } catch (error) {
-        console.error('獲取會員資料時發生錯誤:', error)
-        localStorage.removeItem('token')
-        setMember(null)
-        setIsLoggedIn(false)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    loadMemberData()
-
-    // 監聽 localStorage 變化
-    const handleStorageChange = (e) => {
-      if (e.key === 'member' || e.key === 'token') {
-        loadMemberData()
-      }
-    }
-
-    window.addEventListener('storage', handleStorageChange)
-
-    // 自定義事件監聽
-    const handleMemberUpdate = () => {
-      loadMemberData()
-    }
-    window.addEventListener('memberUpdate', handleMemberUpdate)
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange)
-      window.removeEventListener('memberUpdate', handleMemberUpdate)
-    }
-  }, [])
-
   /* -------------------- Handlers --------------------- */
   const toggleMenu = () => setMenuOpen((prev) => !prev)
   const closeMenu = () => setMenuOpen(false)
@@ -118,11 +54,8 @@ export default function Navbar() {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('token')
-    setMember(null)
-    setIsLoggedIn(false)
+    logout()
     router.push('/')
-    showToast('info', '您已登出 👋')
   }
 
   const handleCloseLoginModal = () => {
@@ -130,12 +63,8 @@ export default function Navbar() {
   }
 
   const handleSubmitLogin = (formData) => {
-    setMember(formData.data)
-    setIsLoggedIn(true)
     setIsLoginModalOpen(false)
     showToast('success', '登入成功 🎉')
-
-    // 跳轉到會員中心
     router.push('/member/center')
   }
 
@@ -150,8 +79,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* <div style={{ border: '2px solid red', height: 80 }}>導覽列/選單</div> */}
-
       <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
         <nav className="nav-container">
           {/* Logo */}
@@ -190,20 +117,22 @@ export default function Navbar() {
               {!isLoading &&
                 (isLoggedIn ? (
                   <div className="user-greeting">
-                    <FaUserCircle />
+                    {/* 使用者頭像 */}
+                    {/* <FaUserCircle /> */}
+                    <img src={member?.avatar || '/img/ncmLogo/logo-ncm.png'} alt="avatar" className="user-profile-avatar" />
                     <div className="user-dropdown">
                       <div className="user-profile-header">
                         <img
-                          src={member.avatar || '/img/ncmLogo/logo-ncm.png'}
+                          src={member?.avatar || '/img/ncmLogo/logo-ncm.png'}
                           alt="avatar"
                           className="user-profile-avatar"
                         />
                         <div className="user-profile-info">
                           <div className="user-profile-name">
-                            {member.name || '未設定姓名'}
+                            {member?.name || '未設定姓名'}
                           </div>
                           <div className="user-profile-email">
-                            {member.email}
+                            {member?.email}
                           </div>
                         </div>
                       </div>
@@ -268,15 +197,15 @@ export default function Navbar() {
                 <>
                   <div className="mobile-profile-header">
                     <img
-                      src={member.avatar || '/img/ncmLogo/logo-ncm.png'}
+                      src={member?.avatar || '/img/ncmLogo/logo-ncm.png'}
                       alt="avatar"
                       className="mobile-profile-avatar"
                     />
                     <div className="mobile-profile-info">
                       <div className="mobile-profile-name">
-                        {member.name || '未設定姓名'}
+                        {member?.name || '未設定姓名'}
                       </div>
-                      <div className="mobile-profile-email">{member.email}</div>
+                      <div className="mobile-profile-email">{member?.email}</div>
                     </div>
                   </div>
                   <button
