@@ -6,7 +6,8 @@ import transporter from '../config/nodemailer.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-const register = async (email, password, name, avatar = 'https://example.com/default-avatar.png') => {
+// museum-backend/src/services/memberService.js
+const register = async (email, password, name, avatar = null) => {
   const connection = await db.getConnection();
   try {
     await connection.beginTransaction();
@@ -38,10 +39,37 @@ const register = async (email, password, name, avatar = 'https://example.com/def
       [memberId, name, avatar]
     );
 
+    // 生成 JWT token
+    const token = jwt.sign(
+      { id: memberId, email, role: 'member' },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+
+    // 獲取完整的用戶資料
+    const [profiles] = await connection.query(
+      'SELECT * FROM member_profiles WHERE member_id = ?',
+      [memberId]
+    );
+
+    const profile = profiles[0];
+    const user = {
+      id: memberId,
+      email,
+      role: 'member',
+      name: profile.name,
+      gender: profile.gender,
+      phone: profile.phone,
+      address: profile.address,
+      avatar: profile.avatar,
+      birthday: profile.birthday
+    };
+
     await connection.commit();
     return { 
       success: true, 
-      memberId,
+      token,
+      user,
       message: '註冊成功'
     };
   } catch (error) {

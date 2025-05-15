@@ -23,7 +23,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:3005/api/members/auth/google/callback',
+      callbackURL: `${process.env.API_URL || 'http://localhost:3005'}/api/members/auth/google/callback`,
       passReqToCallback: true,
       scope: ['profile', 'email'],
       state: true
@@ -42,7 +42,6 @@ passport.use(
           );
 
           if (existingUsers.length > 0) {
-            // 已存在的會員，直接返回
             await connection.commit();
             return done(null, existingUsers[0]);
           }
