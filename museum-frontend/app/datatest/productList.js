@@ -2,7 +2,7 @@ const initialProductList = [
   {
     id: '1',
     name: '青花龍文天球瓶',
-    imageUrl: '',
+    imageUrl: '../image/c49.jpg',
     price: 4500,
     status: '庫存不足',
     category: '陶瓷', // 添加分類
@@ -103,7 +103,7 @@ const initialProductList = [
     oldPrice: 6500,
     discount: '85折',
     status: '庫存充足',
-    category: '玉器', // 添加分類
+    category: '瓷器', // 添加分類
   },
   {
     id: '13',
@@ -111,7 +111,7 @@ const initialProductList = [
     imageUrl: '../image/c51.jpg',
     price: 2800,
     status: '庫存不足',
-    category: '陶瓷', // 添加分類
+    category: '瓷器', // 添加分類
   },
   {
     id: '14',
@@ -121,7 +121,7 @@ const initialProductList = [
     oldPrice: 3800,
     discount: '79折',
     status: '庫存充足',
-    category: '木雕', // 添加分類
+    category: '瓷器', // 添加分類
   },
   {
     id: '15',
@@ -129,7 +129,7 @@ const initialProductList = [
     imageUrl: '../image/k1.jpg',
     price: 980,
     status: '庫存充足',
-    category: '茶具', // 添加分類
+    category: '瓷器', // 添加分類
   },
   {
     id: '16',
@@ -139,6 +139,6 @@ const initialProductList = [
     status: '庫存不足',
     category: '瓷器', // 添加分類
   },
-];
+]
 
-export default initialProductList;
+export default initialProductList

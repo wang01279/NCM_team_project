@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import '../_styles/ProductTabs.scss';
+import React, { useState } from 'react'
+import '../_styles/ProductTabs.scss'
 
 const ProductTabs = () => {
-  const [activeTab, setActiveTab] = useState('desc');
+  const [activeTab, setActiveTab] = useState('desc')
 
   const handleTabClick = (tab) => {
-    setActiveTab(tab);
-  };
+    setActiveTab(tab)
+  }
 
   return (
     <div className="container product-tab">
@@ -35,7 +35,9 @@ const ProductTabs = () => {
         {/* 右側內容 */}
         <div className="col-12 col-md-10">
           {/* 商品說明 */}
-          <div className={`tab-content desc ${activeTab === 'desc' ? 'active' : ''}`}>
+          <div
+            className={`tab-content desc ${activeTab === 'desc' ? 'active' : ''}`}
+          >
             <h4 className="fw-bold">商品說明</h4>
             <p className="mb-2">青花纏枝天球瓶</p>
             <p className="desc-text">
@@ -54,7 +56,9 @@ const ProductTabs = () => {
             </div>
           </div>
           {/* 注意事項 */}
-          <div className={`tab-content note ${activeTab === 'note' ? 'active' : ''}`}>
+          <div
+            className={`tab-content note ${activeTab === 'note' ? 'active' : ''}`}
+          >
             <h4 className="fw-bold">注意事項</h4>
             <p className="desc-text">
               為了保障您的權益，故宮網路商城所購買的商品，辦理退換貨時，且商品必須是全新狀態與完整包裝(商品、附件、內外包裝、隨貨文件、贈品等)。因此若您在訂購商品前或收到商品後，希望更進一步了解商品的使用方式，或對該產品有任何疑慮，請先來函或來電與客服人員連絡。
@@ -64,7 +68,7 @@ const ProductTabs = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductTabs;
+export default ProductTabs

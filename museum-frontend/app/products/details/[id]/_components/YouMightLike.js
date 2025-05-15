@@ -1,6 +1,6 @@
-import React from 'react';
-import ProductCard from '@/app/_components/ProductCard';
-import '../_styles/YouMightLike.scss'; // 引入 SCSS 檔案
+import React from 'react'
+import ProductCard from '@/app/_components/ProductCard'
+import '../_styles/YouMightLike.scss'
 
 const YouMightLike = ({ products }) => {
   return (
@@ -10,13 +10,16 @@ const YouMightLike = ({ products }) => {
         <p className="others-title">更多相關商品</p>
       </div>
       <div className="card-scroll">
-        {products && products.slice(0, 8).map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+        {products &&
+          products
+            .slice(0, 8)
+            .map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
         {products && products.length === 0 && <p>暫無相關商品推薦。</p>}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default YouMightLike ;
+export default YouMightLike

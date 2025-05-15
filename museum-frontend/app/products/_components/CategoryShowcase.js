@@ -1,7 +1,8 @@
-'use client';
+'use client'
 
-import React from 'react';
-import '../_styles/categoryShowcase.scss';
+import React from 'react'
+import '../_styles/categoryShowcase.scss'
+import Image from 'next/image' // 引入 Image 組件
 
 export default function CategoryShowcase() {
   return (
@@ -13,14 +14,25 @@ export default function CategoryShowcase() {
             <a href="#" className="text-decoration-none text-reset">
               <div
                 className="hover-card h-100 d-flex align-items-center p-4 rounded-0 overflow-hidden group"
-                style={{ minHeight: '320px', backgroundColor: '#ebd0a5' }}>
+                style={{ minHeight: '320px', backgroundColor: '#ebd0a5' }}
+              >
                 <div className="row w-100 align-items-center g-0 animate-slidein">
                   <div className="col-md-6 col-6 d-flex justify-content-center align-items-center">
-                    <img
+                    <Image
                       src="/image/1.png"
-                      className="img-fluid rounded border-0"
                       alt="文創商品"
-                      style={{ minWidth: '310px', maxWidth: '380px', objectFit: 'contain', transition: 'transform 0.4s ease', position: 'relative', top: '80px', right: '80px' }}
+                      width={380}
+                      height={285}
+                      className="img-fluid rounded border-0"
+                      style={{
+                        minWidth: '310px',
+                        maxWidth: '380px',
+                        objectFit: 'contain',
+                        transition: 'transform 0.4s ease',
+                        position: 'relative',
+                        top: '80px',
+                        right: '80px',
+                      }}
                     />
                   </div>
                   <div className="col-md-6 col-6 text-start">
@@ -36,15 +48,26 @@ export default function CategoryShowcase() {
               {/* 餐廚用品 */}
               <div className="col-md-6">
                 <a href="#" className="text-decoration-none text-reset">
-                  <div className="hover-card p-4 h-100 overflow-hidden group d-flex align-items-center"
-                       style={{ minHeight: '320px', backgroundColor: '#EAEAEA' }}>
+                  <div
+                    className="hover-card p-4 h-100 overflow-hidden group d-flex align-items-center"
+                    style={{ minHeight: '320px', backgroundColor: '#EAEAEA' }}
+                  >
                     <div className="row align-items-center g-0 animate-slidein">
                       <div className="col-6 d-flex justify-content-center">
-                        <img
+                        <Image
                           src="/image/2.png"
-                          className="img-fluid border-0"
                           alt="餐廚用品"
-                          style={{ maxWidth: '250px', objectFit: 'contain', transition: 'transform 0.4s ease', position: 'relative', right: '80px', top: '50px' }}
+                          width={250}
+                          height={250}
+                          className="img-fluid border-0"
+                          style={{
+                            maxWidth: '250px',
+                            objectFit: 'contain',
+                            transition: 'transform 0.4s ease',
+                            position: 'relative',
+                            right: '80px',
+                            top: '50px',
+                          }}
                         />
                       </div>
                       <div className="col-6 text-start">
@@ -60,15 +83,26 @@ export default function CategoryShowcase() {
               {/* 圖書影音 */}
               <div className="col-md-6">
                 <a href="#" className="text-decoration-none text-reset">
-                  <div className="hover-card p-4 h-100 overflow-hidden group d-flex align-items-center"
-                       style={{ minHeight: '320px', backgroundColor: '#3f3f3f9a' }}>
+                  <div
+                    className="hover-card p-4 h-100 overflow-hidden group d-flex align-items-center"
+                    style={{ minHeight: '320px', backgroundColor: '#3f3f3f9a' }}
+                  >
                     <div className="row align-items-center g-0 animate-slidein">
                       <div className="col-6 d-flex justify-content-center">
-                        <img
+                        <Image
                           src="/image/3.png"
-                          className="img-fluid border-0"
                           alt="圖書影音"
-                          style={{ maxWidth: '130px', objectFit: 'contain', transition: 'transform 0.4s ease', position: 'relative', right: '40px', top: '50px' }}
+                          width={130}
+                          height={195}
+                          className="img-fluid border-0"
+                          style={{
+                            maxWidth: '130px',
+                            objectFit: 'contain',
+                            transition: 'transform 0.4s ease',
+                            position: 'relative',
+                            right: '40px',
+                            top: '50px',
+                          }}
                         />
                       </div>
                       <div className="col-6 text-start">
@@ -89,7 +123,8 @@ export default function CategoryShowcase() {
             <a href="#" className="text-decoration-none text-reset">
               <div
                 className="hover-card text-white h-100 d-flex align-items-center justify-content-between position-relative overflow-hidden group p-4"
-                style={{ minHeight: '320px', backgroundColor: '#9B3413' }}>
+                style={{ minHeight: '320px', backgroundColor: '#9B3413' }}
+              >
                 <div className="row align-items-center animate-slidein">
                   <div className="col-6 text-start text-lg-start">
                     <h2 className="fw-bold mb-3">典藏精品</h2>
@@ -98,7 +133,13 @@ export default function CategoryShowcase() {
                     </p>
                   </div>
                   <div className="col-6 text-end">
-                    <img src="/image/4.png" className="img-fluid border-0 zoom-on-hover" alt="瓷器" />
+                    <Image
+                      src="/image/4.png"
+                      alt="瓷器"
+                      width={300}
+                      height={300}
+                      className="img-fluid border-0 zoom-on-hover"
+                    />
                   </div>
                 </div>
               </div>
@@ -107,5 +148,5 @@ export default function CategoryShowcase() {
         </div>
       </div>
     </section>
-  );
+  )
 }

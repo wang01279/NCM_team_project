@@ -7,10 +7,10 @@ import CategoryShowcase from './_components/CategoryShowcase'
 import CategoryMenu from './_components/CategoryMenu'
 import ProductListHeader from './_components/ProductListHeader'
 import ProductCard from '../_components/ProductCard'
-import productList from '@/app/datatest/productList' // 你的商品假資料
+import productList from '@/app/datatest/productList'
 import './_styles/productPage.scss'
 
-const itemsPerPage = 12 // 每頁顯示的商品數量
+const itemsPerPage = 12
 
 export default function ProductPage() {
   const [currentPage, setCurrentPage] = useState(1)
