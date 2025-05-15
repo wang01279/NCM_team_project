@@ -1,5 +1,8 @@
 @use '../../../app/_styles/foundation/palette' as *;
 
+.customMargin {
+  margin-top: 100px;
+}
 .tabs {
   display: flex;
   justify-content: center;

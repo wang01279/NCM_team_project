@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-// import '@/app/_styles/globals.scss'
 import styles from '../_styles/ex-page.module.scss'
 
 export default function Tabs() {
