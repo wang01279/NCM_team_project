@@ -1,6 +1,6 @@
-"use client";
-import React, { useEffect, useState } from 'react';
-import '../_styles/categoryMenu.scss';
+'use client'
+import React, { useEffect, useState } from 'react'
+import '../_styles/categoryMenu.scss'
 
 const categories = [
   { name: '熱銷精選' },
@@ -20,44 +20,44 @@ const categories = [
     name: '文創商品',
     sub: ['生活用品', '辦公用品', '擺飾'],
   },
-];
+]
 
 const CategoryMenu = () => {
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [isMobile, setIsMobile] = useState(false); // 使用 state 來儲存是否為行動裝置
+  const [activeIndex, setActiveIndex] = useState(null)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    // 在客戶端掛載後執行
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+      setIsMobile(window.innerWidth < 768)
+    }
 
-    // 首次掛載時判斷
-    handleResize();
+    handleResize()
 
-    // 監聽視窗大小改變
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize)
 
-    // 清理事件監聽器
-    return () => window.removeEventListener('resize', handleResize);
-  }, []); // 空的依賴陣列，確保只在掛載和卸載時執行
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const handleClick = (index) => {
     if (isMobile) {
-      setActiveIndex(activeIndex === index ? null : index);
+      setActiveIndex(activeIndex === index ? null : index)
     }
-  };
+  }
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
-      if (isMobile && activeIndex !== null && !e.target.closest('.category-menu')) {
-        setActiveIndex(null);
+      if (
+        isMobile &&
+        activeIndex !== null &&
+        !e.target.closest('.category-menu')
+      ) {
+        setActiveIndex(null)
       }
-    };
+    }
 
-    document.addEventListener('click', handleOutsideClick);
-    return () => document.removeEventListener('click', handleOutsideClick);
-  }, [isMobile, activeIndex]);
+    document.addEventListener('click', handleOutsideClick)
+    return () => document.removeEventListener('click', handleOutsideClick)
+  }, [isMobile, activeIndex])
 
   return (
     <div className="container py-4">
@@ -67,15 +67,25 @@ const CategoryMenu = () => {
             key={cat.name}
             className={`category-item ${activeIndex === idx ? 'active' : ''}`}
             onClick={(e) => {
-              e.stopPropagation();
-              handleClick(idx);
+              e.stopPropagation()
+              handleClick(idx)
             }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.stopPropagation()
+                handleClick(idx)
+              }
+            }}
+            role="button" // 表明這是一個可點擊的元素
+            tabIndex={0} // 使其可以透過 Tab 鍵聚焦
           >
             <span>{cat.name}</span>
             {cat.sub && (
               <div className="subcategory">
                 {cat.sub.map((item) => (
-                  <a key={item} href="#">{item}</a>
+                  <a key={item} href="#">
+                    {item}
+                  </a>
                 ))}
               </div>
             )}
@@ -83,7 +93,7 @@ const CategoryMenu = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CategoryMenu;
+export default CategoryMenu

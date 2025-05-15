@@ -1,62 +1,67 @@
-'use client';
+'use client'
 
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import '../_styles/ProductDetail.scss';
-import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton';
+import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
+import '../_styles/ProductDetail.scss'
+import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 
 const ProductDetail = ({ product }) => {
-  const [mainImageSrc, setMainImageSrc] = useState(null); // 初始化為 null
-  const [currentThumbnailIndex, setCurrentThumbnailIndex] = useState(0);
-  const [quantity, setQuantity] = useState(1);
+  const [mainImageSrc, setMainImageSrc] = useState(null) // 初始化為 null
+  const [currentThumbnailIndex, setCurrentThumbnailIndex] = useState(0)
+  const [quantity, setQuantity] = useState(1)
 
   useEffect(() => {
     if (product) {
       if (product.thumbnails && product.thumbnails.length > 0) {
-        setMainImageSrc(product.thumbnails[currentThumbnailIndex]);
+        setMainImageSrc(product.thumbnails[currentThumbnailIndex] || null) // 如果是 undefined 就設為 null
       } else if (product.imageUrl) {
-        setMainImageSrc(product.imageUrl);
+        setMainImageSrc(product.imageUrl || null) // 如果是 undefined 就設為 null
       } else {
-        setMainImageSrc(null); // 沒有有效 URL 時設定為 null
+        setMainImageSrc(null)
       }
     } else {
-      setMainImageSrc(null); // product 不存在時設定為 null
+      setMainImageSrc(null)
     }
-  }, [currentThumbnailIndex, product?.imageUrl, product?.thumbnails, product]);
+  }, [currentThumbnailIndex, product?.imageUrl, product?.thumbnails, product])
 
   const handlePrevClick = () => {
     if (product?.thumbnails && currentThumbnailIndex > 0) {
-      setCurrentThumbnailIndex(currentThumbnailIndex - 1);
+      setCurrentThumbnailIndex(currentThumbnailIndex - 1)
     }
-  };
+  }
 
   const handleNextClick = () => {
-    if (product?.thumbnails && currentThumbnailIndex < product.thumbnails.length - 1) {
-      setCurrentThumbnailIndex(currentThumbnailIndex + 1);
+    if (
+      product?.thumbnails &&
+      currentThumbnailIndex < product.thumbnails.length - 1
+    ) {
+      setCurrentThumbnailIndex(currentThumbnailIndex + 1)
     }
-  };
+  }
 
   const handleThumbnailClick = (index) => {
-    setCurrentThumbnailIndex(index);
-  };
+    setCurrentThumbnailIndex(index)
+  }
 
   const handleQuantityIncrement = () => {
-    setQuantity(quantity + 1);
-  };
+    setQuantity(quantity + 1)
+  }
 
   const handleQuantityDecrement = () => {
     if (quantity > 1) {
-      setQuantity(quantity - 1);
+      setQuantity(quantity - 1)
     }
-  };
+  }
 
   const handleToggleFavorite = (productId, isCurrentlyFavorite) => {
     // 在這裡處理收藏邏輯
-    console.log(`Product ${productId} is now ${isCurrentlyFavorite ? 'a favorite' : 'not a favorite'}`);
-  };
+    console.log(
+      `Product ${productId} is now ${isCurrentlyFavorite ? 'a favorite' : 'not a favorite'}`
+    )
+  }
 
   if (!product) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
 
   return (
@@ -64,32 +69,43 @@ const ProductDetail = ({ product }) => {
       <div className="container py-4">
         <div className="product-page">
           <div className="product-left">
-            <Image
-              src={mainImageSrc}
-              className="main-image"
-              alt={product.title}
-              width={400}
-              height={400}
-            />
+            {mainImageSrc && (
+              <Image
+                src={mainImageSrc}
+                className="main-image"
+                alt={product.title}
+                width={400}
+                height={400}
+              />
+            )}
+            {!mainImageSrc && (
+              <div className="placeholder-image">No Image Available</div>
+            )}
             {product.thumbnails && product.thumbnails.length > 1 && (
               <div className="thumbnail-carousel-wrapper">
                 <button className="thumb-prev" onClick={handlePrevClick}>
                   &lt;
                 </button>
                 <div className="thumbnail-fixed-view">
-                  {product.thumbnails && product.thumbnails.map((thumbnailUrl, index) => (
-                    thumbnailUrl && typeof thumbnailUrl === 'string' && ( // 檢查 thumbnailUrl 是否存在且為字串
-                      <Image
-                        key={index}
-                        src={thumbnailUrl}
-                        alt=""
-                        width={60}
-                        height={60}
-                        className={index === currentThumbnailIndex ? 'active' : ''}
-                        onClick={() => handleThumbnailClick(index)}
-                      />
-                    )
-                  ))}
+                  {product.thumbnails &&
+                    product.thumbnails.map(
+                      (thumbnailUrl, index) =>
+                        thumbnailUrl &&
+                        typeof thumbnailUrl === 'string' &&
+                        thumbnailUrl.trim() !== '' && ( // 確保不是空字串
+                          <Image
+                            key={index}
+                            src={thumbnailUrl}
+                            alt=""
+                            width={60}
+                            height={60}
+                            className={
+                              index === currentThumbnailIndex ? 'active' : ''
+                            }
+                            onClick={() => handleThumbnailClick(index)}
+                          />
+                        )
+                    )}
                 </div>
                 <button className="thumb-next" onClick={handleNextClick}>
                   &gt;
@@ -106,7 +122,12 @@ const ProductDetail = ({ product }) => {
                 <button className="qty-btn" onClick={handleQuantityDecrement}>
                   -
                 </button>
-                <input type="text" value={quantity} className="qty-input" readOnly />
+                <input
+                  type="text"
+                  value={quantity}
+                  className="qty-input"
+                  readOnly
+                />
                 <button className="qty-btn" onClick={handleQuantityIncrement}>
                   +
                 </button>
@@ -133,7 +154,12 @@ const ProductDetail = ({ product }) => {
               <button className="qty-btn" onClick={handleQuantityDecrement}>
                 -
               </button>
-              <input type="text" value={quantity} className="qty-input" readOnly />
+              <input
+                type="text"
+                value={quantity}
+                className="qty-input"
+                readOnly
+              />
               <button className="qty-btn" onClick={handleQuantityIncrement}>
                 +
               </button>
@@ -145,7 +171,7 @@ const ProductDetail = ({ product }) => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default ProductDetail;
+export default ProductDetail
