@@ -114,6 +114,8 @@ app.get('/api/tables', async (req, res) => {
 // 路由
 app.use('/api/members', memberRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/artists', artistRoutes);
 
 // Socket.IO 連接
 io.use(async (socket, next) => {
