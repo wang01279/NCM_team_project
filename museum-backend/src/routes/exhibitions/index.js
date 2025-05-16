@@ -1,14 +1,32 @@
 import express from 'express'
-import db from '../../config/mysql.js'
-import { successResponse, errorResponse } from '../../lib/utils.js'
+import db from '../../config/database.js'
+import {validatedParamId, successResponse, errorResponse} from '../../lib/utils.js'
 
 const router = express.Router()
 
-// ✅ 取得所有展覽資料（可篩選 state + year）
-router.get('/:state', async (req, res) => {
+// ✅ 查單筆展覽
+router.get('/:id(\\d+)', async (req, res) => {
   try {
-    const { state } = req.params
-    const { year } = req.query
+    const id = Number(req.params.id)
+    validatedParamId(id)
+
+    const [rows] = await db.query('SELECT * FROM exhibitions WHERE id = ?', [id])
+
+    if (rows.length === 0) {
+      return res.status(404).json({ status: 'error', message: '找不到展覽資料' })
+    }
+
+    successResponse(res, rows[0])
+  } catch (err) {
+    errorResponse(res, err)
+  }
+})
+
+
+// ✅ 查展覽列表（可選 state 和 year）
+router.get('/', async (req, res) => {
+  try {
+    const { state = 'current', year } = req.query
 
     let sql = 'SELECT * FROM exhibitions WHERE state = ?'
     const params = [state]
@@ -19,7 +37,6 @@ router.get('/:state', async (req, res) => {
     }
 
     const [rows] = await db.query(sql, params)
-
     successResponse(res, { exhibitions: rows })
   } catch (err) {
     errorResponse(res, err)

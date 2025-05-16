@@ -1,5 +1,5 @@
 // cou-tab.js
-'use client'
+'use client' 
 import { useEffect, useState } from 'react'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
@@ -15,7 +15,7 @@ export default function CouTab() {
     axios
       .get('http://localhost:3005/api/coupons') // 後端資料請求
       .then((res) => {
-        // console.log('✅ 回傳資料：', res.data)
+        console.log('✅ 回傳資料：', res.data)
         setAllCoupons(res.data.data)
       })
       .catch((err) => console.error(err))
@@ -29,11 +29,11 @@ export default function CouTab() {
   const courseCoupons = Array.isArray(allCoupons)
     ? allCoupons.filter((c) => c.category === '課程')
     : []
-
+ 
   return (
     <Tabs
       defaultActiveKey="products"
-      className={`d-flex justify-content-center mt-5 mb-2 ${styles.tabContainer}`}
+      className="d-flex justify-content-center mt-5 mb-2"
       justify
     >
       <Tab eventKey="products" title="商品適用" tabClassName={styles.tabItem}>

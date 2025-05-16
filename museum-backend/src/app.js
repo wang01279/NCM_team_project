@@ -5,6 +5,9 @@ import { Server } from 'socket.io';
 import http from 'http';
 import memberRoutes from './routes/memberRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
+import exhibitionsRoutes from './routes/exhibitions/index.js';
+import couponsRoutes from './routes/coupons/index.js'
+import memberCouponRoutes from './routes/member-coupons.js'
 import db from './config/database.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -14,6 +17,7 @@ import { saveMessage } from './services/chatService.js';
 import jwt from 'jsonwebtoken';
 import courseRoutes from './routes/courseRoutes.js';
 import artistRoutes from './routes/artistRoutes.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -116,13 +120,16 @@ app.use('/api/members', memberRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/artists', artistRoutes);
+app.use('/api/exhibitions', exhibitionsRoutes);
+app.use('/api/coupons', couponsRoutes);
+app.use('/api/member-coupons', memberCouponRoutes)
 
 // Socket.IO 連接
 io.use(async (socket, next) => {
   try {
     const token = socket.handshake.auth.token;
     if (!token) {
-      return next(new Error('未提供認證令牌'));
+      return next(new Error('未提供認證token'));
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
