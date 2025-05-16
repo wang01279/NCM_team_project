@@ -1,6 +1,6 @@
 import express from 'express'
-import db from '../../config/database.js'
-import { successResponse, errorResponse } from '../../lib/utils.js'
+import db from '../config/database.js'
+import { successResponse, errorResponse } from '../lib/utils.js'
 import { randomUUID } from 'crypto'
 // import { authenticateToken } from '../../middleware/auth.js' // 可未來開啟 JWT 驗證
 

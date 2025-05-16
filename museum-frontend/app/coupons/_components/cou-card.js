@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useToast } from '@/app/_components/ToastManager'
-import jwtDecode from 'jwt-decode'
+import jwt from 'jsonwebtoken'
 
 export default function CouponCard({ coupon }) {
   const showToast = useToast()
@@ -14,7 +14,7 @@ export default function CouponCard({ coupon }) {
         return
       }
 
-      const decoded = jwtDecode(token)
+      const decoded = jwt(token)
       const memberId = decoded.id
 
       const res = await fetch('/api/member-coupons', {
