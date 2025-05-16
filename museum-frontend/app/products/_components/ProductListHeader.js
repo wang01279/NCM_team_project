@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import { FaFilter, FaSearch } from 'react-icons/fa'
 import '../_styles/productListHeader.scss'
 
 const ProductListHeader = () => {
@@ -70,7 +71,7 @@ const ProductListHeader = () => {
         <div className="col-12 col-md-3">
           <div className="input-group">
             <span className="input-group-text">
-              <i className="fa fa-search"></i>
+              <FaSearch />
             </span>
             <input
               type="text"
@@ -88,8 +89,9 @@ const ProductListHeader = () => {
           </select>
         </div>
         <div className="col-12 col-md-3">
-          <button className="btn-add p-2" onClick={openFilterPanel}>
-            <i className="fa-solid fa-filter me-2"></i>篩選
+          <button className="btn-add p-3" onClick={openFilterPanel}>
+            <FaFilter className="me-2 " />
+            篩選
           </button>
         </div>
       </div>

@@ -16,8 +16,8 @@ const ProductCard = ({
   const isCurrentlyFavorite = favoriteProducts && favoriteProducts.includes(id)
   const isOutOfStock = status === '庫存不足'
 
-  const imageHeight = 200
-  const imageWidth = 300
+  // const imageHeight = 200
+  // const imageWidth = 300
 
   return (
     <div className={`col-12 col-sm-6 col-md-4 col-lg-3`}>
@@ -26,9 +26,8 @@ const ProductCard = ({
           <Image
             src={imageUrl}
             alt={name}
-            width={imageWidth}
-            height={imageHeight}
-            objectFit="contain"
+            fill // 自動填滿
+            style={{ objectFit: 'contain' }}
             onError={(e) => {
               console.error('Image failed to load:', imageUrl)
               e.currentTarget.onerror = null // 關鍵：移除 onerror 監聽器

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
 import '../_styles/heroSlider.scss'
 
 export default function HeroSlider() {
@@ -109,7 +110,7 @@ export default function HeroSlider() {
                 startAutoSlide()
               }}
             >
-              <i className="fa-solid fa-arrow-left"></i>
+              <FaArrowLeft />
             </button>
             <button
               className="btn-arrow"
@@ -118,7 +119,7 @@ export default function HeroSlider() {
                 startAutoSlide()
               }}
             >
-              <i className="fa-solid fa-arrow-right"></i>
+              <FaArrowRight />
             </button>
           </div>
         )}
