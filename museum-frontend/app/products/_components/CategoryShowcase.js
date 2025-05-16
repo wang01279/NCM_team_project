@@ -32,6 +32,7 @@ export default function CategoryShowcase() {
                         position: 'relative',
                         top: '80px',
                         right: '80px',
+                        height: 'auto', // 加入這一行
                       }}
                     />
                   </div>
@@ -61,12 +62,15 @@ export default function CategoryShowcase() {
                           height={250}
                           className="img-fluid border-0"
                           style={{
+                            minWidth: '240px',
                             maxWidth: '250px',
                             objectFit: 'contain',
                             transition: 'transform 0.4s ease',
                             position: 'relative',
                             right: '80px',
                             top: '50px',
+                            height: 'auto',
+                            width: 'auto',
                           }}
                         />
                       </div>
@@ -96,12 +100,15 @@ export default function CategoryShowcase() {
                           height={195}
                           className="img-fluid border-0"
                           style={{
+                            minWidth: '120px',
                             maxWidth: '130px',
                             objectFit: 'contain',
                             transition: 'transform 0.4s ease',
                             position: 'relative',
                             right: '40px',
                             top: '50px',
+                            height: 'auto',
+                            width: 'auto',
                           }}
                         />
                       </div>
