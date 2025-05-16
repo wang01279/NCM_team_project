@@ -6,12 +6,12 @@ import '../_styles/components/productCard.scss'
 import AddToCartButton from '@/app/_components/AddToCartButton'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 
-const ProductCard = ({
+export default function ProductCard({
   product,
   onAddToCart,
   onAddToFavorites,
   favoriteProducts,
-}) => {
+}) {
   const { id, name, imageUrl, price, oldPrice, discount, status } = product
   const isCurrentlyFavorite = favoriteProducts && favoriteProducts.includes(id)
   const isOutOfStock = status === '庫存不足'
@@ -71,5 +71,3 @@ const ProductCard = ({
     </div>
   )
 }
-
-export default ProductCard

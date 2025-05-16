@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import '../_styles/ProductTabs.scss'
 
-const ProductTabs = () => {
+export default function ProductTabs() {
   const [activeTab, setActiveTab] = useState('desc')
 
   const handleTabClick = (tab) => {
@@ -70,5 +70,3 @@ const ProductTabs = () => {
     </div>
   )
 }
-
-export default ProductTabs

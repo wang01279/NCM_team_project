@@ -5,7 +5,7 @@ import Image from 'next/image'
 import '../_styles/ProductDetail.scss'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 
-const ProductDetail = ({ product }) => {
+export default function ProductDetail({ product }) {
   const [mainImageSrc, setMainImageSrc] = useState(null) // 初始化為 null
   const [currentThumbnailIndex, setCurrentThumbnailIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
@@ -173,5 +173,3 @@ const ProductDetail = ({ product }) => {
     </section>
   )
 }
-
-export default ProductDetail

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
 import '../_styles/heroSlider.scss'
+import Link from 'next/link' // 假設您使用 Next.js 的 Link 組件
 
 export default function HeroSlider() {
   const slides = [
@@ -11,24 +12,28 @@ export default function HeroSlider() {
       img: '/image/b1-removebg-preview.png',
       title: '法華牡丹金彩盤',
       desc: '繁花似錦，金彩輝映宴席風華',
+      link: '/products/fahua-peony-plate',
     },
     {
       bg: '/image/b2-bg.png',
       img: '/image/b2-removebg-preview.png',
       title: '青花龍紋天球瓶小',
       desc: '祥龍盤繞，典藏氣韻小巧不凡',
+      link: '/products/qinghua-dragon-vase-small',
     },
     {
       bg: '/image/b3-bg.png',
       img: '/image/b3-removebg-preview.png',
       title: '精工琉璃 翠玉白菜-霧面',
       desc: '霧面溫潤質感，寓意清白傳承',
+      link: '/products/liu-li-cabbage-matte',
     },
     {
       bg: '/image/b4-bg.png',
       img: '/image/b4-removebg-preview.png',
       title: '仿故宮金地青花雲龍蓋杯',
       desc: '金地青花交融，杯蓋藏龍蘊藏雅趣',
+      link: '/products/golden-blue-dragon-cup',
     },
   ]
 
@@ -44,9 +49,14 @@ export default function HeroSlider() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setIsMobile(window.innerWidth <= 768)
+      const handleResize = () => {
+        setIsMobile(window.innerWidth <= 768)
+      }
+      handleResize() // 初始判斷
+      window.addEventListener('resize', handleResize)
+      return () => window.removeEventListener('resize', handleResize) // 清除監聽器
     }
-  }, [])
+  }, []) // 使用空的依賴項陣列
 
   useEffect(() => {
     startAutoSlide()
@@ -104,22 +114,22 @@ export default function HeroSlider() {
         {isMobile && (
           <div className="mobile-arrows d-flex justify-content-center gap-4 my-3">
             <button
-              className="btn-arrow"
+              className="btn-arrow btn-primary"
               onClick={() => {
                 handlePrev()
                 startAutoSlide()
               }}
             >
-              <FaArrowLeft />
+              <FaArrowLeft aria-label="上一張幻燈片" />
             </button>
             <button
-              className="btn-arrow"
+              className="btn-arrow btn-primary"
               onClick={() => {
                 handleNext()
                 startAutoSlide()
               }}
             >
-              <FaArrowRight />
+              <FaArrowRight aria-label="下一張幻燈片" />
             </button>
           </div>
         )}
@@ -148,10 +158,11 @@ export default function HeroSlider() {
                 }
               }}
               role="button"
+              tabIndex="0"
               onMouseMove={(e) => handleMouseMove(e, leftArrowRef)}
             >
               <div className="arrow" ref={leftArrowRef}>
-                <i className="fa-solid fa-arrow-left"></i>
+                <FaArrowLeft aria-label="上一張幻燈片" />
               </div>
             </div>
             <div
@@ -167,10 +178,11 @@ export default function HeroSlider() {
                 }
               }}
               role="button"
+              tabIndex="0"
               onMouseMove={(e) => handleMouseMove(e, rightArrowRef)}
             >
               <div className="arrow" ref={rightArrowRef}>
-                <i className="fa-solid fa-arrow-right"></i>
+                <FaArrowRight aria-label="下一張幻燈片" />
               </div>
             </div>
           </div>
@@ -185,15 +197,17 @@ export default function HeroSlider() {
             if (index === prev) className += ' exit'
 
             return (
-              <div key={index} className={className}>
-                <img
-                  src={slide.img}
-                  className="main-product-img"
-                  alt={slide.title}
-                />
-                <h4 className="fw-bold mt-3">{slide.title}</h4>
-                <p>{slide.desc}</p>
-              </div>
+              <Link key={index} href={slide.link}>
+                <div className={className}>
+                  <img
+                    src={slide.img}
+                    className="main-product-img"
+                    alt={slide.title}
+                  />
+                  <h4 className="fw-bold mt-3">{slide.title}</h4>
+                  <p>{slide.desc}</p>
+                </div>
+              </Link>
             )
           })}
         </div>

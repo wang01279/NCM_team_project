@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { FaRegBookmark, FaBookmark } from 'react-icons/fa'
 
-const AddToFavoritesButton = ({
+export default function AddToFavoritesButton({
   productId,
   onAddToFavorites,
   onToggleFavorite,
   isFavorite: initialIsFavorite,
-}) => {
+}) {
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite || false)
   const handleToggle = onToggleFavorite || onAddToFavorites || (() => {}) // 提供空函數作為預設值
 
@@ -27,5 +27,3 @@ const AddToFavoritesButton = ({
     </button>
   )
 }
-
-export default AddToFavoritesButton

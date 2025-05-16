@@ -2,7 +2,7 @@ import React from 'react'
 import ProductCard from '@/app/_components/ProductCard'
 import '../_styles/YouMightLike.scss'
 
-const YouMightLike = ({ products }) => {
+export default function YouMightLike({ products }) {
   return (
     <div className="others-section">
       <div className="text-center fw-bold my-4">
@@ -21,5 +21,3 @@ const YouMightLike = ({ products }) => {
     </div>
   )
 }
-
-export default YouMightLike

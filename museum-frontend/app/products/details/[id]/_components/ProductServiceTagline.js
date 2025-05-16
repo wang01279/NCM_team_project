@@ -2,7 +2,7 @@ import React from 'react'
 import '../_styles/ProductServiceTagline.scss'
 import { FaGift, FaCreditCard, FaTruck } from 'react-icons/fa'
 
-const ProductServiceTagline = () => {
+export default function ProductServiceTagline() {
   return (
     <div className="container service-tagline">
       <div className="row text-center">
@@ -37,5 +37,3 @@ const ProductServiceTagline = () => {
     </div>
   )
 }
-
-export default ProductServiceTagline

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { FaFilter, FaSearch } from 'react-icons/fa'
 import '../_styles/productListHeader.scss'
 
-const ProductListHeader = () => {
+export default function ProductListHeader() {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [minPrice, setMinPrice] = useState(0)
   const [maxPrice, setMaxPrice] = useState(10000)
@@ -89,7 +89,10 @@ const ProductListHeader = () => {
           </select>
         </div>
         <div className="col-12 col-md-3">
-          <button className="btn-add p-3" onClick={openFilterPanel}>
+          <button
+            className="btn-add btn btn-primary p-3"
+            onClick={openFilterPanel}
+          >
             <FaFilter className="me-2 " />
             篩選
           </button>
@@ -218,9 +221,14 @@ const ProductListHeader = () => {
       <div
         className={`overlay ${isFilterOpen ? 'show' : ''}`}
         onClick={closeFilterPanel}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            closeFilterPanel()
+          }
+        }}
       ></div>
     </div>
   )
 }
-
-export default ProductListHeader

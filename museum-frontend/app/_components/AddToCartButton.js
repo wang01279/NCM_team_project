@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 
-const AddToCartButton = ({ productId, onAddToCart, disabled }) => {
+export default function AddToCartButton({ productId, onAddToCart, disabled }) {
   const handleClick = () => {
     if (!disabled && onAddToCart) {
       onAddToCart(productId)
@@ -21,5 +21,3 @@ const AddToCartButton = ({ productId, onAddToCart, disabled }) => {
     </button>
   )
 }
-
-export default AddToCartButton
