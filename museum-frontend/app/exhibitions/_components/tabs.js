@@ -1,34 +1,36 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import styles from '../_styles/ex-page.module.scss'
 
 export default function Tabs() {
-  const pathname = usePathname()
+  // const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const state = searchParams.get('state') || 'current'
 
   return (
     <ul className={`${styles.tabs} mt-5`}>
       <li>
         <Link
           href="/exhibitions"
-          className={`${styles.tabItem} ${pathname === '/exhibitions' ? styles.active : ''}`}
+          className={`${styles.tabItem} ${state === 'current' ? styles.active : ''}`}
         >
           當期展覽
         </Link>
       </li>
       <li>
         <Link
-          href="/exhibitions/future"
-          className={`${styles.tabItem} ${pathname === '/exhibitions/future' ? styles.active : ''}`}
+          href="/exhibitions?state=future"
+          className={`${styles.tabItem} ${state === 'future' ? styles.active : ''}`}
         >
           展覽預告
         </Link>
       </li>
       <li>
         <Link
-          href="/exhibitions/past"
-          className={`${styles.tabItem} ${pathname === '/exhibitions/past' ? styles.active : ''}`}
+          href="/exhibitions?state=past"
+          className={`${styles.tabItem} ${state === 'past' ? styles.active : ''}`}
         >
           展覽回顧
         </Link>

@@ -1,5 +1,5 @@
 import express from 'express'
-import db from '../../config/mysql.js'
+import db from '../../config/database.js'
 import { successResponse, errorResponse } from '../../lib/utils.js'
 
 const router = express.Router()

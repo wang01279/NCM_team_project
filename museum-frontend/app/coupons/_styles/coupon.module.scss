@@ -5,12 +5,14 @@
   margin-top: 20px;
   font-size: 24px;
 }
-
+.borderCustom{
+  border: 1px solid $dark;
+}
 .tabItem {
   color: $main-text;
   background-color: $muted;
-  margin-right: 4px;
-  border-radius: 6px 6px 0 0;
+  // margin-right: 4px;
+  border-radius:0 !important;
   transition: all 0.2s ease;
 
   &:hover {

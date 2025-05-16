@@ -2,35 +2,46 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-// import '@/app/_styles/globals.scss'
 import styles from '../_styles/ex-page.module.scss'
 import Link from 'next/link'
 
-export default function ExhibitionList({ state, year }) {
+export default function ExhibitionList({ state = 'current', year }) {
   const [exhibitions, setExhibitions] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    console.log('state:', state)
-    console.log('year:', year)
-    if (!state) return
+    const query = new URLSearchParams({ state })
+    if (year) query.append('year', year)
 
-    const url = `http://localhost:3005/api/exhibitions/${state}${year ? `?year=${year}` : ''}`
-    console.log('實際 fetch URL:', url)
+    const url = `http://localhost:3005/api/exhibitions?${query.toString()}`
+    console.log('🔥 fetch URL:', url)
 
     fetch(url)
       .then((res) => res.json())
-      .then((res) => setExhibitions(res.data.exhibitions))
-      .catch((err) => console.error('fetch 錯誤:', err))
+      .then((res) => {
+        if (res?.data?.exhibitions) {
+          setExhibitions(res.data.exhibitions)
+        } else {
+          setExhibitions([])
+        }
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.error('❌ fetch 錯誤:', err)
+        setLoading(false)
+      })
   }, [state, year])
 
   return (
     <main className="container my-5">
-      {exhibitions.length === 0 ? (
+      {loading ? (
         <p className="text-center text-muted">資料載入中...</p>
+      ) : exhibitions.length === 0 ? (
+        <p className="text-center text-muted">查無展覽資料</p>
       ) : (
         exhibitions.map((ex) => (
           <Link
-            href={`/exhibitions/details/${ex.id}`}
+            href={`/exhibitions/${ex.id}`}
             key={ex.id}
             className="text-decoration-none"
           >
@@ -45,13 +56,15 @@ export default function ExhibitionList({ state, year }) {
                   width={600}
                   height={400}
                   className="img-fluid"
+                  // placeholder="blur" // 選用：需搭配本地 blurDataURL 或 loading 佈局
                 />
               </div>
               <div className={`col-md-7 ${styles.infoContainer}`}>
                 <h5 className="fw-bold">{ex.title}</h5>
                 <div className="mt-5">
                   <p className="text-muted mb-1">
-                    展覽期間：{ex.startDate} ~ {ex.endDate}
+                    展覽期間：{ex.startDate.slice(0, 10)} ~{' '}
+                    {ex.endDate.slice(0, 10)}
                   </p>
                   <p className="text-muted mb-2">展廳區域：{ex.venue_id}</p>
                   <div className="d-flex justify-content-end">

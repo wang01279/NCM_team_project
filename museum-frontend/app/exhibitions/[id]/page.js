@@ -1,14 +1,14 @@
 'use client'
+
 import '@/app/_styles/globals.scss'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { IoLocationSharp } from 'react-icons/io5'
-import { FaRegCalendarPlus } from 'react-icons/fa6'
-import { FaRegBookmark } from 'react-icons/fa'
+import { FaRegCalendarPlus, FaRegBookmark } from 'react-icons/fa6'
 import Image from 'next/image'
-import styles from '../../_styles/ex-detail.module.scss'
-import TextToggle from '../../_components/text-toggle.js'
+import styles from '../_styles/ex-detail.module.scss'
+import TextToggle from '../_components/text-toggle.js'
 
 export default function ExhibitionDetailPage() {
   const { id } = useParams()
@@ -19,22 +19,27 @@ export default function ExhibitionDetailPage() {
   useEffect(() => {
     if (!id) return
     setIsLoading(true)
-    fetch(`http://localhost:3005/api/exhibitions/details/${id}`)
+
+    fetch(`http://localhost:3005/api/exhibitions/${id}`)
       .then((res) => res.json())
       .then((res) => {
-        setExhibits(res.data)
+        if (res.status === 'success') {
+          setExhibits(res.data)
+        } else {
+          setIsError(true)
+        }
         setIsLoading(false)
       })
       .catch((err) => {
-        console.error('fetch detail error:', err)
+        console.error('❌ fetch detail error:', err)
         setIsError(true)
         setIsLoading(false)
       })
   }, [id])
 
-  if (isLoading) return <div className="text-center">資料載入中...</div>
-  if (isError)
-    return <div className="text-center text-danger">資料載入失敗</div>
+  if (isLoading) return <div className="text-center py-5">資料載入中...</div>
+  if (isError || !exhibits)
+    return <div className="text-center text-danger py-5">資料載入失敗</div>
 
   const toUTCString = (dateStr) => {
     const date = new Date(dateStr)
@@ -45,8 +50,8 @@ export default function ExhibitionDetailPage() {
     exhibits?.startDate && exhibits?.endDate
       ? `https://calendar.google.com/calendar/render?action=TEMPLATE` +
         `&text=${encodeURIComponent(exhibits.title)}` +
-        `&details=${encodeURIComponent(exhibits.intro?.slice(0, 100) + '...')}` +
-        `&location=${encodeURIComponent(exhibits.location || '國立故磁博物館')}` +
+        `&details=${encodeURIComponent(exhibits.intro?.slice(0, 100) || '')}` +
+        `&location=${encodeURIComponent(exhibits.location || '國立故瓷博物館')}` +
         `&dates=${toUTCString(exhibits.startDate)}/${toUTCString(exhibits.endDate)}`
       : '#'
 
@@ -66,6 +71,7 @@ export default function ExhibitionDetailPage() {
         className={`container d-flex justify-content-center flex-column py-4 ${styles.exhibitionInfo}`}
       >
         <h2 className="fw-bold text-center mb-3">{exhibits.title}</h2>
+
         <a
           href={googleCalendarUrl}
           target="_blank"
@@ -73,7 +79,7 @@ export default function ExhibitionDetailPage() {
           className="text-decoration-none text-dark text-center"
         >
           <FaRegCalendarPlus className="me-2" />
-          {exhibits.startDate} ~ {exhibits.endDate}
+          {exhibits.startDate.slice(0, 10)} ~ {exhibits.endDate.slice(0, 10)}
         </a>
 
         <div className="d-flex justify-content-center align-items-center">
