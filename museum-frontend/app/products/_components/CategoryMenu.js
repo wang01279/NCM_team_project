@@ -22,7 +22,7 @@ const categories = [
   },
 ]
 
-const CategoryMenu = () => {
+export default function CategoryMenu() {
   const [activeIndex, setActiveIndex] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -95,5 +95,3 @@ const CategoryMenu = () => {
     </div>
   )
 }
-
-export default CategoryMenu
