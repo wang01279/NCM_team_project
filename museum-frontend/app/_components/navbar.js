@@ -23,7 +23,7 @@ export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const { showToast } = useToast()
-  const { member, isLoggedIn, isLoading, logout } = useAuth()
+  const { member, isLoggedIn, isLoading, logout, googleLogin } = useAuth()
   
   /* ---------------------- State ---------------------- */
   const [isScrolled, setIsScrolled] = useState(false)
@@ -52,6 +52,7 @@ export default function Navbar() {
   const handleLogin = () => {
     setIsLoginModalOpen(true)
   }
+  
 
   const handleLogout = () => {
     logout()

@@ -5,6 +5,7 @@ import { Form } from 'react-bootstrap'
 import FloatingField from '@/app/_components/FloatingField'
 import { FaEnvelope, FaLock, FaGoogle } from 'react-icons/fa'
 import { useToast } from '@/app/_components/ToastManager'
+import GoogleLoginButton from './GoogleLoginButton'
 
 export default function LoginForm({ formData, setFormData, onSubmit, onClose }) {
   const [loading, setLoading] = useState(false)
@@ -16,6 +17,7 @@ export default function LoginForm({ formData, setFormData, onSubmit, onClose }) 
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
+  // 傳統 email/password 登入
   const handleLogin = async (e) => {
     e.preventDefault()
     if (!formData.email || !formData.password) {
@@ -25,7 +27,7 @@ export default function LoginForm({ formData, setFormData, onSubmit, onClose }) 
 
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:3005/api/members/login', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/members/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -35,19 +37,17 @@ export default function LoginForm({ formData, setFormData, onSubmit, onClose }) 
       })
 
       const data = await res.json()
-
       if (!res.ok || !data.success) {
         throw new Error(data.message || '登入失敗')
       }
 
       localStorage.setItem('token', data.data.token)
       localStorage.setItem('member', JSON.stringify(data.data.user))
-      window.dispatchEvent(new Event('memberUpdate'))
       showToast('success', '登入成功 🎉')
 
       router.push('/member/center')
-      if (onSubmit) onSubmit(data)
-      if (onClose) onClose()
+      onSubmit?.(data)
+      onClose?.()
     } catch (err) {
       console.error('登入錯誤:', err)
       showToast('error', err.message || '系統錯誤')
@@ -56,8 +56,28 @@ export default function LoginForm({ formData, setFormData, onSubmit, onClose }) 
     }
   }
 
-  const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:3005/api/members/auth/google'
+  // Firebase Google Popup 登入成功後的 callback
+  const handleGoogleLoginSuccess = async (idToken) => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/members/auth/firebase`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken })
+      })
+      const data = await res.json()
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Firebase 登入後端驗證失敗')
+      }
+
+      // 驗證成功：存 token + member，導頁
+      localStorage.setItem('token', data.accessToken)
+      localStorage.setItem('member', JSON.stringify(data.user))
+      showToast('success', 'Google 登入成功 🎉')
+      router.push('/member/center')
+    } catch (err) {
+      console.error('後端驗證錯誤：', err)
+      showToast('error', err.message)
+    }
   }
 
   return (
@@ -90,10 +110,10 @@ export default function LoginForm({ formData, setFormData, onSubmit, onClose }) 
           <span className="text-muted">或</span>
         </div>
 
-        <button type="button" className="btn btn-outline-primary" onClick={handleGoogleLogin}>
-          <FaGoogle className="icon" />
-          使用 Google 登入
-        </button>
+        <GoogleLoginButton
+          onLoginSuccess={handleGoogleLoginSuccess}
+          disabled={loading}
+        />
       </div>
     </Form>
   )
