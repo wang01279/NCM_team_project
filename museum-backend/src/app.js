@@ -9,7 +9,7 @@ import db from './config/database.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
-import passport from './config/passport.js';
+// import passport from './config/passport.js';
 import { saveMessage } from './services/chatService.js';
 import jwt from 'jsonwebtoken';
 
@@ -46,9 +46,6 @@ app.use(session({
   }
 }));
 
-// Passport 初始化
-app.use(passport.initialize());
-app.use(passport.session());
 
 // 靜態文件服務
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
@@ -191,3 +188,5 @@ const PORT = process.env.PORT || 3005;
 server.listen(PORT, () => {
   console.log(`服務器運行在端口 ${PORT}`);
 }); 
+
+export default app;

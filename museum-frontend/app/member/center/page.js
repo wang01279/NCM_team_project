@@ -20,8 +20,14 @@ import FavoritesTab from './features/tabs/FavoritesTab'
 export default function MemberCenter() {
   const router = useRouter()
   const { showToast } = useToast()
-  const { member, token, isLoggedIn, isLoading: authLoading, updateMember } = useAuth()
-  
+  const {
+    member,
+    token,
+    isLoggedIn,
+    isLoading: authLoading,
+    updateMember,
+  } = useAuth()
+
   const [activeTab, setActiveTab] = useState('profile')
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState({
@@ -29,7 +35,7 @@ export default function MemberCenter() {
     gender: '',
     phone: '',
     address: '',
-    birthday: ''
+    birthday: '',
   })
 
   useEffect(() => {
@@ -45,11 +51,12 @@ export default function MemberCenter() {
         gender: member.gender || '',
         phone: member.phone || '',
         address: member.address || '',
-        birthday: member.birthday || ''
+        birthday: member.birthday || '',
       })
     }
   }, [member])
 
+  // 編輯
   const handleEdit = () => {
     setIsEditing(true)
   }
@@ -61,18 +68,19 @@ export default function MemberCenter() {
       gender: member.gender || '',
       phone: member.phone || '',
       address: member.address || '',
-      birthday: member.birthday || ''
+      birthday: member.birthday || '',
     })
   }
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }))
   }
 
+  // 上傳頭像
   const handleAvatarUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
@@ -91,6 +99,7 @@ export default function MemberCenter() {
     formData.append('avatar', file)
 
     try {
+      console.log('開始上傳頭像...')
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/members/profile/avatar`,
         {
@@ -102,11 +111,16 @@ export default function MemberCenter() {
         }
       )
 
+      console.log('收到回應:', res.status)
       const data = await res.json()
+      console.log('回應數據:', data)
+
       if (data.success && data.data.avatarUrl) {
         const newAvatarUrl = data.data.avatarUrl.startsWith('http')
           ? data.data.avatarUrl
           : `${process.env.NEXT_PUBLIC_API_URL}${data.data.avatarUrl}`
+
+        console.log('新的頭像 URL:', newAvatarUrl)
 
         const updatedMember = {
           ...member,
@@ -123,39 +137,84 @@ export default function MemberCenter() {
     }
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  // 更新會員資料
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault()
+  //   try {
+  //     console.log('Token:', token) // 檢查 token 是否存在
+  //     console.log('發送更新請求:', formData)
+
+  //     const response = await fetch(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/api/members/profile`,
+  //       {
+  //         method: 'PUT',
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({
+  //           ...formData,
+  //           avatar: member.avatar, // 添加 avatar 欄位
+  //         }),
+  //       }
+  //     )
+
+  //     console.log('Response status:', response.status) // 檢查響應狀態
+  //     const data = await response.json()
+  //     console.log('收到回應:', data)
+
+  //     if (!response.ok) {
+  //       throw new Error(data.message || '更新失敗')
+  //     }
+
+  //     updateMember({
+  //       ...member,
+  //       ...data.data,
+  //     })
+
+  //     showToast('success', '資料更新成功')
+  //   } catch (error) {
+  //     console.error('更新失敗:', error)
+  //     showToast('error', error.message || '更新失敗')
+  //   }
+  // }
+
+  const handleSubmit = async (formData) => {
     try {
+      console.log('Token:', token)
+      
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/members/profile`,
         {
           method: 'PUT',
           headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(formData),
+          body: formData // 直接發送 FormData
         }
       )
-
+  
+      console.log('Response status:', response.status)
       const data = await response.json()
-      if (data.success) {
-        const updatedMember = {
-          ...member,
-          ...data.data,
-        }
-        updateMember(updatedMember)
-        setIsEditing(false)
-        showToast('success', '資料更新成功')
-      } else {
-        showToast('error', data.message || '更新失敗')
+      console.log('收到回應:', data)
+  
+      if (!response.ok) {
+        throw new Error(data.message || '更新失敗')
       }
+  
+      updateMember({
+        ...member,
+        ...data.data
+      })
+  
+      showToast('success', '資料更新成功')
     } catch (error) {
-      console.error('更新資料時發生錯誤:', error)
-      showToast('error', '更新失敗，請稍後再試')
+      console.error('更新失敗:', error)
+      showToast('error', error.message || '更新失敗')
     }
   }
 
+  // 渲染主內容
   const renderMainContent = () => {
     switch (activeTab) {
       case 'profile':
@@ -168,6 +227,7 @@ export default function MemberCenter() {
             onCancel={handleCancel}
             onSubmit={handleSubmit}
             onChange={handleChange}
+            onAvatarUpload={handleAvatarUpload} // 新增這行
           />
         )
       case 'orders':
@@ -181,6 +241,7 @@ export default function MemberCenter() {
     }
   }
 
+  // 載入中
   if (authLoading) {
     return (
       <div className="loading-container">
@@ -191,26 +252,26 @@ export default function MemberCenter() {
     )
   }
 
+  // 未登入
   if (!isLoggedIn) {
     return null
   }
 
+  // 渲染頁面
   return (
     <>
       <div className={styles.lowContent}>
         <LowContent />
       </div>
       <div className={styles.leftSidebar}>
-        <LeftSidebar 
-          setActiveTab={setActiveTab} 
-          activeTab={activeTab} 
+        <LeftSidebar
+          setActiveTab={setActiveTab}
+          activeTab={activeTab}
           member={member || {}}
-          onAvatarUpload={handleAvatarUpload}
+          // onAvatarUpload={handleAvatarUpload}
         />
       </div>
-      <main className={styles.mainContent}>
-        {renderMainContent()}
-      </main>
+      <main className={styles.mainContent}>{renderMainContent()}</main>
       <div className={styles.rightContent}>
         <RightContent />
       </div>

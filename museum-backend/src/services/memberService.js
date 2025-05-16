@@ -6,7 +6,83 @@ import transporter from '../config/nodemailer.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-// museum-backend/src/services/memberService.js
+
+
+// 註冊
+// const register = async (email, password, name, avatar = null) => {
+//   const connection = await db.getConnection();
+//   try {
+//     await connection.beginTransaction();
+
+//     // 檢查郵箱是否已存在
+//     const [existingMembers] = await connection.query(
+//       'SELECT id FROM members WHERE email = ? AND is_deleted = FALSE',
+//       [email]
+//     );
+
+//     if (Array.isArray(existingMembers) && existingMembers.length > 0) {
+//       throw new Error('該郵箱已被註冊');
+//     }
+
+//     // 加密密碼
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     // 創建會員
+//     const [result] = await connection.query(
+//       'INSERT INTO members (email, password, role) VALUES (?, ?, ?)',
+//       [email, hashedPassword, 'member']
+//     );
+
+//     const memberId = result.insertId;
+
+//     // 創建會員資料
+//     await connection.query(
+//       'INSERT INTO member_profiles (member_id, name, avatar) VALUES (?, ?, ?)',
+//       [memberId, name, avatar]
+//     );
+
+//     // 生成 JWT token
+//     const token = jwt.sign(
+//       { id: memberId, email, role: 'member' },
+//       process.env.JWT_SECRET || 'your-secret-key',
+//       { expiresIn: '24h' }
+//     );
+
+//     // 獲取完整的用戶資料
+//     const [profiles] = await connection.query(
+//       'SELECT * FROM member_profiles WHERE member_id = ?',
+//       [memberId]
+//     );
+
+//     const profile = profiles[0];
+//     const user = {
+//       id: memberId,
+//       email,
+//       role: 'member',
+//       name: profile.name,
+//       gender: profile.gender,
+//       phone: profile.phone,
+//       address: profile.address,
+//       avatar: profile.avatar,
+//       birthday: profile.birthday
+//     };
+
+//     await connection.commit();
+//     return { 
+//       success: true, 
+//       token,
+//       user,
+//       message: '註冊成功'
+//     };
+//   } catch (error) {
+//     await connection.rollback();
+//     throw error;
+//   } finally {
+//     connection.release();
+//   }
+// };
+
+// 註冊
 const register = async (email, password, name, avatar = null) => {
   const connection = await db.getConnection();
   try {
@@ -33,10 +109,11 @@ const register = async (email, password, name, avatar = null) => {
 
     const memberId = result.insertId;
 
-    // 創建會員資料
+    // 創建會員資料，如果沒有提供頭像，使用默認值
+    const defaultAvatar = 'https://example.com/default-avatar.png';
     await connection.query(
       'INSERT INTO member_profiles (member_id, name, avatar) VALUES (?, ?, ?)',
-      [memberId, name, avatar]
+      [memberId, name, avatar || defaultAvatar]
     );
 
     // 生成 JWT token
@@ -74,12 +151,15 @@ const register = async (email, password, name, avatar = null) => {
     };
   } catch (error) {
     await connection.rollback();
+    console.error('註冊錯誤:', error);
     throw error;
   } finally {
     connection.release();
   }
 };
 
+
+// 登入
 const login = async (email, password) => {
   try {
     // 查詢會員
@@ -136,6 +216,7 @@ const login = async (email, password) => {
   }
 };
 
+// 獲取會員資料
 const getMemberProfile = async (memberId) => {
   try {
     const [profiles] = await db.query(
@@ -156,6 +237,11 @@ const getMemberProfile = async (memberId) => {
   }
 };
 
+
+
+
+
+// 更新會員資料
 const updateMemberProfile = async (memberId, profileData) => {
   const connection = await db.getConnection();
   try {
@@ -180,37 +266,72 @@ const updateMemberProfile = async (memberId, profileData) => {
       // 更新現有資料
       const updateQuery = `
         UPDATE member_profiles 
-        SET phone = ?, 
+        SET name = ?,
+            gender = ?,
+            phone = ?, 
             address = ?, 
-            birthday = ?, 
-            avatar = ?
+            birthday = ?
+            ${profileData.avatar ? ', avatar = ?' : ''}
         WHERE member_id = ?
       `;
-      await connection.query(updateQuery, [
+
+      const updateParams = [
+        profileData.name,
+        profileData.gender,
         profileData.phone,
         profileData.address,
         profileData.birthday,
-        profileData.avatar,
-        memberId
-      ]);
+      ];
+
+      // 如果有新頭像，添加到參數中
+      if (profileData.avatar) {
+        updateParams.push(profileData.avatar);
+      }
+
+      // 添加 member_id
+      updateParams.push(memberId);
+
+      await connection.query(updateQuery, updateParams);
     } else {
       // 創建新資料
       const insertQuery = `
-        INSERT INTO member_profiles (member_id, phone, address, birthday, avatar)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO member_profiles (
+          member_id, 
+          name, 
+          gender, 
+          phone, 
+          address, 
+          birthday
+          ${profileData.avatar ? ', avatar' : ''}
+        )
+        VALUES (?, ?, ?, ?, ?, ?
+          ${profileData.avatar ? ', ?' : ''}
+        )
       `;
-      await connection.query(insertQuery, [
+
+      const insertParams = [
         memberId,
+        profileData.name,
+        profileData.gender,
         profileData.phone,
         profileData.address,
         profileData.birthday,
-        profileData.avatar
-      ]);
+      ];
+
+      // 如果有新頭像，添加到參數中
+      if (profileData.avatar) {
+        insertParams.push(profileData.avatar);
+      }
+
+      await connection.query(insertQuery, insertParams);
     }
 
     // 獲取更新後的資料
     const [updatedProfile] = await connection.query(
-      'SELECT * FROM member_profiles WHERE member_id = ?',
+      `SELECT m.email, mp.name, mp.gender, mp.phone, mp.address, mp.avatar, mp.birthday
+       FROM members m 
+       JOIN member_profiles mp ON m.id = mp.member_id 
+       WHERE m.id = ? AND m.is_deleted = FALSE`,
       [memberId]
     );
 
@@ -229,6 +350,118 @@ const updateMemberProfile = async (memberId, profileData) => {
   }
 };
 
+// 更新會員資料
+// const updateMemberProfile = async (memberId, profileData) => {
+//   const connection = await db.getConnection();
+//   try {
+//     await connection.beginTransaction();
+
+//     // 處理生日格式
+//     if (profileData.birthday) {
+//       try {
+//         profileData.birthday = new Date(profileData.birthday).toISOString().split('T')[0];
+//       } catch (error) {
+//         throw new Error('生日格式無效');
+//       }
+//     }
+
+//     // 檢查是否已存在會員資料
+//     const [checkResult] = await connection.query(
+//       'SELECT * FROM member_profiles WHERE member_id = ?',
+//       [memberId]
+//     );
+
+//     if (checkResult && checkResult.length > 0) {
+//       // 更新現有資料
+//       const updateQuery = `
+//         UPDATE member_profiles 
+//         SET name = ?,
+//             gender = ?,
+//             phone = ?, 
+//             address = ?, 
+//             birthday = ?
+//             ${profileData.avatar ? ', avatar = ?' : ''}
+//         WHERE member_id = ?
+//       `;
+
+//       const updateParams = [
+//         profileData.name,
+//         profileData.gender,
+//         profileData.phone,
+//         profileData.address,
+//         profileData.birthday,
+//       ];
+
+//       // 如果有新頭像，添加到參數中
+//       if (profileData.avatar) {
+//         updateParams.push(profileData.avatar);
+//       }
+
+//       // 添加 member_id
+//       updateParams.push(memberId);
+
+//       await connection.query(updateQuery, updateParams);
+//     } else {
+//       // 創建新資料
+//       const insertQuery = `
+//         INSERT INTO member_profiles (
+//           member_id, 
+//           name, 
+//           gender, 
+//           phone, 
+//           address, 
+//           birthday
+//           ${profileData.avatar ? ', avatar' : ''}
+//         )
+//         VALUES (?, ?, ?, ?, ?, ?
+//           ${profileData.avatar ? ', ?' : ''}
+//         )
+//       `;
+
+//       const insertParams = [
+//         memberId,
+//         profileData.name,
+//         profileData.gender,
+//         profileData.phone,
+//         profileData.address,
+//         profileData.birthday,
+//       ];
+
+//       // 如果有新頭像，添加到參數中
+//       if (profileData.avatar) {
+//         insertParams.push(profileData.avatar);
+//       }
+
+//       await connection.query(insertQuery, insertParams);
+//     }
+
+//     // 獲取更新後的資料
+//     const [updatedProfile] = await connection.query(
+//       `SELECT m.email, mp.name, mp.gender, mp.phone, mp.address, mp.avatar, mp.birthday
+//        FROM members m 
+//        JOIN member_profiles mp ON m.id = mp.member_id 
+//        WHERE m.id = ? AND m.is_deleted = FALSE`,
+//       [memberId]
+//     );
+
+//     await connection.commit();
+//     return { 
+//       success: true, 
+//       data: updatedProfile[0],
+//       message: '會員資料更新成功' 
+//     };
+//   } catch (error) {
+//     await connection.rollback();
+//     console.error('Error in updateMemberProfile:', error);
+//     throw error;
+//   } finally {
+//     connection.release();
+//   }
+// };
+
+
+
+// 刪除會員
 const deleteMember = async (memberId) => {
   await db.query(
     'UPDATE members SET is_deleted = TRUE WHERE id = ?',
@@ -237,6 +470,7 @@ const deleteMember = async (memberId) => {
   return { success: true };
 };
 
+// 更新密碼
 const changePassword = async (memberId, oldPassword, newPassword) => {
   const connection = await db.getConnection();
   try {
@@ -442,6 +676,8 @@ const deleteAccount = async (memberId, password) => {
   }
 };
 
+
+// 發送密碼重設驗證碼郵件
 const sendResetPasswordEmail = async (email, verificationCode) => {
   try {
     console.log('開始發送驗證碼郵件...');
@@ -485,6 +721,102 @@ const sendResetPasswordEmail = async (email, verificationCode) => {
   }
 };
 
+
+// firebase 登入
+// const createFirebaseUser = async (userData) => {
+//   const { email, name, avatar, firebaseUid } = userData;
+  
+//   try {
+//     const [result] = await db.query(
+//       'INSERT INTO members (email, name, avatar, firebase_uid) VALUES (?, ?, ?, ?)',
+//       [email, name, avatar, firebaseUid]
+//     );
+
+//     const [member] = await db.query(
+//       'SELECT * FROM members WHERE id = ?',
+//       [result.insertId]
+//     );
+
+//     return member[0];
+//   } catch (error) {
+//     console.error('創建 Firebase 用戶失敗:', error);
+//     throw error;
+//   }
+// };
+
+
+
+// 根據 email 查找用戶
+const findByEmail = async (email) => {
+  try {
+    const [members] = await db.query(
+      'SELECT * FROM members WHERE email = ?',
+      [email]
+    );
+    return members[0];
+  } catch (error) {
+    console.error('查找用戶失敗:', error);
+    throw error;
+  }
+};
+
+// 創建 Firebase 用戶
+const createFirebaseUser = async (userData) => {
+  const { email, name, avatar, firebaseUid } = userData;
+  const connection = await db.getConnection();
+  
+  try {
+    await connection.beginTransaction();
+
+    // 先創建 members 記錄
+    const [result] = await connection.query(
+      'INSERT INTO members (email, role, firebase_uid) VALUES (?, ?, ?)',
+      [email, 'member', firebaseUid]
+    );
+
+    const memberId = result.insertId;
+
+    // 創建 member_profiles 記錄
+    await connection.query(
+      'INSERT INTO member_profiles (member_id, name, avatar) VALUES (?, ?, ?)',
+      [memberId, name || email.split('@')[0], avatar]
+    );
+
+    // 獲取完整的用戶資料
+    const [members] = await connection.query(
+      `SELECT m.*, mp.name, mp.avatar 
+       FROM members m 
+       JOIN member_profiles mp ON m.id = mp.member_id 
+       WHERE m.id = ?`,
+      [memberId]
+    );
+
+    await connection.commit();
+    return members[0];
+  } catch (error) {
+    await connection.rollback();
+    console.error('創建 Firebase 用戶失敗:', error);
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
+// 生成 JWT token
+const generateToken = (member) => {
+  return jwt.sign(
+    { 
+      id: member.id,
+      email: member.email
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d' }
+  );
+};
+
+
+
+
 export {
   register,
   login,
@@ -496,5 +828,9 @@ export {
   sendEmailChangeEmail,
   confirmEmailChange,
   deleteAccount,
-  sendResetPasswordEmail
+  sendResetPasswordEmail,
+
+  findByEmail,
+  createFirebaseUser,
+  generateToken
 }; 

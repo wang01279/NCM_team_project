@@ -23,13 +23,13 @@ export default function Sidebar({ member, activeTab, setActiveTab, onAvatarUploa
     >
       <div className={styles.userInfo}>
         <div className={styles.avatarContainer}>
-          <input
+          {/* <input
             type="file"
             id="avatarUpload"
             accept="image/*"
             style={{ display: 'none' }}
             onChange={onAvatarUpload}
-          />
+          /> */}
           <label htmlFor="avatarUpload" style={{ cursor: 'pointer' }}>
             <img
               src={member.avatar || '/profile/images/pic.jpg'}
