@@ -214,18 +214,48 @@ router.post("/login", async (req, res) => {
 });
 
 // 獲取會員資料
-router.get("/profile", authenticateToken, async (req, res) => {
+router.get("/:id", authenticateToken, async (req, res) => {
   try {
-    const memberId = req.user.id;
-    const profile = await getMemberProfile(memberId);
+    const memberId = req.params.id;
+    
+    // 獲取會員基本資料
+    const [members] = await pool.query(
+      "SELECT id, email, role, created_at FROM members WHERE id = ? AND is_deleted = FALSE",
+      [memberId]
+    );
+
+    if (members.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "用戶不存在",
+      });
+    }
+
+    // 獲取會員詳細資料
+    const [profiles] = await pool.query(
+      "SELECT name, gender, phone, address, avatar, birthday FROM member_profiles WHERE member_id = ?",
+      [memberId]
+    );
+
+    const profile = profiles[0] || {};
+
+    // 構建完整的頭像URL
+    const host = process.env.SERVER_ORIGIN || `${req.protocol}://${req.get("host")}`;
+    const fullAvatar = profile.avatar ? `${host}${profile.avatar}` : null;
+
     res.json({
       success: true,
-      data: profile,
+      data: {
+        ...members[0],
+        ...profile,
+        avatar: fullAvatar,
+      },
     });
   } catch (error) {
-    res.status(400).json({
+    console.error("獲取會員資料錯誤:", error);
+    res.status(500).json({
       success: false,
-      message: error.message,
+      message: "獲取會員資料失敗",
     });
   }
 });

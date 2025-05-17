@@ -5,6 +5,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import '../_styles/navbar.scss'
 import AuthModal from '@/app/_components/Auth/AuthModal'
 import { useAuth } from '@/app/_hooks/useAuth'
+// import { useAuth } from '@/app/_components/Auth/AuthProvider'
+
 import {
   FaUserCircle,
   FaCommentDots,
@@ -15,6 +17,7 @@ import {
   FaShoppingCart,
   FaUser,
 } from 'react-icons/fa'
+import Image from 'next/image'
 
 // toast
 import { useToast } from './ToastManager'
@@ -23,8 +26,9 @@ export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const { showToast } = useToast()
-  const { member, isLoggedIn, isLoading, logout, googleLogin } = useAuth()
-  
+  const { member, isLoggedIn, isLoading, login, logout, googleLogin } =
+    useAuth()
+
   /* ---------------------- State ---------------------- */
   const [isScrolled, setIsScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -52,7 +56,6 @@ export default function Navbar() {
   const handleLogin = () => {
     setIsLoginModalOpen(true)
   }
-  
 
   const handleLogout = () => {
     logout()
@@ -63,11 +66,113 @@ export default function Navbar() {
     setIsLoginModalOpen(false)
   }
 
-  const handleSubmitLogin = (formData) => {
-    setIsLoginModalOpen(false)
-    showToast('success', '登入成功 🎉')
-    router.push('/member/center')
+  // const handleSubmitLogin = (formData) => {
+  //   // 1. 把後端回來的 member 資料 & token 存 localStorage
+  //   // localStorage.setItem('member', JSON.stringify(formData.user))
+  //   // localStorage.setItem('token', formData.token)
+  //   // // 2. 觸發 useAuth 在第三個 useEffect 裡監聽的 memberLogin 事件
+  //   // window.dispatchEvent(
+  //   //   new CustomEvent('memberLogin', {
+  //   //     detail: { memberData: formData.user, token: formData.token },
+  //   //   })
+  //   // )
+
+  //   // **直接呼叫 hook 裡的 login()**
+  //   login(formData.user, formData.token)
+
+  //   // 3. 關閉 Modal、跳頁、Toast
+  //   setIsLoginModalOpen(false)
+  //   showToast('success', '登入成功 🎉')
+  //   router.push('/member/center')
+  // }
+
+  // const handleSubmitLogin = async (formData) => {
+  //   // 1. 呼叫後端登入 API 拿到 user 與 token
+  //   const { user, token } = await apiLogin(formData)
+
+  //   // 2. 直接呼叫 hook 裡的 login()，更新全站 Auth 狀態
+  //   login(user, token)
+
+  //   // 3. 關閉 Modal、跳頁、顯示 Toast
+  //   setIsLoginModalOpen(false)
+  //   showToast('success', '登入成功 🎉')
+  //   router.push('/member/center')
+  // }
+
+  // 這裡把 handleSubmitLogin 改成 async 並內嵌 fetch
+  // const handleSubmitLogin = async (formData) => {
+  //   try {
+  //     // 1. 呼叫後端登入 API
+  //     const res = await fetch('/api/auth/login', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         email: formData.email,
+  //         password: formData.password,
+  //       }),
+  //     })
+
+  //     // 2. 解析回傳
+  //     const json = await res.json()
+  //     if (!res.ok || !json.success) {
+  //       throw new Error(json.message || `登入失敗：HTTP ${res.status}`)
+  //     }
+
+  //     const { user, token } = json.data
+
+  //     // 3. 呼叫 login 更新全局狀態
+  //     login(user, token)
+
+  //     // 4. UI 處理：關 Modal、Toast、轉頁
+  //     setIsLoginModalOpen(false)
+  //     showToast('success', '登入成功 🎉')
+  //     router.push('/member/center')
+  //   } catch (err) {
+  //     console.error('登入錯誤：', err)
+  //     showToast('error', err.message || '登入失敗')
+  //   }
+  // }
+
+  const handleSubmitLogin = async (formData) => {
+    try {
+      // 1. 呼叫後端登入 API（使用 NEXT_PUBLIC_API_URL）
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/members/login`,
+        {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        }
+      )
+  
+      // 2. 解析回傳
+      const json = await res.json()
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || `登入失敗：HTTP ${res.status}`)
+      }
+  
+      const { user, token } = json.data
+  
+      // 3. 呼叫 login 更新全局狀態
+      login(user, token)
+  
+      // 4. UI 處理：關 Modal、Toast、轉頁
+      setIsLoginModalOpen(false)
+      showToast('success', '登入成功 🎉')
+      router.push('/member/center')
+    } catch (err) {
+      console.error('登入錯誤：', err)
+      showToast('error', err.message || '登入失敗')
+    }
   }
+  
 
   const handleNavigateToMemberCenter = () => {
     router.push('/member/center')
@@ -84,15 +189,19 @@ export default function Navbar() {
         <nav className="nav-container">
           {/* Logo */}
           <a href="/" className="logo-container logo" onClick={closeMenu}>
-            <img
+            <Image
               src="/img/logo-navbar/logo-navbar-light-1.svg"
               alt="國立故瓷博物館"
               className="large-logo"
+              width={200}
+              height={50}
             />
-            <img
+            <Image
               src="/img/ncmLogo/logo-ncm.png"
               alt="國立故瓷博物館"
               className="small-logo"
+              width={40}
+              height={40}
             />
           </a>
 
@@ -119,14 +228,23 @@ export default function Navbar() {
                 (isLoggedIn ? (
                   <div className="user-greeting">
                     {/* 使用者頭像 */}
-                    {/* <FaUserCircle /> */}
-                    <img src={member?.avatar || '/img/ncmLogo/logo-ncm.png'} alt="avatar" className="user-profile-avatar" />
+                    <img
+                      src={member?.avatar || '/img/ncmLogo/logo-ncm.png'}
+                      alt="avatar"
+                      width={40}
+                      height={40}
+                      className="user-profile-avatar"
+                      style={{ objectFit: 'cover', borderRadius: '50%' }}
+                    />
                     <div className="user-dropdown">
                       <div className="user-profile-header">
                         <img
                           src={member?.avatar || '/img/ncmLogo/logo-ncm.png'}
                           alt="avatar"
+                          width={60}
+                          height={60}
                           className="user-profile-avatar"
+                          style={{ objectFit: 'cover', borderRadius: '50%' }}
                         />
                         <div className="user-profile-info">
                           <div className="user-profile-name">
@@ -200,13 +318,18 @@ export default function Navbar() {
                     <img
                       src={member?.avatar || '/img/ncmLogo/logo-ncm.png'}
                       alt="avatar"
+                      width={50}
+                      height={50}
                       className="mobile-profile-avatar"
+                      style={{ objectFit: 'cover', borderRadius: '50%' }}
                     />
                     <div className="mobile-profile-info">
                       <div className="mobile-profile-name">
                         {member?.name || '未設定姓名'}
                       </div>
-                      <div className="mobile-profile-email">{member?.email}</div>
+                      <div className="mobile-profile-email">
+                        {member?.email}
+                      </div>
                     </div>
                   </div>
                   <button

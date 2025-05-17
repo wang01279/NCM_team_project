@@ -196,6 +196,18 @@ const login = async (email, password) => {
 
     const profile = profiles[0];
 
+    // 構建完整的頭像URL
+    const host = process.env.SERVER_ORIGIN || 'http://localhost:3005';
+    const fullAvatar = profile.avatar 
+      ? (profile.avatar.startsWith('http') 
+          ? profile.avatar 
+          : `${host}${profile.avatar}`)
+      : null;
+
+    console.log('登入 - 頭像路徑:', profile.avatar);
+    console.log('登入 - 服務器地址:', host);
+    console.log('登入 - 完整頭像URL:', fullAvatar);
+
     return {
       success: true,
       token,
@@ -207,11 +219,12 @@ const login = async (email, password) => {
         gender: profile.gender,
         phone: profile.phone,
         address: profile.address,
-        avatar: profile.avatar,
+        avatar: fullAvatar,  // 使用完整的頭像URL
         birthday: profile.birthday
       }
     };
   } catch (error) {
+    console.error('登入錯誤:', error);
     throw error;
   }
 };
@@ -231,8 +244,26 @@ const getMemberProfile = async (memberId) => {
       throw new Error('找不到會員資料');
     }
 
-    return profiles[0];
+    const profile = profiles[0];
+
+    // 構建完整的頭像URL
+    const host = process.env.SERVER_ORIGIN || 'http://localhost:3005';
+    const fullAvatar = profile.avatar 
+      ? (profile.avatar.startsWith('http') 
+          ? profile.avatar 
+          : `${host}${profile.avatar}`)
+      : null;
+
+    console.log('獲取會員資料 - 頭像路徑:', profile.avatar);
+    console.log('獲取會員資料 - 服務器地址:', host);
+    console.log('獲取會員資料 - 完整頭像URL:', fullAvatar);
+
+    return {
+      ...profile,
+      avatar: fullAvatar  // 使用完整的頭像URL
+    };
   } catch (error) {
+    console.error('獲取會員資料錯誤:', error);
     throw error;
   }
 };
@@ -335,15 +366,30 @@ const updateMemberProfile = async (memberId, profileData) => {
       [memberId]
     );
 
+    // 構建完整的頭像URL
+    const host = process.env.SERVER_ORIGIN || 'http://localhost:3005';
+    const fullAvatar = updatedProfile[0].avatar 
+      ? (updatedProfile[0].avatar.startsWith('http') 
+          ? updatedProfile[0].avatar 
+          : `${host}${updatedProfile[0].avatar}`)
+      : null;
+
+    console.log('更新會員資料 - 頭像路徑:', updatedProfile[0].avatar);
+    console.log('更新會員資料 - 服務器地址:', host);
+    console.log('更新會員資料 - 完整頭像URL:', fullAvatar);
+
     await connection.commit();
     return { 
       success: true, 
-      data: updatedProfile[0],
+      data: {
+        ...updatedProfile[0],
+        avatar: fullAvatar  // 使用完整的頭像URL
+      },
       message: '會員資料更新成功' 
     };
   } catch (error) {
     await connection.rollback();
-    console.error('Error in updateMemberProfile:', error);
+    console.error('更新會員資料錯誤:', error);
     throw error;
   } finally {
     connection.release();
