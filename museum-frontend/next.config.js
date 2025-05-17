@@ -20,6 +20,16 @@ const nextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost',
+        port: '3005',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'example.com',
       },
     ],
     unoptimized: true,

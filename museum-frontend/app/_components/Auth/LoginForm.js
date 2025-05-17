@@ -7,7 +7,12 @@ import { FaEnvelope, FaLock, FaGoogle } from 'react-icons/fa'
 import { useToast } from '@/app/_components/ToastManager'
 import GoogleLoginButton from './GoogleLoginButton'
 
-export default function LoginForm({ formData, setFormData, onSubmit, onClose }) {
+export default function LoginForm({
+  formData,
+  setFormData,
+  onSubmit,
+  onClose,
+}) {
   const [loading, setLoading] = useState(false)
   const { showToast } = useToast()
   const router = useRouter()
@@ -27,27 +32,7 @@ export default function LoginForm({ formData, setFormData, onSubmit, onClose }) 
 
     setLoading(true)
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/members/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.email.trim(),
-          password: formData.password,
-        }),
-      })
-
-      const data = await res.json()
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || '登入失敗')
-      }
-
-      localStorage.setItem('token', data.data.token)
-      localStorage.setItem('member', JSON.stringify(data.data.user))
-      showToast('success', '登入成功 🎉')
-
-      router.push('/member/center')
-      onSubmit?.(data)
-      onClose?.()
+      await onSubmit?.(formData)
     } catch (err) {
       console.error('登入錯誤:', err)
       showToast('error', err.message || '系統錯誤')
@@ -59,11 +44,14 @@ export default function LoginForm({ formData, setFormData, onSubmit, onClose }) 
   // Firebase Google Popup 登入成功後的 callback
   const handleGoogleLoginSuccess = async (idToken) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/members/auth/firebase`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken })
-      })
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/members/auth/firebase`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken }),
+        }
+      )
       const data = await res.json()
       if (!res.ok || !data.success) {
         throw new Error(data.message || 'Firebase 登入後端驗證失敗')
@@ -86,7 +74,11 @@ export default function LoginForm({ formData, setFormData, onSubmit, onClose }) 
         controlId="email"
         name="email"
         type="email"
-        label={<><FaEnvelope className="icon" /> 電子郵件</>}
+        label={
+          <>
+            <FaEnvelope className="icon" /> 電子郵件
+          </>
+        }
         placeholder="請輸入電子郵件"
         value={formData.email}
         onChange={handleChange}
@@ -95,7 +87,11 @@ export default function LoginForm({ formData, setFormData, onSubmit, onClose }) 
         controlId="password"
         name="password"
         type="password"
-        label={<><FaLock className="icon" /> 密碼</>}
+        label={
+          <>
+            <FaLock className="icon" /> 密碼
+          </>
+        }
         placeholder="請輸入密碼"
         value={formData.password}
         onChange={handleChange}

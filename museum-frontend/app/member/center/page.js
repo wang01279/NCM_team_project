@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/app/_components/ToastManager'
 import { useAuth } from '@/app/_hooks/useAuth'
+// import { useAuth } from '../../_components/Auth/AuthProvider'
 
 import styles from './styles/center.module.scss'
 import LeftSidebar from './features/sidebar/LeftSidebar'
@@ -182,7 +183,7 @@ export default function MemberCenter() {
   const handleSubmit = async (formData) => {
     try {
       console.log('Token:', token)
-      
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/members/profile`,
         {
@@ -190,23 +191,23 @@ export default function MemberCenter() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          body: formData // 直接發送 FormData
+          body: formData, // 直接發送 FormData
         }
       )
-  
+
       console.log('Response status:', response.status)
       const data = await response.json()
       console.log('收到回應:', data)
-  
+
       if (!response.ok) {
         throw new Error(data.message || '更新失敗')
       }
-  
+
       updateMember({
         ...member,
-        ...data.data
+        ...data.data,
       })
-  
+
       showToast('success', '資料更新成功')
     } catch (error) {
       console.error('更新失敗:', error)
@@ -260,6 +261,7 @@ export default function MemberCenter() {
   // 渲染頁面
   return (
     <>
+
       <div className={styles.lowContent}>
         <LowContent />
       </div>

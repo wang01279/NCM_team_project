@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Navbar from '@/app/_components/navbar'
 // button
 import Button from 'react-bootstrap/Button'
 // modal
@@ -47,6 +48,8 @@ export default function AppPage(props) {
   const onSubmit = (data) => console.log('🎉', data)
 
   return (
+    <>
+    <Navbar />
     <div className="container">
       <div className="grid-container">
         <div className="box box1">
@@ -111,7 +114,8 @@ export default function AppPage(props) {
             <i className="fa-solid fa-arrow-right" />
           </button>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

@@ -6,11 +6,13 @@ import { Form } from 'react-bootstrap'
 import { FaUser, FaEnvelope, FaLock, FaGoogle } from 'react-icons/fa'
 import FloatingField from '@/app/_components/FloatingField'
 import { useToast } from '@/app/_components/ToastManager'
+import { useAuth } from '@/app/_hooks/useAuth'
 
 export default function RegisterForm({ formData, setFormData, onSubmit, onClose }) {
   const [loading, setLoading] = useState(false)
   const { showToast } = useToast()
   const router = useRouter()
+  const { login } = useAuth()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -44,9 +46,15 @@ export default function RegisterForm({ formData, setFormData, onSubmit, onClose 
 
     setLoading(true)
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/members/register`, {
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/members/register`
+      console.log('註冊請求 URL:', apiUrl)
+
+      const res = await fetch(apiUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({
           name: formData.name.trim(),
           email: formData.email.trim(),
@@ -54,25 +62,45 @@ export default function RegisterForm({ formData, setFormData, onSubmit, onClose 
         }),
       })
 
+      // 检查响应的 Content-Type
+      const contentType = res.headers.get('content-type')
+      console.log('回應 Content-Type:', contentType)
+      console.log('回應狀態碼:', res.status)
+
+      // 如果不是 JSON 格式，先读取内容看看是什么
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await res.text()
+        console.error('非 JSON 回應內容:', text)
+        throw new Error('伺服器回應格式錯誤，請檢查 API 地址是否正確')
+      }
+
       const data = await res.json()
+      console.log('完整回應內容:', data)
 
       if (!res.ok || !data.success) {
         throw new Error(data.message || '註冊失敗')
       }
 
       // 檢查返回的數據結構
-      if (!data.token || !data.user) {
-        throw new Error('註冊成功但未收到有效的認證信息')
+      if (!data.token) {
+        console.error('返回數據缺少 token 字段:', data)
+        throw new Error('註冊成功但未收到認證令牌')
       }
 
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('member', JSON.stringify(data.user))
-      window.dispatchEvent(new Event('memberUpdate'))
-      showToast('success', '註冊成功 🎉')
+      if (!data.user) {
+        console.error('返回數據缺少 user 字段:', data)
+        throw new Error('註冊成功但未收到用戶信息')
+      }
 
-      router.push('/member/center')
-      if (onSubmit) onSubmit(data)
+      // 使用注册返回的数据更新全局状态
+      login(data.user, data.token)
+      
+      // 关闭模态框并显示成功消息
+      showToast('success', '註冊成功 🎉')
       if (onClose) onClose()
+      
+      // 跳转到会员中心
+      router.push('/member/center')
     } catch (err) {
       console.error('註冊錯誤:', err)
       showToast('error', err.message || '系統錯誤')
