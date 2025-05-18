@@ -1,28 +1,33 @@
+// app/_components/AddToFavoritesButton.js
 import React, { useState, useEffect } from 'react'
 import { FaRegBookmark, FaBookmark } from 'react-icons/fa'
 
-export default function AddToFavoritesButton({
-  productId,
-  onAddToFavorites,
+const AddToFavoritesButton = ({
+  itemId,
+  itemType, // 'product' | 'course' | 'exhibition'
   onToggleFavorite,
   isFavorite: initialIsFavorite,
 }) {
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite || false)
-  const handleToggle = onToggleFavorite || onAddToFavorites || (() => {}) // 提供空函數作為預設值
 
   useEffect(() => {
     setIsFavorite(initialIsFavorite || false)
   }, [initialIsFavorite])
 
   const toggleFavorite = () => {
-    setIsFavorite(!isFavorite)
-    if (handleToggle) {
-      handleToggle(productId, !isFavorite)
+    const newState = !isFavorite
+    setIsFavorite(newState)
+    if (onToggleFavorite) {
+      onToggleFavorite(itemId, itemType, newState)
     }
   }
 
   return (
-    <button className="btn-icon favorite-button " onClick={toggleFavorite}>
+    <button
+      className="btn-icon favorite-button d-flex align-items-center px-1 py-1"
+      onClick={toggleFavorite}
+      title={isFavorite ? '取消收藏' : '加入收藏'}
+    >
       {isFavorite ? <FaBookmark className="text-danger" /> : <FaRegBookmark />}
     </button>
   )
