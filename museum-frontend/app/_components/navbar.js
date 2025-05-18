@@ -26,8 +26,16 @@ export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const { showToast } = useToast()
-  const { member, isLoggedIn, isLoading, login, logout, googleLogin } =
-    useAuth()
+  const {
+    member,
+    isLoggedIn,
+    isLoading,
+    login,
+    logout,
+    googleLogin,
+    updateMember,
+    avatarSrc,
+  } = useAuth()
 
   /* ---------------------- State ---------------------- */
   const [isScrolled, setIsScrolled] = useState(false)
@@ -66,73 +74,6 @@ export default function Navbar() {
     setIsLoginModalOpen(false)
   }
 
-  // const handleSubmitLogin = (formData) => {
-  //   // 1. 把後端回來的 member 資料 & token 存 localStorage
-  //   // localStorage.setItem('member', JSON.stringify(formData.user))
-  //   // localStorage.setItem('token', formData.token)
-  //   // // 2. 觸發 useAuth 在第三個 useEffect 裡監聽的 memberLogin 事件
-  //   // window.dispatchEvent(
-  //   //   new CustomEvent('memberLogin', {
-  //   //     detail: { memberData: formData.user, token: formData.token },
-  //   //   })
-  //   // )
-
-  //   // **直接呼叫 hook 裡的 login()**
-  //   login(formData.user, formData.token)
-
-  //   // 3. 關閉 Modal、跳頁、Toast
-  //   setIsLoginModalOpen(false)
-  //   showToast('success', '登入成功 🎉')
-  //   router.push('/member/center')
-  // }
-
-  // const handleSubmitLogin = async (formData) => {
-  //   // 1. 呼叫後端登入 API 拿到 user 與 token
-  //   const { user, token } = await apiLogin(formData)
-
-  //   // 2. 直接呼叫 hook 裡的 login()，更新全站 Auth 狀態
-  //   login(user, token)
-
-  //   // 3. 關閉 Modal、跳頁、顯示 Toast
-  //   setIsLoginModalOpen(false)
-  //   showToast('success', '登入成功 🎉')
-  //   router.push('/member/center')
-  // }
-
-  // 這裡把 handleSubmitLogin 改成 async 並內嵌 fetch
-  // const handleSubmitLogin = async (formData) => {
-  //   try {
-  //     // 1. 呼叫後端登入 API
-  //     const res = await fetch('/api/auth/login', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({
-  //         email: formData.email,
-  //         password: formData.password,
-  //       }),
-  //     })
-
-  //     // 2. 解析回傳
-  //     const json = await res.json()
-  //     if (!res.ok || !json.success) {
-  //       throw new Error(json.message || `登入失敗：HTTP ${res.status}`)
-  //     }
-
-  //     const { user, token } = json.data
-
-  //     // 3. 呼叫 login 更新全局狀態
-  //     login(user, token)
-
-  //     // 4. UI 處理：關 Modal、Toast、轉頁
-  //     setIsLoginModalOpen(false)
-  //     showToast('success', '登入成功 🎉')
-  //     router.push('/member/center')
-  //   } catch (err) {
-  //     console.error('登入錯誤：', err)
-  //     showToast('error', err.message || '登入失敗')
-  //   }
-  // }
-
   const handleSubmitLogin = async (formData) => {
     try {
       // 1. 呼叫後端登入 API（使用 NEXT_PUBLIC_API_URL）
@@ -140,9 +81,9 @@ export default function Navbar() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/members/login`,
         {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            Accept: 'application/json',
           },
           credentials: 'include',
           body: JSON.stringify({
@@ -151,18 +92,18 @@ export default function Navbar() {
           }),
         }
       )
-  
+
       // 2. 解析回傳
       const json = await res.json()
       if (!res.ok || !json.success) {
         throw new Error(json.message || `登入失敗：HTTP ${res.status}`)
       }
-  
+
       const { user, token } = json.data
-  
+
       // 3. 呼叫 login 更新全局狀態
       login(user, token)
-  
+
       // 4. UI 處理：關 Modal、Toast、轉頁
       setIsLoginModalOpen(false)
       showToast('success', '登入成功 🎉')
@@ -172,7 +113,6 @@ export default function Navbar() {
       showToast('error', err.message || '登入失敗')
     }
   }
-  
 
   const handleNavigateToMemberCenter = () => {
     router.push('/member/center')
@@ -229,7 +169,7 @@ export default function Navbar() {
                   <div className="user-greeting">
                     {/* 使用者頭像 */}
                     <img
-                      src={member?.avatar || '/img/ncmLogo/logo-ncm.png'}
+                      src={avatarSrc}
                       alt="avatar"
                       width={40}
                       height={40}
@@ -239,7 +179,7 @@ export default function Navbar() {
                     <div className="user-dropdown">
                       <div className="user-profile-header">
                         <img
-                          src={member?.avatar || '/img/ncmLogo/logo-ncm.png'}
+                          src={avatarSrc}
                           alt="avatar"
                           width={60}
                           height={60}

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import {
   register,
   login,
@@ -19,19 +19,15 @@ import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
 
-
 import jwt from "jsonwebtoken";
 import admin from "../config/firebaseAdmin.js";
 // import passport from "../config/passport.js";
 import bcrypt from "bcryptjs";
 import pool from "../config/database.js";
 
-
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-import transporter from '../config/nodemailer.js';
-
-
+import transporter from "../config/nodemailer.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -74,7 +70,7 @@ router.post("/register", async (req, res) => {
     const result = await register(email, password, name, avatar);
     res.json(result);
   } catch (error) {
-    console.error('註冊錯誤:', error);
+    console.error("註冊錯誤:", error);
     res.status(400).json({
       success: false,
       message: error.message,
@@ -217,7 +213,7 @@ router.post("/login", async (req, res) => {
 router.get("/:id", authenticateToken, async (req, res) => {
   try {
     const memberId = req.params.id;
-    
+
     // 獲取會員基本資料
     const [members] = await pool.query(
       "SELECT id, email, role, created_at FROM members WHERE id = ? AND is_deleted = FALSE",
@@ -240,8 +236,22 @@ router.get("/:id", authenticateToken, async (req, res) => {
     const profile = profiles[0] || {};
 
     // 構建完整的頭像URL
-    const host = process.env.SERVER_ORIGIN || `${req.protocol}://${req.get("host")}`;
-    const fullAvatar = profile.avatar ? `${host}${profile.avatar}` : null;
+    const host =
+      process.env.SERVER_ORIGIN || `${req.protocol}://${req.get("host")}`;
+    // const fullAvatar = profile.avatar ? `${host}${profile.avatar}` : null;
+
+    // 只有相對路徑補前綴，完整 URL 保持原狀
+    let fullAvatar = null;
+    if (profile.avatar) {
+      if (
+        profile.avatar.startsWith("http://") ||
+        profile.avatar.startsWith("https://")
+      ) {
+        fullAvatar = profile.avatar;
+      } else {
+        fullAvatar = `${host}${profile.avatar}`;
+      }
+    }
 
     res.json({
       success: true,
@@ -260,124 +270,111 @@ router.get("/:id", authenticateToken, async (req, res) => {
   }
 });
 
-// 更新會員資料
-// router.put("/profile", authenticateToken, async (req, res) => {
-//   try {
-//     const { name, gender, phone, address, birthday } = req.body;
-//     console.log(req.body);
-//     const memberId = req.user.id;
-//     // const parsedBirthday = birthday ? birthday : null;
-
-//     // 更新會員詳細資料
-//     await pool.query(
-//       `UPDATE member_profiles 
-//        SET name = ?, gender = ?, phone = ?, address = ?, birthday = ?
-//        WHERE member_id = ?`,
-//       [name, gender, phone, address, birthday, memberId]
-//     );
-
-//     res.json({
-//       success: true,
-//       message: "資料更新成功",
-//     });
-//   } catch (error) {
-//     console.error("Error updating profile:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "更新資料失敗",
-//     });
-//   }
-// });
-
-// 更新會員資料
-// router.put("/profile", authenticateToken, async (req, res) => {
-//   try {
-//     const { name, gender, phone, address, birthday } = req.body;
-//     const memberId = req.user.id;
-
-//     // 使用 updateMemberProfile 服務函數
-//     const result = await updateMemberProfile(memberId, {
-//       name,
-//       gender,
-//       phone,
-//       address,
-//       birthday,
-//     });
-
-//     // 獲取更新後的完整資料
-//     const [updatedProfile] = await pool.query(
-//       `SELECT m.email, mp.name, mp.gender, mp.phone, mp.address, mp.avatar, mp.birthday
-//        FROM members m 
-//        JOIN member_profiles mp ON m.id = mp.member_id 
-//        WHERE m.id = ? AND m.is_deleted = FALSE`,
-//       [memberId]
-//     );
-
-//     res.json({
-//       success: true,
-//       message: "資料更新成功",
-//       data: updatedProfile[0]
-//     });
-//   } catch (error) {
-//     console.error("Error updating profile:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: error.message || "更新資料失敗",
-//     });
-//   }
-// });
-
-// 更新會員資料
-router.put("/profile", authenticateToken, upload.single('avatar'), async (req, res) => {
+// 獲取當前用戶資料
+router.get("/me", authenticateToken, async (req, res) => {
   try {
-    const memberId = req.user.id;
-    const { name, gender, phone, address, birthday } = req.body;
-    
-    // 如果有上傳新頭像，生成頭像路徑
-    let avatarPath = null;
-    if (req.file) {
-      avatarPath = `/uploads/${req.file.filename}`;
-    }
-
-    // 使用 updateMemberProfile 服務函數
-    const result = await updateMemberProfile(memberId, {
-      name,
-      gender,
-      phone,
-      address,
-      birthday,
-      avatar: avatarPath // 如果有新頭像就更新，沒有就保持原樣
-    });
-
-    // 獲取更新後的完整資料
-    const [updatedProfile] = await pool.query(
-      `SELECT m.email, mp.name, mp.gender, mp.phone, mp.address, mp.avatar, mp.birthday
-       FROM members m 
-       JOIN member_profiles mp ON m.id = mp.member_id 
-       WHERE m.id = ? AND m.is_deleted = FALSE`,
-      [memberId]
+    const [members] = await pool.query(
+      "SELECT id, email, role, created_at FROM members WHERE id = ? AND is_deleted = FALSE",
+      [req.user.id]
     );
+    if (members.length === 0) {
+      return res.status(404).json({ success: false, message: "用戶不存在" });
+    }
+    const [profiles] = await pool.query(
+      "SELECT name, gender, phone, address, avatar, birthday FROM member_profiles WHERE member_id = ?",
+      [req.user.id]
+    );
+    const profile = profiles[0] || {};
 
-    // 構建完整的頭像URL
-    const host = process.env.SERVER_ORIGIN || `${req.protocol}://${req.get("host")}`;
-    const fullAvatar = updatedProfile[0].avatar ? `${host}${updatedProfile[0].avatar}` : null;
+    const host =
+      process.env.SERVER_ORIGIN || `${req.protocol}://${req.get("host")}`;
+    let fullAvatar = null;
+    if (profile.avatar) {
+      if (
+        profile.avatar.startsWith("http://") ||
+        profile.avatar.startsWith("https://")
+      ) {
+        fullAvatar = profile.avatar;
+      } else {
+        fullAvatar = `${host}${profile.avatar}`;
+      }
+    }
 
     res.json({
       success: true,
-      message: "資料更新成功",
       data: {
-        ...updatedProfile[0],
-        avatar: fullAvatar
-      }
+        ...members[0],
+        ...profile,
+        avatar: fullAvatar,
+      },
     });
   } catch (error) {
-    console.error("Error updating profile:", error);
-    res.status(500).json({
-      success: false,
-      message: error.message || "更新資料失敗",
-    });
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ success: false, message: "獲取用戶資料失敗" });
   }
 });
+
+
+
+// 更新會員資料
+router.put(
+  "/profile",
+  authenticateToken,
+  upload.single("avatar"),
+  async (req, res) => {
+    try {
+      const memberId = req.user.id;
+      const { name, gender, phone, address, birthday } = req.body;
+
+      // 如果有上傳新頭像，生成頭像路徑
+      let avatarPath = null;
+      if (req.file) {
+        avatarPath = `/uploads/${req.file.filename}`;
+      }
+
+      // 使用 updateMemberProfile 服務函數
+      const result = await updateMemberProfile(memberId, {
+        name,
+        gender,
+        phone,
+        address,
+        birthday,
+        avatar: avatarPath, // 如果有新頭像就更新，沒有就保持原樣
+      });
+
+      // 獲取更新後的完整資料
+      const [updatedProfile] = await pool.query(
+        `SELECT m.email, mp.name, mp.gender, mp.phone, mp.address, mp.avatar, mp.birthday
+       FROM members m 
+       JOIN member_profiles mp ON m.id = mp.member_id 
+       WHERE m.id = ? AND m.is_deleted = FALSE`,
+        [memberId]
+      );
+
+      // 構建完整的頭像URL
+      const host =
+        process.env.SERVER_ORIGIN || `${req.protocol}://${req.get("host")}`;
+      const fullAvatar = updatedProfile[0].avatar
+        ? `${host}${updatedProfile[0].avatar}`
+        : null;
+
+      res.json({
+        success: true,
+        message: "資料更新成功",
+        data: {
+          ...updatedProfile[0],
+          avatar: fullAvatar,
+        },
+      });
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({
+        success: false,
+        message: error.message || "更新資料失敗",
+      });
+    }
+  }
+);
 
 // 刪除會員（軟刪除）
 router.delete("/", authenticateToken, async (req, res) => {
@@ -454,36 +451,52 @@ router.post(
 
 // 修改密碼
 router.post("/change-password", authenticateToken, async (req, res) => {
-  try {
-    const memberId = req.user.id;
-    const { oldPassword, newPassword } = req.body;
+  const { currentPassword, newPassword } = req.body;
+  const memberId = req.user.id;
 
-    // 驗證必要參數
-    if (!oldPassword || !newPassword) {
-      return res.status(400).json({
+  try {
+    // 驗證當前密碼
+    const [member] = await pool.query("SELECT * FROM members WHERE id = ?", [
+      memberId,
+    ]);
+
+    if (member.length === 0) {
+      return res.status(404).json({
         success: false,
-        message: "請提供舊密碼和新密碼",
+        message: "找不到會員資料",
       });
     }
 
-    // 修改密碼
-    const result = await changePassword(memberId, oldPassword, newPassword);
-
-    // 發送確認郵件
-    const [members] = await pool.query(
-      "SELECT email FROM members WHERE id = ?",
-      [memberId]
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      member[0].password
     );
 
-    if (members && members.length > 0) {
-      await sendPasswordChangeEmail(members[0].email);
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        message: "當前密碼錯誤",
+      });
     }
 
-    res.json(result);
+    // 加密新密碼
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // 更新密碼
+    await pool.query("UPDATE members SET password = ? WHERE id = ?", [
+      hashedPassword,
+      memberId,
+    ]);
+
+    res.json({
+      success: true,
+      message: "密碼修改成功",
+    });
   } catch (error) {
-    res.status(400).json({
+    console.error("修改密碼錯誤:", error);
+    res.status(500).json({
       success: false,
-      message: error.message,
+      message: "修改密碼失敗",
     });
   }
 });
@@ -605,21 +618,90 @@ router.delete("/account", authenticateToken, async (req, res) => {
     const memberId = req.user.id;
     const { password } = req.body;
 
+    console.log("收到刪除帳號請求:", { memberId });
+
     // 驗證必要參數
     if (!password) {
+      console.log("缺少密碼參數");
       return res.status(400).json({
         success: false,
         message: "請提供密碼",
       });
     }
 
-    // 刪除帳號
-    const result = await deleteAccount(memberId, password);
-    res.json(result);
+    // 驗證密碼
+    const [members] = await pool.query(
+      "SELECT * FROM members WHERE id = ? AND is_deleted = FALSE",
+      [memberId]
+    );
+
+    console.log(
+      "查詢會員結果:",
+      members.length > 0 ? "找到會員" : "未找到會員"
+    );
+
+    if (members.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "找不到會員資料",
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, members[0].password);
+    console.log("密碼驗證結果:", isPasswordValid ? "密碼正確" : "密碼錯誤");
+
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        message: "密碼錯誤",
+      });
+    }
+
+    // 開始事務
+    const connection = await pool.getConnection();
+    await connection.beginTransaction();
+
+    try {
+      // 軟刪除會員資料
+      console.log("開始軟刪除會員資料");
+      await connection.query(
+        "UPDATE members SET is_deleted = TRUE WHERE id = ?",
+        [memberId]
+      );
+
+      // 軟刪除會員詳細資料
+      console.log("開始軟刪除會員詳細資料");
+      await connection.query(
+        "UPDATE member_profiles SET is_deleted = TRUE WHERE member_id = ?",
+        [memberId]
+      );
+
+      // 提交事務
+      await connection.commit();
+      console.log("帳號刪除成功");
+
+      res.json({
+        success: true,
+        message: "帳號已成功刪除",
+      });
+    } catch (error) {
+      // 如果出錯，回滾事務
+      await connection.rollback();
+      throw error;
+    } finally {
+      // 釋放連接
+      connection.release();
+    }
   } catch (error) {
-    res.status(400).json({
-      success: false,
+    console.error("刪除帳號錯誤:", error);
+    console.error("錯誤詳情:", {
       message: error.message,
+      stack: error.stack,
+      code: error.code,
+    });
+    res.status(500).json({
+      success: false,
+      message: "刪除帳號失敗",
     });
   }
 });
@@ -655,10 +737,10 @@ router.delete("/account", authenticateToken, async (req, res) => {
 
 //       // 登入成功，生成 JWT token
 //       const token = jwt.sign(
-//         { 
-//           id: req.user.id, 
+//         {
+//           id: req.user.id,
 //           email: req.user.email,
-//           role: req.user.role 
+//           role: req.user.role
 //         },
 //         process.env.JWT_SECRET || 'your-secret-key',
 //         { expiresIn: '24h' }
@@ -678,7 +760,7 @@ router.delete("/account", authenticateToken, async (req, res) => {
 //       // 重定向到前端，並帶上 token 和用戶信息
 //       const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/member/center?token=${token}&user=${encodeURIComponent(JSON.stringify(userData))}`;
 //       console.log('重定向 URL:', redirectUrl);
-      
+
 //       res.redirect(redirectUrl);
 //     } catch (error) {
 //       console.error('Google callback error:', error);
@@ -686,8 +768,6 @@ router.delete("/account", authenticateToken, async (req, res) => {
 //     }
 //   }
 // );
-
-
 
 // 處理上傳錯誤
 router.use((error, req, res, next) => {
@@ -750,7 +830,6 @@ router.get("/me", authenticateToken, async (req, res) => {
         avatar: fullAvatar, // ← 前端一拿就能 <img src="">
       },
     });
-    
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).json({
@@ -761,50 +840,52 @@ router.get("/me", authenticateToken, async (req, res) => {
 });
 
 // 忘記密碼
-router.post('/forgot-password', async (req, res) => {
+router.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
-    
+
     // 生成6位數驗證碼
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    
+    const verificationCode = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+
     // 將驗證碼存入資料庫，有效期15分鐘
     await pool.query(
-      'UPDATE members SET reset_token = ?, reset_token_expiry = DATE_ADD(NOW(), INTERVAL 15 MINUTE) WHERE email = ? AND is_deleted = FALSE',
+      "UPDATE members SET reset_token = ?, reset_token_expiry = DATE_ADD(NOW(), INTERVAL 15 MINUTE) WHERE email = ? AND is_deleted = FALSE",
       [verificationCode, email]
     );
 
     // 發送驗證碼郵件
     await sendResetPasswordEmail(email, verificationCode);
-    
-    res.json({ 
-      success: true, 
-      message: '驗證碼已發送到您的郵箱' 
+
+    res.json({
+      success: true,
+      message: "驗證碼已發送到您的郵箱",
     });
   } catch (error) {
-    console.error('忘記密碼錯誤:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: error.message || '發送驗證碼失敗' 
+    console.error("忘記密碼錯誤:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "發送驗證碼失敗",
     });
   }
 });
 
 // 重設密碼
-router.post('/reset-password', async (req, res) => {
+router.post("/reset-password", async (req, res) => {
   try {
     const { email, verificationCode, newPassword } = req.body;
 
     // 檢查驗證碼是否有效
     const [members] = await pool.query(
-      'SELECT * FROM members WHERE email = ? AND reset_token = ? AND reset_token_expiry > NOW() AND is_deleted = FALSE',
+      "SELECT * FROM members WHERE email = ? AND reset_token = ? AND reset_token_expiry > NOW() AND is_deleted = FALSE",
       [email, verificationCode]
     );
 
     if (members.length === 0) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: '驗證碼無效或已過期' 
+        message: "驗證碼無效或已過期",
       });
     }
 
@@ -813,38 +894,34 @@ router.post('/reset-password', async (req, res) => {
 
     // 更新密碼並清除驗證碼
     await pool.query(
-      'UPDATE members SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE email = ?',
+      "UPDATE members SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE email = ?",
       [hashedPassword, email]
     );
 
-    res.json({ 
+    res.json({
       success: true,
-      message: '密碼重設成功' 
+      message: "密碼重設成功",
     });
   } catch (error) {
-    console.error('重設密碼錯誤:', error);
-    res.status(500).json({ 
+    console.error("重設密碼錯誤:", error);
+    res.status(500).json({
       success: false,
-      message: '重設密碼失敗' 
+      message: "重設密碼失敗",
     });
   }
 });
 
-
-
-
-
 // Firebase 驗證路由
-router.post('/auth/firebase', async (req, res) => {
-  const { idToken } = req.body
+router.post("/auth/firebase", async (req, res) => {
+  const { idToken } = req.body;
   if (!idToken) {
-    return res.status(400).json({ success: false, message: '缺少 idToken' })
+    return res.status(400).json({ success: false, message: "缺少 idToken" });
   }
 
   try {
     // 驗證並解碼 ID Token
-    const decoded = await admin.auth().verifyIdToken(idToken)
-    const { uid: firebaseUid, email, name, picture: avatar } = decoded
+    const decoded = await admin.auth().verifyIdToken(idToken);
+    const { uid: firebaseUid, email, name, picture: avatar } = decoded;
 
     // 查或建會員（包含會員資料）
     let [members] = await pool.query(
@@ -853,8 +930,8 @@ router.post('/auth/firebase', async (req, res) => {
        LEFT JOIN member_profiles mp ON m.id = mp.member_id 
        WHERE m.firebase_uid = ?`,
       [firebaseUid]
-    )
-    let member = members[0]
+    );
+    let member = members[0];
 
     if (!member) {
       [members] = await pool.query(
@@ -863,25 +940,42 @@ router.post('/auth/firebase', async (req, res) => {
          LEFT JOIN member_profiles mp ON m.id = mp.member_id 
          WHERE m.email = ? AND m.is_deleted = FALSE`,
         [email]
-      )
-      member = members[0]
+      );
+      member = members[0];
       if (member) {
-        await pool.query(
-          'UPDATE members SET firebase_uid = ? WHERE id = ?',
-          [firebaseUid, member.id]
-        )
+        await pool.query("UPDATE members SET firebase_uid = ? WHERE id = ?", [
+          firebaseUid,
+          member.id,
+        ]);
       }
     }
     if (!member) {
-      member = await createFirebaseUser({ email, name, avatar, firebaseUid })
+      member = await createFirebaseUser({ email, name, avatar, firebaseUid });
     }
 
     // 發你自己的 JWT
     const accessToken = jwt.sign(
       { id: member.id, email: member.email },
       process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    )
+      { expiresIn: "24h" }
+    );
+
+    // ─── 在這裡新增 avatarUrl 的處理 ───
+    let avatarUrl = null;
+    if (member.avatar) {
+      // 如果已經是完整網址，就直接用
+      if (
+        member.avatar.startsWith("http://") ||
+        member.avatar.startsWith("https://")
+      ) {
+        avatarUrl = member.avatar;
+      } else {
+        // 否則當成相對路徑，加上 host 前綴
+        const host =
+          process.env.SERVER_ORIGIN || `${req.protocol}://${req.get("host")}`;
+        avatarUrl = `${host}${member.avatar}`;
+      }
+    }
 
     res.json({
       success: true,
@@ -894,13 +988,14 @@ router.post('/auth/firebase', async (req, res) => {
         gender: member.gender,
         phone: member.phone,
         address: member.address,
-        avatar: member.avatar,
-        birthday: member.birthday
-      }
-    })
+        // avatar: member.avatar,
+        avatar: avatarUrl,
+        birthday: member.birthday,
+      },
+    });
   } catch (err) {
-    console.error('Firebase 驗證錯誤：', err)
-    res.status(401).json({ success: false, message: '驗證失敗：' + err.code })
+    console.error("Firebase 驗證錯誤：", err);
+    res.status(401).json({ success: false, message: "驗證失敗：" + err.code });
   }
 });
 

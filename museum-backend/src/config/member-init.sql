@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： localhost
--- 產生時間： 2025 年 05 月 14 日 16:58
+-- 產生時間： 2025 年 05 月 18 日 20:32
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -97,29 +97,22 @@ CREATE TABLE `members` (
   `google_id` varchar(255) DEFAULT NULL,
   `role` enum('member','admin','staff') DEFAULT 'member',
   `is_deleted` tinyint(1) DEFAULT 0,
-  `created_at` datetime DEFAULT current_timestamp()
+  `created_at` datetime DEFAULT current_timestamp(),
+  `firebase_uid` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `members`
 --
 
-INSERT INTO `members` (`id`, `email`, `password`, `reset_token`, `reset_token_expiry`, `google_id`, `role`, `is_deleted`, `created_at`) VALUES
-(1, 'test@example.com', '$2b$10$mPi6.KtTOiW9NYLwQ6xF9eDJcTRJdyIdCLyUd.fLeAa1jrpecVOC2', NULL, NULL, NULL, 'member', 0, '2025-04-30 22:36:35'),
-(2, 'test3@example.com', '$2b$10$m9N3edCnQLnP.c/v87HGsecoHWSA7ABZjNNMYhxmyljxYi1RXew3S', NULL, NULL, NULL, 'member', 0, '2025-04-30 22:38:53'),
-(3, 'test2@example.com', '$2b$10$1SbsvpeD/ohQI9p803oY.OVXXVeC90FuNqT/I6YU2pKBCz0ykfnAu', NULL, NULL, NULL, 'member', 1, '2025-04-30 22:59:54'),
-(4, 'eeyorepppppp@gmail.com', NULL, NULL, NULL, '114548210815219626446', 'admin', 0, '2025-05-01 00:34:23'),
-(5, 'chun@test.com', '$2b$10$Tp9lNGA1esxBO1tivvOR2..dBTxy/XaqX3VopMdkGxESHoillyKWe', '276136', '2025-05-12 19:26:09', NULL, 'member', 0, '2025-05-01 03:00:57'),
-(6, 'erica51528@yahoo.com.tw', '$2b$10$jKY0wbsekVrH99gNAuYjNult98ACVibDW4T8YLpbb97R3nF55HcQe', NULL, NULL, NULL, 'member', 0, '2025-05-01 03:03:46'),
-(7, 'erica51528@gmail.com', '$2b$10$a2Pab9n6z6wSxV8Prr1tiOgiQ6mOSYnlSX01YzUTrLif38QaxsqvK', '295466', '2025-05-12 21:20:54', '110215699996745906774', 'member', 0, '2025-05-01 03:04:41'),
-(8, '123@gmail.com', '$2b$10$0999MTbsYQVSMhlpWuAuoOJ01QmnNAJC7UPduxaVBtJ2BiPaR1vHq', NULL, NULL, NULL, 'member', 0, '2025-05-01 03:07:50'),
-(9, 'eeyoreppp@gmail.com', NULL, NULL, NULL, '112083537805999064229', 'member', 0, '2025-05-01 03:17:37'),
-(10, 'localhost@jnn.fjyj', '$2b$10$5qrQcbJ1Uq57yBKfrEQXn.qMD/Vkawf.zAXfhs.Dq1yzL0clK/OEW', NULL, NULL, NULL, 'member', 0, '2025-05-08 01:30:26'),
-(11, 'erica@gamil.com', '$2b$10$RmI4VLzO1Mzg40MDX6knS./dogWMq4OvHS/NSm9cUCioWp0bYXIwi', NULL, NULL, NULL, 'member', 0, '2025-05-09 19:45:50'),
-(12, 'chunchun@test.com', '$2b$10$GbatdttI/abB4BzZVaz00uUHfiGl14.cv4X6PLPkYHyEI69p2orvq', NULL, NULL, NULL, 'member', 0, '2025-05-10 00:56:34'),
-(13, 'bin@test.com', '$2b$10$3Tb3PXPu7EJ4mO5Ok0lTO.gskXV5hrknanpKSSeqmLiJQgPLusUVK', NULL, NULL, NULL, 'member', 0, '2025-05-10 01:21:02'),
-(14, 'chun1@test.com', '$2b$10$75LcnNOL7i4S6xQtdelUQ.Bfq1yveFCuppDkwA8lPWIteLHd6GBlO', NULL, NULL, NULL, 'member', 0, '2025-05-10 17:27:43'),
-(15, 'eeyorepppp@gmail.com', NULL, NULL, NULL, '113048253439701359467', 'member', 0, '2025-05-10 17:42:19');
+INSERT INTO `members` (`id`, `email`, `password`, `reset_token`, `reset_token_expiry`, `google_id`, `role`, `is_deleted`, `created_at`, `firebase_uid`) VALUES
+(91, 'eeyorepppppp@gmail.com', NULL, NULL, NULL, NULL, 'member', 0, '2025-05-19 02:18:24', 'l6dlfdM5T2goNTP22S7ng68FfBC3'),
+(92, 'erica51528@gmail.com', NULL, NULL, NULL, NULL, 'member', 0, '2025-05-19 02:22:22', 'mmWngRPpqfRhtJWF2Mw3ANI7nHo1'),
+(93, 'ncm@test.com', '$2b$10$ay3VtU5lkvq0nJG4NY6llelR5cSMBPf4JMYeBeXbOOFeteIpzncj.', NULL, NULL, NULL, 'member', 0, '2025-05-19 02:25:20', NULL),
+(94, 'hu@test.com', '$2b$10$mV51MFUdJfZbxq0/XAqQp.SoC9Yk0ppMy5c9hXwGYOH5R6EN4NskW', NULL, NULL, NULL, 'member', 0, '2025-05-19 02:28:12', NULL),
+(95, 'wang@test.com', '$2b$10$RmHLGIhqReY.FoZEl2LWKOmDcrhdJAqNokNl27Dsjm0ei3ulFIvYK', NULL, NULL, NULL, 'member', 0, '2025-05-19 02:29:43', NULL),
+(96, 'xie@test.com', '$2b$10$zji/kmd5HjmD0OMJQilgI.q7WN5gXqrMVw9wvKc7Ev2qLGoXxWz2G', NULL, NULL, NULL, 'member', 0, '2025-05-19 02:30:47', NULL),
+(97, 'lili@test.com', '$2b$10$RMkGGxO3sMshFNGMj/zeHOGJo0ODWoUHrFkT5z0ONaRFo9QHnfayi', NULL, NULL, NULL, 'member', 0, '2025-05-19 02:31:40', NULL);
 
 -- --------------------------------------------------------
 
@@ -144,21 +137,13 @@ CREATE TABLE `member_profiles` (
 --
 
 INSERT INTO `member_profiles` (`id`, `member_id`, `name`, `gender`, `phone`, `address`, `avatar`, `is_deleted`, `birthday`) VALUES
-(1, 1, '新名字', 'M', '0912345678', '台北市', '/uploads/1746024404143-24802191.jpg', 0, NULL),
-(2, 2, '測試用戶', NULL, NULL, NULL, 'https://example.com/custom-avatar.png', 0, NULL),
-(3, 3, 'Test User 2', NULL, NULL, NULL, 'https://example.com/default-avatar.png', 1, NULL),
-(4, 4, 'NCM故瓷', NULL, NULL, NULL, 'https://lh3.googleusercontent.com/a/ACg8ocKaAAXCQaAIJDp1bepaXAJHok3pw7RZeFt6g5srSISP7_7Zayw=s96-c', 0, '2025-05-08'),
-(5, 5, '123456', NULL, '0912345678', '新興路3巷24號', 'https://example.com/default-avatar.png', 0, '2025-02-05'),
-(6, 6, '李傑克1', NULL, NULL, NULL, 'https://example.com/default-avatar.png', 0, NULL),
-(7, 7, 'catt', NULL, NULL, NULL, '/uploads/1747227610579-832005215.jpg', 0, NULL),
-(8, 8, 'jack1', NULL, '123442131', '新興路3巷24號', 'https://example.com/default-avatar.png', 0, '2025-05-16'),
-(9, 9, '-MEFF64 1', NULL, NULL, NULL, 'https://lh3.googleusercontent.com/a/ACg8ocJJ6SJ8BPZGeZteRkFXuD0KUexgL_5yHmGll_pCroPLjh62e4U=s96-c', 0, NULL),
-(10, 10, 'May', NULL, NULL, NULL, 'https://example.com/default-avatar.png', 0, NULL),
-(11, 11, 'Chun', NULL, NULL, NULL, 'https://example.com/default-avatar.png', 0, NULL),
-(12, 12, '丸丸', 'F', '0912345678', '新興路3巷24號', 'https://example.com/default-avatar.png', 0, '2025-05-08'),
-(13, 13, '111', 'F', NULL, NULL, '/uploads/1746869219275-237231233.png', 0, NULL),
-(14, 14, 'May', NULL, NULL, NULL, '/uploads/1746869303636-176080332.jpg', 0, NULL),
-(15, 15, '-MEFF64 2', NULL, NULL, NULL, 'https://lh3.googleusercontent.com/a/ACg8ocLIgueLQBOJqa3OxPm4qUU01vHYAIya7Pn7_1N1iAnWYqGGQ50=s96-c', 0, NULL);
+(91, 91, 'NCM故瓷', 'O', '0912345678', '桃園市中壢區新生路二段421號', '/uploads/1747592433743-514995103.svg', 0, '2024-12-25'),
+(92, 92, 'Chun Chun', 'F', '0912345678', '桃園市中壢區新生路二段421號', 'https://lh3.googleusercontent.com/a/ACg8ocLJZayu_xLnunFAKtxpSRY3DTCB5NCdhqFjpQ9q8On8u6uOaWqW=s96-c', 0, '1998-06-01'),
+(93, 93, '小磁怪', 'O', '0912345678', '桃園市中壢區新生路二段421號', '/uploads/default-avatar.png', 0, '2024-12-26'),
+(94, 94, '胡一心', 'F', '0912345678', '桃園市中壢區新生路二段421號', '/uploads/default-avatar.png', 0, '1999-06-25'),
+(95, 95, '王阿哲', 'M', '0912345678', '桃園市中壢區新生路二段421號', '/uploads/default-avatar.png', 0, '2002-04-03'),
+(96, 96, '謝阿祐', 'M', '0912345678', '桃園市中壢區新生路二段421號', '/uploads/default-avatar.png', 0, '2020-04-03'),
+(97, 97, 'Lilian', 'F', '0912345678', '桃園市中壢區新生路二段421號', '/uploads/default-avatar.png', 0, '2001-11-19');
 
 -- --------------------------------------------------------
 
@@ -215,7 +200,8 @@ ALTER TABLE `chat_room_messages`
 --
 ALTER TABLE `members`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `firebase_uid` (`firebase_uid`);
 
 --
 -- 資料表索引 `member_profiles`
@@ -258,13 +244,13 @@ ALTER TABLE `chat_room_messages`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `members`
 --
 ALTER TABLE `members`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `member_profiles`
 --
 ALTER TABLE `member_profiles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `messages`
