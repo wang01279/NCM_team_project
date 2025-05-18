@@ -10,7 +10,7 @@ export default function Tabs() {
   const state = searchParams.get('state') || 'current'
 
   return (
-    <ul className={`${styles.tabs} mt-5`}>
+    <ul className={`${styles.tabs} ${styles['tab-menu']} mt-5`}>
       <li>
         <Link
           href="/exhibitions"

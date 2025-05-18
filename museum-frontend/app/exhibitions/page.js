@@ -3,7 +3,7 @@
 import Carousel from './_components/carousel'
 import Menu from './_components/menu'
 import { useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ExhibitionList from './_components/list'
 import Tabs from './_components/tabs' // 若你有 tab 切換功能
 import styles from '../exhibitions/_styles/ex-page.module.scss'
@@ -16,19 +16,26 @@ export default function ExhibitionPage() {
   // 對過去展覽篩選年份
   const [selectedYear, setSelectedYear] = useState(year)
 
+  useEffect(() => {
+    setSelectedYear(year)
+  }, [year])
+
   return (
     <>
       <main className="container">
         <div className={styles.customMargin}>
-          <h2 className="d-flex justify-content-center align-items-center fw-bold mb-4">
-            展覽 | Exhibition
-          </h2>
+          <div className="d-flex justify-content-center align-items-center flex-column fw-bold">
+            <h2 className="mb-0 pb-0">展覽</h2>
+            <p className="mb-0 pb-0">-</p>
+            <h5 className="mt-0 pt-0 m-0">Exhibition</h5>
+          </div>
+
           <Tabs />
         </div>
         <div>
           {/* 當期展覽專屬：輪播區塊 */}
           {state === 'current' && (
-            <section className="my-4">
+            <section className="my-4 d-flex justify-content-center">
               <Carousel />
             </section>
           )}
@@ -36,7 +43,7 @@ export default function ExhibitionPage() {
           {/* 過去展覽專屬：年份篩選 */}
           {state === 'past' && (
             <section className="my-3">
-              <Menu selectedYear={selectedYear} onChange={setSelectedYear} />
+              <Menu selectedYear={year} />
             </section>
           )}
 

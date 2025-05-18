@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+
 import styles from '../_styles/ex-menu.module.scss'
 
 export default function Menu() {
@@ -39,7 +40,7 @@ export default function Menu() {
   return (
     <>
       <div className="d-flex justify-content-center mt-3">
-        <button className="btn btn-outline-dark" onClick={toggleMenu}>
+        <button className="btn btn-primary" onClick={toggleMenu}>
           選擇年份 ▾
         </button>
       </div>
@@ -63,7 +64,7 @@ export default function Menu() {
             {years.map((year) => (
               <li key={year}>
                 <Link
-                  href={`/exhibitions/past?year=${year}`}
+                  href={`/exhibitions?state=past&year=${year}`} // ✅ 修正這行即可
                   onClick={toggleMenu}
                 >
                   {year}

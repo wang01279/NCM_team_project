@@ -3,26 +3,39 @@
 .customMargin {
   margin-top: 100px;
 }
+
+.tab-menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  padding: rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  
+}
+
+
 .tabs {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   gap: 2rem;
   list-style: none;
   margin-bottom: 2rem;
-  padding: 0;
+  padding: 10px;
 }
 
 .tabItem {
   text-decoration: none;
   color: $primary;
   font-weight: bold;
-  font-size: 1rem;
+  font-size:16px;
   position: relative;
   transition: color 0.3s ease;
 }
 
 .tabItem:hover {
   color: $secondary;
+  text-decoration: none;
 }
 
 .tabItem::after {
@@ -32,79 +45,119 @@
   left: 50%;
   width: 0;
   height: 2px;
-  background-color: $secondary;
-  transform: translateX(-50%);
+  background-color: $secondary ; 
+  transform: translateX(-50%) ;
   transition: width 0.3s ease;
+  
+}
+
+.tabItem {
+  &:focus {
+    color: $secondary;
+    outline: none;
+    box-shadow: none;
+  }
 }
 
 .tabItem:hover::after,
 .active::after {
   width: 60%;
+  text-decoration: none !important;
 }
 
 .active {
   color: $secondary;
+  text-decoration: none !important;
+  // border: 0px solid !important;
 }
 
 /* ---------------- 輪播區(保留BS-5樣式) ---------------- */
 
-/* ---------------- 展覽卡片 ---------------- */
+/* ---------------- 展覽卡片樣式 ---------------- */
 .exhibitionCard {
   color: $dark;
   position: relative;
-  background-color: $main-bg;
+  background-color: $light;
   overflow: hidden;
-  transition:
-    box-shadow 0.3s ease,
-    transform 0.3s ease;
   margin-bottom: 2rem;
+  border-radius: 8px;
+  transition: background-color 0.1s ease, box-shadow 0.1s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .exhibitionCard:hover {
-  box-shadow: 0 8px 24px $dark;
-  transform: translateY(-4px);
+  background-color: $muted;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-.exhibitionCard:hover::before {
-  opacity: 1;
-}
-
-/* ✅ 圖片放大 */
 .imageContainer {
-  height: 100%;
-  padding: 0;
+  height: 250px;
   overflow: hidden;
-  display: flex;
-  align-items: stretch;
   position: relative;
-  z-index: 2;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .exhibitionImg {
-  transition: transform 0.4s ease;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.4s ease;
   display: block;
+}
+
+.imageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0); // 預設透明
+  transition: background 0.3s ease;
+  z-index: 1;
+}
+
+.exhibitionCard:hover .imageOverlay {
+  background: rgba(215, 206, 195, 0.4); // Hover 時變暗
 }
 
 .exhibitionCard:hover .exhibitionImg {
   transform: scale(1.05);
 }
-
-/* ✅ 文字內容樣式 */
+/* ---------------- 卡片文字與標題 ---------------- */
 .infoContainer {
   position: relative;
   z-index: 2;
-  transition:
-    color 0.4s ease,
-    opacity 0.4s ease;
-}
 
-.exhibitionCard:hover .infoContainer h5 {
-  color: $primary;
+  h5,
+  p {
+transition:
+      transform 1s ease,
+      color 0.4s ease;
+    transform: scale(1); // 預設大小
+  }
 }
 
 .exhibitionCard:hover .infoContainer {
-  opacity: 1;
+  h5,
+  p {
+    transform:  scale(1.01); // 平移＋微放大
+    color: $primary;
+  }
+}
+
+
+/* ---------------- 自訂按鈕 hover 效果 ---------------- */
+.customBtn {
+  border: 1px solid $primary;
+  color: $primary;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.exhibitionCard:hover .customBtn {
+  background-color: $primary;
+  color: $alert;
 }

@@ -51,49 +51,63 @@ export default function ExhibitionDetailPage() {
       ? `https://calendar.google.com/calendar/render?action=TEMPLATE` +
         `&text=${encodeURIComponent(exhibits.title)}` +
         `&details=${encodeURIComponent(exhibits.intro?.slice(0, 100) || '')}` +
-        `&location=${encodeURIComponent(exhibits.location || '國立故瓷博物館')}` +
+        `&location=${encodeURIComponent(exhibits.venueId || '國立故瓷博物館')}` +
         `&dates=${toUTCString(exhibits.startDate)}/${toUTCString(exhibits.endDate)}`
       : '#'
 
   return (
     <>
-      <div className="d-flex justify-content-center mt-4">
+      <div className={`${styles.heroBanner} d-flex justify-content-center`}>
         <Image
           src={`/images/${exhibits.image}`}
           alt={exhibits.title}
           width={1000}
           height={500}
-          style={{ objectFit: 'contain' }}
+          className="img-fluid"
+          style={{ objectFit: 'contain', width: '100%', height: 'auto' }}
         />
       </div>
 
       <div
         className={`container d-flex justify-content-center flex-column py-4 ${styles.exhibitionInfo}`}
       >
-        <h2 className="fw-bold text-center mb-3">{exhibits.title}</h2>
-
-        <a
-          href={googleCalendarUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-decoration-none text-dark text-center"
-        >
-          <FaRegCalendarPlus className="me-2" />
-          {exhibits.startDate.slice(0, 10)} ~ {exhibits.endDate.slice(0, 10)}
-        </a>
-
         <div className="d-flex justify-content-center align-items-center">
-          <p className="text-center text-muted d-inline-block me-2 mb-0">
-            <IoLocationSharp className="me-1 p-0" />
-            {exhibits.venue_id}
-          </p>
-          <button type="button" className="btn btn-icon">
-            <FaRegBookmark />
-          </button>
+          <h2
+            className={`${styles.titleEx} fw-bold text-center mb-3 me-3 d-flex align-items-center`}
+          >
+            {exhibits.title}
+            <FaRegBookmark className="ms-2" />
+          </h2>
+        </div>
+
+        <div className="container d-flex justify-content-center">
+          <div className="d-flex flex-column align-items-start text-center">
+            <a
+              href={googleCalendarUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`text-decoration-none text-center text-dark fs-5 d-flex align-items-center ${styles.customHover}`}
+              title="加入行事曆"
+            >
+              <FaRegCalendarPlus className="me-2" />
+              {exhibits.startDate.slice(0, 10)} ~{' '}
+              {exhibits.endDate.slice(0, 10)}
+            </a>
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="查看展區導引"
+              className={`${styles.customHover} d-flex align-items-center text-center text-dark fs-5 d-inline-block me-2 mb-0  text-decoration-none`}
+            >
+              <IoLocationSharp className="me-2" />
+              {exhibits.venue_id}
+            </a>
+          </div>
         </div>
 
         <div className={`container py-4 ${styles.exhibitionDescription}`}>
-          <h4 className="fw-bold mb-3">展覽概述</h4>
+          <h4 className={`${styles.subEx} fw-bold mb-3`}>展覽概述</h4>
           <TextToggle text={exhibits.intro} maxLine={5} />
         </div>
       </div>

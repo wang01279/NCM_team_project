@@ -1,76 +1,63 @@
-// components/exhibition/Carousel.js
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 export default function Carousel() {
+  const [exhibitions, setExhibitions] = useState([])
+
   useEffect(() => {
+    // 確保 Bootstrap JS 被正確加載
     import('bootstrap/dist/js/bootstrap.bundle.min.js')
+
+    // 抓取當期展覽
+    fetch('http://localhost:3005/api/exhibitions?state=current')
+      .then((res) => res.json())
+      .then((res) => {
+        if (res?.data?.exhibitions) {
+          setExhibitions(res.data.exhibitions)
+        }
+      })
+      .catch((err) => console.error('展覽取得失敗：', err))
   }, [])
 
   return (
     <div
       id="carouselExampleIndicators"
-      className="carousel slide pt-5"
+      className="carousel slide pt-0 "
       data-bs-ride="carousel"
+      style={{ maxWidth: '1000px', width: '100%' }} // ← 控制整體寬度
     >
       <div className="carousel-indicators">
-        <button
-          type="button"
-          data-bs-target="#carouselExampleIndicators"
-          data-bs-slide-to="0"
-          className="active"
-          aria-current="true"
-          aria-label="Slide 1"
-        ></button>
-        <button
-          type="button"
-          data-bs-target="#carouselExampleIndicators"
-          data-bs-slide-to="1"
-          aria-label="Slide 2"
-        ></button>
-        <button
-          type="button"
-          data-bs-target="#carouselExampleIndicators"
-          data-bs-slide-to="2"
-          aria-label="Slide 3"
-        ></button>
+        {exhibitions.map((_, index) => (
+          <button
+            key={index}
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to={index}
+            className={index === 0 ? 'active' : ''}
+            aria-current={index === 0 ? 'true' : undefined}
+            aria-label={`Slide ${index + 1}`}
+          ></button>
+        ))}
       </div>
 
       <div className="carousel-inner">
-        <div className="carousel-item active">
-          <div className="ratio ratio-16x9">
-            <Image
-              src="/images/04010505.jpg"
-              className="d-block w-100"
-              alt="亞洲探險記"
-              width={1000}
-              height={500}
-            />
+        {exhibitions.map((e, index) => (
+          <div
+            key={e.id}
+            className={`carousel-item ${index === 0 ? 'active' : ''} `}
+          >
+            <div className="ratio ratio-16x9" style={{ maxHeight: '400px' }}>
+              <Image
+                src={`/images/${e.image}`}
+                alt={e.title}
+                width={1000}
+                height={500}
+                className="d-block w-100 object-fit-cover"
+              />
+            </div>
           </div>
-        </div>
-        <div className="carousel-item">
-          <div className="ratio ratio-16x9">
-            <Image
-              src="/images/04000569.jpg"
-              className="d-block w-100"
-              alt="士拿呼"
-              width={1000}
-              height={500}
-            />
-          </div>
-        </div>
-        <div className="carousel-item">
-          <div className="ratio ratio-16x9">
-            <Image
-              src="/images/04011127.png"
-              className="d-block w-100"
-              alt="清宮鼻煙壺"
-              width={1000}
-              height={500}
-            />
-          </div>
-        </div>
+        ))}
       </div>
 
       <button

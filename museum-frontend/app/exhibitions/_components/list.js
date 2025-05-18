@@ -46,17 +46,17 @@ export default function ExhibitionList({ state = 'current', year }) {
             className="text-decoration-none"
           >
             <div
-              className={`${styles.exhibitionCard} row align-items-center overflow-hidden mb-4`}
+              className={`${styles.exhibitionCard} row align-items-center overflow-hidden mb-0`}
               style={{ cursor: 'pointer' }}
             >
               <div className={`col-md-5 ${styles.imageContainer}`}>
+              <div className={styles.imageOverlay}></div> {/* ← 遮罩層 */}
                 <Image
                   src={`/images/${ex.image}`}
                   alt={ex.title}
                   width={600}
-                  height={400}
-                  className="img-fluid"
-                  // placeholder="blur" // 選用：需搭配本地 blurDataURL 或 loading 佈局
+                  height={250}
+                  className=" exhibitionImg"
                 />
               </div>
               <div className={`col-md-7 ${styles.infoContainer}`}>
@@ -68,7 +68,7 @@ export default function ExhibitionList({ state = 'current', year }) {
                   </p>
                   <p className="text-muted mb-2">展廳區域：{ex.venue_id}</p>
                   <div className="d-flex justify-content-end">
-                    <button className={`btn ${styles.customBtn}`}>
+                    <button className={`btn btn-light`}>
                       <span>查看更多</span>
                       <svg width="18" height="18" viewBox="0 0 24 24">
                         <line x1="5" y1="12" x2="19" y2="12" />
