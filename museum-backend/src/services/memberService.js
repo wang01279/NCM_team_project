@@ -110,7 +110,7 @@ const register = async (email, password, name, avatar = null) => {
     const memberId = result.insertId;
 
     // 創建會員資料，如果沒有提供頭像，使用默認值
-    const defaultAvatar = 'https://example.com/default-avatar.png';
+    const defaultAvatar = '/uploads/default-avatar.png';
     await connection.query(
       'INSERT INTO member_profiles (member_id, name, avatar) VALUES (?, ?, ?)',
       [memberId, name, avatar || defaultAvatar]
