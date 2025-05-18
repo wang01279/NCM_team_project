@@ -46,10 +46,9 @@ $submenu-bg: rgba(255, 255, 255, 0.95);
     padding: 0.75rem 1rem;
     z-index: 100;
     position: absolute;
-    top:100%;
-    left: 0;
-    transform: none;
-    width: 100%;
+    top: 100%;
+    left: -30%; /* 置中對齊 */
+    width: 150px;
     min-width: unset;
     animation: fadeSlideIn 0.3s ease forwards;
 
@@ -119,6 +118,9 @@ $submenu-bg: rgba(255, 255, 255, 0.95);
   .category-item {
     width: 100%;
     align-items: center;
+    &:focus {
+      outline: none; /* 移除焦點時的框線 */
+    }
   }
 }
 

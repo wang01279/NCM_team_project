@@ -12,29 +12,36 @@ export default function ProductCard({
   onAddToFavorites,
   favoriteProducts,
 }) {
-  const { id, name, imageUrl, price, oldPrice, discount, status } = product
-  const isCurrentlyFavorite = favoriteProducts && favoriteProducts.includes(id)
-  const isOutOfStock = status === '庫存不足'
+  const {
+    id,
+    name_zh: name,
+    main_img: imageUrl,
+    price,
+    discount_rate,
+    stock,
+  } = product
 
-  // const imageHeight = 200
-  // const imageWidth = 300
+  const hasDiscount = discount_rate && discount_rate > 0 && discount_rate < 10
+  const discountPrice = hasDiscount
+    ? Math.round(price * (discount_rate / 10))
+    : null
+
+  const status = stock === 0 ? '庫存不足' : '庫存充足'
+  const isOutOfStock = stock === 0
+  const isCurrentlyFavorite = favoriteProducts?.includes(id)
 
   return (
-    <div className={`col-12 col-sm-6 col-md-4 col-lg-3`}>
+    <div className="col-12 col-sm-6 col-md-4 col-lg-3">
       <div className="product-card">
         <div className="product-img">
           <Image
             src={imageUrl}
             alt={name}
-            fill // 自動填滿
+            fill
             style={{ objectFit: 'contain' }}
             onError={(e) => {
               console.error('Image failed to load:', imageUrl)
-              e.currentTarget.onerror = null // 關鍵：移除 onerror 監聽器
-              // e.currentTarget.src = null; // 選項 1：將 src 設定為 null，圖片將不顯示
-              // e.currentTarget.style.display = 'none'; // 選項 2：直接隱藏圖片元素
-              // 選項 3：設定一個預設的替代圖片 (確保該圖片存在且路徑正確)
-              // e.currentTarget.src = '/image/no-image.png';
+              e.currentTarget.onerror = null
             }}
           />
           <div className="img-overlay">
@@ -43,16 +50,26 @@ export default function ProductCard({
             </Link>
           </div>
         </div>
+
         <div className="product-name">{name}</div>
+
         <div className="product-price-wrap">
-          <span className="product-price">NT${price}</span>
-          {oldPrice && <span className="product-old-price">NT${oldPrice}</span>}
-          {discount && <span className="product-discount">{discount}</span>}
+          {hasDiscount ? (
+            <>
+              <span className="product-price">NT${discountPrice}</span>
+              <span className="product-old-price">NT${price}</span>
+              <span className="product-discount">{discount_rate} 折</span>
+            </>
+          ) : (
+            <span className="product-price">NT${price}</span>
+          )}
         </div>
+
         <div className="product-status">
           <i className="fa-solid fa-box me-2"></i>
           {status}
         </div>
+
         <div className="product-actions">
           <AddToCartButton
             productId={id}
@@ -65,8 +82,9 @@ export default function ProductCard({
             isFavorite={isCurrentlyFavorite}
           />
         </div>
-        {status === '庫存不足' && <span className="stock-badge">缺貨中</span>}
-        {discount && <span className="stock-badge sale">特價中</span>}
+
+        {isOutOfStock && <span className="stock-badge">缺貨中</span>}
+        {hasDiscount && <span className="stock-badge sale">特價中</span>}
       </div>
     </div>
   )

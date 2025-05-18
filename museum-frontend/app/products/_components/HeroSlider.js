@@ -3,95 +3,77 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
 import '../_styles/heroSlider.scss'
-import Link from 'next/link' // 假設您使用 Next.js 的 Link 組件
+import Link from 'next/link'
 
 export default function HeroSlider() {
-  const slides = [
-    {
-      bg: '/image/b1-bg.png',
-      img: '/image/b1-removebg-preview.png',
-      title: '法華牡丹金彩盤',
-      desc: '繁花似錦，金彩輝映宴席風華',
-      link: '/products/fahua-peony-plate',
-    },
-    {
-      bg: '/image/b2-bg.png',
-      img: '/image/b2-removebg-preview.png',
-      title: '青花龍紋天球瓶小',
-      desc: '祥龍盤繞，典藏氣韻小巧不凡',
-      link: '/products/qinghua-dragon-vase-small',
-    },
-    {
-      bg: '/image/b3-bg.png',
-      img: '/image/b3-removebg-preview.png',
-      title: '精工琉璃 翠玉白菜-霧面',
-      desc: '霧面溫潤質感，寓意清白傳承',
-      link: '/products/liu-li-cabbage-matte',
-    },
-    {
-      bg: '/image/b4-bg.png',
-      img: '/image/b4-removebg-preview.png',
-      title: '仿故宮金地青花雲龍蓋杯',
-      desc: '金地青花交融，杯蓋藏龍蘊藏雅趣',
-      link: '/products/golden-blue-dragon-cup',
-    },
+  const [products, setProducts] = useState([])
+
+  const bgImages = [
+    '/image/b1-bg.png',
+    '/image/b2-bg.png',
+    '/image/b3-bg.png',
+    '/image/b4-bg.png',
   ]
 
-  const INTERVAL = 6000 // 自動輪播時間（毫秒）
-
+  const INTERVAL = 6000
   const [current, setCurrent] = useState(0)
   const [prev, setPrev] = useState(null)
   const [isAnimating, setIsAnimating] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  const timeoutRef = useRef(null) // 使用 useRef 來儲存 timeout 的 ID
+  const timeoutRef = useRef(null)
   const leftArrowRef = useRef(null)
   const rightArrowRef = useRef(null)
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth <= 768)
-      }
-      handleResize() // 初始判斷
-      window.addEventListener('resize', handleResize)
-      return () => window.removeEventListener('resize', handleResize) // 清除監聽器
-    }
-  }, []) // 使用空的依賴項陣列
+  const [isMobile, setIsMobile] = useState(false)
 
+  // 監聽螢幕尺寸切換手機版
   useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // 撈資料
+  useEffect(() => {
+    fetch('http://localhost:3005/api/products/latest')
+      .then((res) => {
+        if (!res.ok) throw new Error('API 回傳錯誤')
+        return res.json()
+      })
+      .then((data) => {
+        if (Array.isArray(data)) setProducts(data)
+        else setProducts([])
+      })
+      .catch(() => setProducts([]))
+  }, [])
+
+  // 啟動自動輪播
+  useEffect(() => {
+    if (products.length === 0) return
     startAutoSlide()
-    return () => clearTimeout(timeoutRef.current) // 在組件卸載時清除 timeout
-  }, [current])
+    return () => clearTimeout(timeoutRef.current)
+  }, [current, products])
 
   const startAutoSlide = () => {
-    clearTimeout(timeoutRef.current) // 清除任何現有的 timeout
-    timeoutRef.current = setTimeout(() => {
-      handleNext()
-    }, INTERVAL)
+    clearTimeout(timeoutRef.current)
+    timeoutRef.current = setTimeout(handleNext, INTERVAL)
   }
 
   const showSlide = (index) => {
     if (isAnimating || index === current) return
     setIsAnimating(true)
     setPrev(current)
-
     setTimeout(() => {
       setCurrent(index)
       setIsAnimating(false)
       setPrev(null)
-      startAutoSlide() // 在手動切換後重新啟動自動輪播
-    }, 600) // 等 exit 動畫跑完再切換 active
+      startAutoSlide()
+    }, 600)
   }
 
-  const handleNext = () => {
-    const next = (current + 1) % slides.length
-    showSlide(next)
-  }
-
-  const handlePrev = () => {
-    const prevIndex = (current - 1 + slides.length) % slides.length
-    showSlide(prevIndex)
-  }
+  const handleNext = () => showSlide((current + 1) % products.length)
+  const handlePrev = () =>
+    showSlide((current - 1 + products.length) % products.length)
 
   const handleMouseMove = (e, ref) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -113,76 +95,53 @@ export default function HeroSlider() {
 
         {isMobile && (
           <div className="mobile-arrows d-flex justify-content-center gap-4 my-3">
-            <button
-              className="btn-arrow btn-primary"
-              onClick={() => {
-                handlePrev()
-                startAutoSlide()
-              }}
-            >
-              <FaArrowLeft aria-label="上一張幻燈片" />
+            <button className="btn-arrow btn-primary" onClick={handlePrev}>
+              <FaArrowLeft />
             </button>
-            <button
-              className="btn-arrow btn-primary"
-              onClick={() => {
-                handleNext()
-                startAutoSlide()
-              }}
-            >
-              <FaArrowRight aria-label="下一張幻燈片" />
+            <button className="btn-arrow btn-primary" onClick={handleNext}>
+              <FaArrowRight />
             </button>
           </div>
         )}
 
         <div className="slider">
-          {slides.map((slide, index) => (
+          {bgImages.map((bg, index) => (
             <div
               key={index}
               className={`slide ${index === current ? 'active' : ''}`}
             >
-              <img src={slide.bg} className="bg-img" alt={`背景${index + 1}`} />
+              <img src={bg} className="bg-img" alt={`背景${index + 1}`} />
             </div>
           ))}
 
           <div className="click-zones">
             <div
               className="zone prev"
-              onClick={() => {
-                handlePrev()
-                startAutoSlide()
-              }}
+              onClick={handlePrev}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  handlePrev()
-                  startAutoSlide()
-                }
+                if (e.key === 'Enter' || e.key === ' ') handlePrev()
               }}
+              onMouseMove={(e) => handleMouseMove(e, leftArrowRef)}
               role="button"
               tabIndex="0"
-              onMouseMove={(e) => handleMouseMove(e, leftArrowRef)}
             >
               <div className="arrow" ref={leftArrowRef}>
-                <FaArrowLeft aria-label="上一張幻燈片" />
+                <FaArrowLeft />
               </div>
             </div>
+
             <div
               className="zone next"
-              onClick={() => {
-                handleNext()
-                startAutoSlide()
-              }}
+              onClick={handleNext}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  handleNext()
-                  startAutoSlide()
-                }
+                if (e.key === 'Enter' || e.key === ' ') handleNext()
               }}
+              onMouseMove={(e) => handleMouseMove(e, rightArrowRef)}
               role="button"
               tabIndex="0"
-              onMouseMove={(e) => handleMouseMove(e, rightArrowRef)}
             >
               <div className="arrow" ref={rightArrowRef}>
-                <FaArrowRight aria-label="下一張幻燈片" />
+                <FaArrowRight />
               </div>
             </div>
           </div>
@@ -191,21 +150,21 @@ export default function HeroSlider() {
 
       <div className="product-container">
         <div className="contents">
-          {slides.map((slide, index) => {
+          {products.map((product, index) => {
             let className = 'content'
             if (index === current) className += ' active'
             if (index === prev) className += ' exit'
 
             return (
-              <Link key={index} href={slide.link}>
+              <Link key={product.id} href={`/products/${product.id}`}>
                 <div className={className}>
                   <img
-                    src={slide.img}
+                    src={product.main_img}
                     className="main-product-img"
-                    alt={slide.title}
+                    alt={product.name_zh}
                   />
-                  <h4 className="fw-bold mt-3">{slide.title}</h4>
-                  <p>{slide.desc}</p>
+                  <h4 className="fw-bold mt-3">{product.name_zh}</h4>
+                  <p>{product.description}</p>
                 </div>
               </Link>
             )
