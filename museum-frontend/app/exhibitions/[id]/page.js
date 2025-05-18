@@ -5,10 +5,11 @@ import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { IoLocationSharp } from 'react-icons/io5'
-import { FaRegCalendarPlus, FaRegBookmark } from 'react-icons/fa6'
+import { FaRegCalendarPlus } from 'react-icons/fa6'
 import Image from 'next/image'
 import styles from '../_styles/ex-detail.module.scss'
 import TextToggle from '../_components/text-toggle.js'
+import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 
 export default function ExhibitionDetailPage() {
   const { id } = useParams()
@@ -72,12 +73,22 @@ export default function ExhibitionDetailPage() {
         className={`container d-flex justify-content-center flex-column py-4 ${styles.exhibitionInfo}`}
       >
         <div className="d-flex justify-content-center align-items-center">
-          <h2
-            className={`${styles.titleEx} fw-bold text-center mb-3 me-3 d-flex align-items-center`}
+          <h3
+            className={`${styles.titleEx} fw-bold text-center d-flex align-items-center justify-content-center`}
           >
             {exhibits.title}
-            <FaRegBookmark className="ms-2" />
-          </h2>
+            <div className="ms-2 fs-6">
+              <AddToFavoritesButton
+                itemId={exhibits.id}
+                itemType="exhibition"
+                isFavorite={exhibits.isFavorite}
+                onToggleFavorite={(id, type, state) => {
+                  // 發 API：新增或移除收藏
+                  console.log('收藏展覽:', id, type, state)
+                }}
+              />
+            </div>
+          </h3>
         </div>
 
         <div className="container d-flex justify-content-center">
@@ -90,6 +101,7 @@ export default function ExhibitionDetailPage() {
               title="加入行事曆"
             >
               <FaRegCalendarPlus className="me-2" />
+              展期：
               {exhibits.startDate.slice(0, 10)} ~{' '}
               {exhibits.endDate.slice(0, 10)}
             </a>
@@ -101,6 +113,7 @@ export default function ExhibitionDetailPage() {
               className={`${styles.customHover} d-flex align-items-center text-center text-dark fs-5 d-inline-block me-2 mb-0  text-decoration-none`}
             >
               <IoLocationSharp className="me-2" />
+              展區：
               {exhibits.venue_id}
             </a>
           </div>

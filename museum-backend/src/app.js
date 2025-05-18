@@ -8,6 +8,9 @@ import chatRoutes from './routes/chatRoutes.js';
 import exhibitionsRoutes from './routes/exhibitions/index.js';
 import couponsRoutes from './routes/coupons/index.js'
 import memberCouponRoutes from './routes/member-coupons.js'
+import productFavRoutes from './favorites/products.js'
+import courseFavRoutes from './favorites/courses.js'
+import exhibitionFavRoutes from './favorites/exhibitions.js'
 import db from './config/database.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -119,6 +122,9 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/exhibitions', exhibitionsRoutes);
 app.use('/api/coupons', couponsRoutes);
 app.use('/api/member-coupons', memberCouponRoutes)
+app.use('/api/favorites/products', productFavRoutes);
+app.use('/api/favorites/courses', courseFavRoutes);
+app.use('/api/favorites/exhibitions', exhibitionFavRoutes);
 
 // Socket.IO 連接
 io.use(async (socket, next) => {
