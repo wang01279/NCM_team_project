@@ -12,6 +12,7 @@ import session from 'express-session';
 import passport from './config/passport.js';
 import { saveMessage } from './services/chatService.js';
 import jwt from 'jsonwebtoken';
+import productRoutes from './routes/products/productRoutes.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -112,6 +113,7 @@ app.get('/api/tables', async (req, res) => {
 // 路由
 app.use('/api/members', memberRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/products', productRoutes)
 
 // Socket.IO 連接
 io.use(async (socket, next) => {
