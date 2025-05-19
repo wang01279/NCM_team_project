@@ -110,7 +110,7 @@ export default function Navbar() {
       router.push('/member/center')
     } catch (err) {
       console.error('登入錯誤：', err)
-      showToast('error', err.message || '登入失敗')
+      showToast('danger', `登入失敗：${err.message || '未知錯誤'}`)
     }
   }
 

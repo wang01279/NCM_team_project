@@ -29,6 +29,8 @@ import crypto from "crypto";
 import nodemailer from "nodemailer";
 import transporter from "../config/nodemailer.js";
 
+import { isValidPassword } from "../utils/validatePassword.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -60,10 +62,16 @@ router.post("/register", async (req, res) => {
     }
 
     // 驗證密碼長度
-    if (password.length < 8) {
+    // if (password.length < 8) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "密碼長度至少為8個字符",
+    //   });
+    // }
+    if (!isValidPassword(password)) {
       return res.status(400).json({
         success: false,
-        message: "密碼長度至少為8個字符",
+        message: "密碼需包含至少8字元，且包含大寫、小寫、數字與特殊符號",
       });
     }
 
@@ -480,7 +488,14 @@ router.post("/change-password", authenticateToken, async (req, res) => {
     }
 
     // 加密新密碼
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    // const hashedPassword = await bcrypt.hash(newPassword, 10);
+    if (!isValidPassword(newPassword)) {
+      return res.status(400).json({
+        success: false,
+        message: "新密碼格式不符，需包含大小寫、數字、特殊符號且至少8字元",
+      });
+    }
+    
 
     // 更新密碼
     await pool.query("UPDATE members SET password = ? WHERE id = ?", [
@@ -890,7 +905,14 @@ router.post("/reset-password", async (req, res) => {
     }
 
     // 加密新密碼
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    // const hashedPassword = await bcrypt.hash(newPassword, 10);
+    if (!isValidPassword(newPassword)) {
+      return res.status(400).json({
+        success: false,
+        message: "密碼格式錯誤，請確認包含大寫、小寫、數字與特殊符號",
+      });
+    }
+    
 
     // 更新密碼並清除驗證碼
     await pool.query(
