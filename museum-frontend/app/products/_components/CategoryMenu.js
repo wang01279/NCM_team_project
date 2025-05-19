@@ -1,9 +1,9 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import '../_styles/categoryMenu.scss'
 
 const categories = [
-  { name: '熱銷精選' },
+  { name: '全部商品', sub: ['熱銷精選'] },
   {
     name: '典藏精品',
     sub: ['陶瓷', '迷你陶器', '琉璃'],
@@ -22,9 +22,10 @@ const categories = [
   },
 ]
 
-export default function CategoryMenu() {
+export default function CategoryMenu({ onCategoryClick }) {
   const [activeIndex, setActiveIndex] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
+  const categoryMenuRef = useRef(null) // 用於監聽外部點擊
 
   useEffect(() => {
     const handleResize = () => {
@@ -38,9 +39,20 @@ export default function CategoryMenu() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  const handleClick = (index) => {
+  const handleCategoryClick = (index, categoryName) => {
+    setActiveIndex(index)
+    if (onCategoryClick) {
+      onCategoryClick(categoryName)
+    }
     if (isMobile) {
+      // 手機版：點擊時切換子選單顯示
       setActiveIndex(activeIndex === index ? null : index)
+    }
+  }
+
+  const handleSubCategoryClick = (subCategoryName) => {
+    if (onCategoryClick) {
+      onCategoryClick(subCategoryName)
     }
   }
 
@@ -49,8 +61,10 @@ export default function CategoryMenu() {
       if (
         isMobile &&
         activeIndex !== null &&
-        !e.target.closest('.category-menu')
+        categoryMenuRef.current &&
+        !categoryMenuRef.current.contains(e.target)
       ) {
+        // 手機版：點擊選單外部時關閉子選單
         setActiveIndex(null)
       }
     }
@@ -60,7 +74,7 @@ export default function CategoryMenu() {
   }, [isMobile, activeIndex])
 
   return (
-    <div className="container py-4">
+    <div className="container py-4" ref={categoryMenuRef}>
       <div className="category-menu">
         {categories.map((cat, idx) => (
           <div
@@ -68,22 +82,37 @@ export default function CategoryMenu() {
             className={`category-item ${activeIndex === idx ? 'active' : ''}`}
             onClick={(e) => {
               e.stopPropagation()
-              handleClick(idx)
+              handleCategoryClick(idx, cat.name)
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.stopPropagation()
-                handleClick(idx)
+                handleCategoryClick(idx, cat.name)
               }
             }}
-            role="button" // 表明這是一個可點擊的元素
-            tabIndex={0} // 使其可以透過 Tab 鍵聚焦
+            role="button"
+            tabIndex={0}
           >
             <span>{cat.name}</span>
             {cat.sub && (
               <div className="subcategory">
                 {cat.sub.map((item) => (
-                  <a key={item} href="#">
+                  <a
+                    key={item}
+                    href="#"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleSubCategoryClick(item)
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.stopPropagation()
+                        handleSubCategoryClick(item)
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
                     {item}
                   </a>
                 ))}

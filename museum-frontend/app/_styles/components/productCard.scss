@@ -90,8 +90,13 @@
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 6px;
+  margin: 10px;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   // -webkit-line-clamp: 2; // 最多顯示兩行
-  height: 2.8em; // 建議設定固定高度
+  height: 2.3em; // 建議設定固定高度
 }
 
 /* 副標題 */

@@ -13,6 +13,7 @@ export default function HeroSlider() {
     '/image/b2-bg.png',
     '/image/b3-bg.png',
     '/image/b4-bg.png',
+    '/image/b4-bg.png',
   ]
 
   const INTERVAL = 6000
@@ -86,7 +87,7 @@ export default function HeroSlider() {
   }
 
   return (
-    <section className="hero-section py-4">
+    <section className="hero-section py-5">
       <div className="slider-container container">
         <div className="slider-title">
           <h1 className="text-center fw-bold">新品上市</h1>

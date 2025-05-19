@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { FaFilter, FaSearch } from 'react-icons/fa'
-import '../_styles/productListHeader.scss'
+import '../_styles/productFilter.scss'
 
 export default function ProductListHeader() {
   const [isFilterOpen, setIsFilterOpen] = useState(false)

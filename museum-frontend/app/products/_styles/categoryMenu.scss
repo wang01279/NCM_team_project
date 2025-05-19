@@ -19,6 +19,9 @@ $submenu-bg: rgba(255, 255, 255, 0.95);
   display: flex;
   flex-direction: column;
   align-items: center;
+  &:focus {
+    outline: none; /* 移除焦點時的框線 */
+  }
 
   > span {
     padding: 0.5rem 1rem;

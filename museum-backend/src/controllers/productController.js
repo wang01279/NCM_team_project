@@ -24,7 +24,7 @@ export async function getProducts(req, res) {
  */
 export async function getLatestProducts(req, res) {
   try {
-    const products = await fetchLatestProducts(4);
+    const products = await fetchLatestProducts(5);
     res.json(products);
   } catch (err) {
     console.error("取得最新商品失敗:", err);

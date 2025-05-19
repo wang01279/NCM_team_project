@@ -6,6 +6,18 @@ import '../_styles/components/productCard.scss'
 import AddToCartButton from '@/app/_components/AddToCartButton'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 
+// 格式化價格的函式，移除小數點並加入千分位
+const formatPrice = (price) => {
+  if (price === null || price === undefined) {
+    return 'NT$0' // 或者你希望顯示的其他預設值
+  }
+  const formattedPrice = Math.round(price).toLocaleString('zh-TW', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })
+  return `NT$${formattedPrice}`
+}
+
 export default function ProductCard({
   product,
   onAddToCart,
@@ -29,6 +41,9 @@ export default function ProductCard({
   const status = stock === 0 ? '庫存不足' : '庫存充足'
   const isOutOfStock = stock === 0
   const isCurrentlyFavorite = favoriteProducts?.includes(id)
+  const displayDiscount = hasDiscount
+    ? `${Math.round(discount_rate * 10)} 折`
+    : ''
 
   return (
     <div className="col-12 col-sm-6 col-md-4 col-lg-3">
@@ -56,12 +71,14 @@ export default function ProductCard({
         <div className="product-price-wrap">
           {hasDiscount ? (
             <>
-              <span className="product-price">NT${discountPrice}</span>
-              <span className="product-old-price">NT${price}</span>
-              <span className="product-discount">{discount_rate} 折</span>
+              <span className="product-price">
+                {formatPrice(discountPrice)}
+              </span>
+              <span className="product-old-price">{formatPrice(price)}</span>
+              <span className="product-discount">{displayDiscount}</span>
             </>
           ) : (
-            <span className="product-price">NT${price}</span>
+            <span className="product-price">{formatPrice(price)}</span>
           )}
         </div>
 
