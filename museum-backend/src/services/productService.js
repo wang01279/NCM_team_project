@@ -1,6 +1,36 @@
 import db from "../config/database.js";
 
 /**
+ * 取得所有分類（包含子分類和 id）
+ */
+export async function fetchAllCategories() {
+  try {
+    const [categories] = await db.query(`
+      SELECT
+        c.id AS category_id,
+        c.name AS category_name,
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'id', s.id,
+            'name', s.name
+          )
+        ) AS subcategories
+      FROM product_categories c
+      LEFT JOIN product_subcategories s ON c.id = s.category_id
+      GROUP BY c.id, c.name
+    `);
+    // 如果 categories 是 null 或只有一個 null 元素，將其轉換為空陣列
+    if (!categories || (categories.length === 1 && categories[0] === null)) {
+      return [];
+    }
+    return categories;
+  } catch (error) {
+    console.error("取得所有分類失敗:", error);
+    throw error;
+  }
+}
+
+/**
  * 取得商品清單（含篩選、排序、分頁、搜尋）
  */
 export async function fetchProducts({

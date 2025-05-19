@@ -2,6 +2,7 @@ import {
   fetchProducts,
   fetchProductById,
   fetchLatestProducts,
+  fetchAllCategories, // 引入新的函式
 } from "../services/productService.js";
 
 /**
@@ -51,5 +52,19 @@ export async function getProductById(req, res) {
   } catch (err) {
     console.error("取得商品失敗:", err);
     res.status(500).json({ error: "伺服器錯誤，無法取得商品" });
+  }
+}
+
+/**
+ * 取得所有分類（包含子分類和 id）
+ * 前端：/api/categories
+ */
+export async function getCategories(req, res) {
+  try {
+    const categories = await fetchAllCategories();
+    res.json(categories);
+  } catch (err) {
+    console.error("取得分類資料失敗:", err);
+    res.status(500).json({ error: "伺服器錯誤，無法取得分類資料" });
   }
 }

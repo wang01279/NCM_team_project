@@ -12,7 +12,7 @@ import session from 'express-session';
 import passport from './config/passport.js';
 import { saveMessage } from './services/chatService.js';
 import jwt from 'jsonwebtoken';
-import productRoutes from './routes/products/productRoutes.js'
+import productRoutes from './routes/products/index.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
