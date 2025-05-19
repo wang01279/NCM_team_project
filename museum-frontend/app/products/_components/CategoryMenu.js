@@ -40,9 +40,8 @@ export default function CategoryMenu({ onCategoryClick }) {
   }, [])
 
   const handleCategoryClick = (index, categoryName) => {
-    setActiveIndex(index)
     if (onCategoryClick) {
-      onCategoryClick(categoryName)
+      onCategoryClick({ category: categoryName, subcategory: null }) // 修改：傳遞主分類
     }
     if (isMobile) {
       // 手機版：點擊時切換子選單顯示
@@ -50,9 +49,9 @@ export default function CategoryMenu({ onCategoryClick }) {
     }
   }
 
-  const handleSubCategoryClick = (subCategoryName) => {
+  const handleSubCategoryClick = (subCategoryName, categoryName) => {
     if (onCategoryClick) {
-      onCategoryClick(subCategoryName)
+      onCategoryClick({ category: categoryName, subcategory: subCategoryName }) // 修改：傳遞子分類
     }
   }
 
@@ -102,12 +101,12 @@ export default function CategoryMenu({ onCategoryClick }) {
                     href="#"
                     onClick={(e) => {
                       e.stopPropagation()
-                      handleSubCategoryClick(item)
+                      handleSubCategoryClick(item, cat.name) // 修改：傳遞 categoryName
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.stopPropagation()
-                        handleSubCategoryClick(item)
+                        handleSubCategoryClick(item, cat.name) // 修改：傳遞 categoryName
                       }
                     }}
                     role="button"

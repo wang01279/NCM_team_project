@@ -20,13 +20,21 @@ export default function ProductPage() {
   const [totalPages, setTotalPages] = useState(1)
 
   // 新增一個 state 來儲存目前選取的分類
-  const [selectedCategory, setSelectedCategory] = useState('熱銷精選') // 預設選取 '熱銷精選'
+  const [selectedCategory, setSelectedCategory] = useState({
+    category: null,
+    subcategory: null,
+  }) // 修改：初始值為物件
 
   // 當 currentPage 或 selectedCategory 改變時，自動重新 fetch 該頁的資料
   useEffect(() => {
     let url = `http://localhost:3005/api/products?page=${currentPage}`
-    if (selectedCategory && selectedCategory !== '熱銷精選') {
-      url += `&category=${selectedCategory}` // 假設後端使用 'category' 參數篩選
+    if (selectedCategory.category) {
+      // 修改：判斷 category 是否存在
+      url += `&category=${selectedCategory.category}`
+    }
+    if (selectedCategory.subcategory) {
+      // 修改：判斷 subcategory 是否存在
+      url += `&subcategory=${selectedCategory.subcategory}`
     }
 
     fetch(url)
@@ -41,7 +49,7 @@ export default function ProductPage() {
         setProducts([])
         setTotalPages(1)
       })
-  }, [currentPage, selectedCategory])
+  }, [currentPage, selectedCategory.category, selectedCategory.subcategory]) // 修改：監聽 category 和 subcategory
 
   // 切換目前頁碼
   const goToPage = (pageNumber) => {
@@ -66,8 +74,9 @@ export default function ProductPage() {
   }
 
   // 新增一個函式來處理分類選取
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category)
+  const handleCategoryClick = (categoryInfo) => {
+    // 修改：接收一個物件
+    setSelectedCategory(categoryInfo) // 修改：更新 selectedCategory
     setCurrentPage(1) // 重置到第一頁
   }
 

@@ -64,6 +64,9 @@ $submenu-bg: rgba(255, 255, 255, 0.95);
       &:hover {
         color: $hover-color;
       }
+      &:focus {
+        outline: none; /* 移除焦點時的框線 */
+      }
     }
   }
 
