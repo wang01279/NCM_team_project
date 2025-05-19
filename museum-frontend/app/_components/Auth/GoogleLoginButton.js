@@ -1,5 +1,3 @@
-
-
 'use client'
 
 import React from 'react'
@@ -17,7 +15,7 @@ export default function GoogleLoginButton({ onLoginSuccess, disabled }) {
       const firebaseUser = result.user
       // 拿到 idToken
       const idToken = await firebaseUser.getIdToken(true)
-      onLoginSuccess(idToken)    // 只傳 idToken
+      onLoginSuccess(idToken) // 只傳 idToken
     } catch (err) {
       console.error('Firebase Google 登入錯誤', err)
       alert('Google 登入失敗：' + err.message)
@@ -36,4 +34,3 @@ export default function GoogleLoginButton({ onLoginSuccess, disabled }) {
     </Button>
   )
 }
-
