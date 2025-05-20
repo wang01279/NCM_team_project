@@ -1,12 +1,16 @@
 // app/_components/AddToFavoritesButton.js
-import React, { useState, useEffect } from 'react'
+
+import { useState, useEffect } from 'react'
 import { FaRegBookmark, FaBookmark } from 'react-icons/fa'
 
 const AddToFavoritesButton = ({
   itemId,
   itemType, // 'product' | 'course' | 'exhibition'
-  onToggleFavorite,
   isFavorite: initialIsFavorite,
+<<<<<<< Updated upstream
+=======
+  onToggleFavorite,
+>>>>>>> Stashed changes
 }) => {
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite || false)
 

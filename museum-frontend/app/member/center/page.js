@@ -15,7 +15,7 @@ import RightContent from './features/lottery/RightContent'
 import ProfileTab from './features/tabs/ProfileTab'
 import OrdersTab from './features/tabs/OrdersTab'
 import CouponsTab from './features/tabs/CouponsTab'
-import FavoritesTab from './features/tabs/favorites/FavoritesTab'
+import FavoritesTab from './features/tabs/FavoritesTab'
 
 export default function MemberCenter() {
   const router = useRouter()
