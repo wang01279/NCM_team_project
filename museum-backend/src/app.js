@@ -21,6 +21,7 @@ import jwt from 'jsonwebtoken';
 import courseRoutes from './routes/courseRoutes.js';
 import artistRoutes from './routes/artistRoutes.js';
 
+import productRoutes from './routes/products/index.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -126,6 +127,7 @@ app.use('/api/member-coupons', memberCouponRoutes)
 app.use('/api/favorites/products', productFavRoutes);
 app.use('/api/favorites/courses', courseFavRoutes);
 app.use('/api/favorites/exhibitions', exhibitionFavRoutes);
+app.use('/api/products', productRoutes)
 
 // Socket.IO 連接
 io.use(async (socket, next) => {
