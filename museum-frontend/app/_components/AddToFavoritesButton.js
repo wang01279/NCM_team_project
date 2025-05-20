@@ -1,4 +1,5 @@
 // app/_components/AddToFavoritesButton.js
+// 收藏按鈕
 
 import { useState, useEffect } from 'react'
 import { FaRegBookmark, FaBookmark } from 'react-icons/fa'
@@ -7,6 +8,8 @@ const AddToFavoritesButton = ({
   itemId,
   itemType, // 'product' | 'course' | 'exhibition'
   isFavorite: initialIsFavorite,
+  onToggleFavorite,
+  // 百慕達三角地帶
 }) => {
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite || false)
 
@@ -32,3 +35,6 @@ const AddToFavoritesButton = ({
     </button>
   )
 }
+
+export default AddToFavoritesButton
+// 匯出收藏按鈕
