@@ -31,7 +31,7 @@ export default function CouTab() {
         <li>
           <div
             type="button"
-            className={`fs-4 d-flex align-items-center ${styles.tabItem} ${activeTab === 'products' ? styles.active : ''}`}
+            className={`fs-5 d-flex align-items-center ${styles.tabItem} ${activeTab === 'products' ? styles.active : ''}`}
             onClick={() => setActiveTab('products')}
           >
             <FaGift className='me-2 p-0'/>
@@ -41,7 +41,7 @@ export default function CouTab() {
         <li>
           <div
             type="button"
-            className={`fs-4 d-flex align-items-center  ${styles.tabItem} ms-2 ${activeTab === 'courses' ? styles.active : ''}`}
+            className={`fs-5 d-flex align-items-center  ${styles.tabItem} ms-2 ${activeTab === 'courses' ? styles.active : ''}`}
             onClick={() => setActiveTab('courses')}
           >
             <FaBookOpen className='me-2'/>
