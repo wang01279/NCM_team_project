@@ -48,6 +48,7 @@ export default function ProductCard({
   return (
     <div className="col-12 col-sm-6 col-md-4 col-lg-3">
       <div className="product-card">
+        {/* 商品圖片區塊 佔 61.8% */}
         <div className="product-img">
           <Image
             src={imageUrl}
@@ -60,46 +61,52 @@ export default function ProductCard({
             }}
           />
           <div className="img-overlay">
-            <Link href={`/products/details/${id}`} className="more-btn">
+            <Link
+              href={`/products/details/${id}`}
+              className="more-btn btn-secondary"
+            >
               顯示更多
             </Link>
           </div>
         </div>
 
-        <div className="product-name">{name}</div>
+        {/* 商品資訊區塊 佔 38.2% */}
+        <div className="product-info">
+          <div className="product-name">{name}</div>
 
-        <div className="product-price-wrap">
-          {hasDiscount ? (
-            <>
-              <span className="product-price">
-                {formatPrice(discountPrice)}
-              </span>
-              <span className="product-old-price">{formatPrice(price)}</span>
-              <span className="product-discount">{displayDiscount}</span>
-            </>
-          ) : (
-            <span className="product-price">{formatPrice(price)}</span>
-          )}
+          <div className="product-price-wrap">
+            {hasDiscount ? (
+              <>
+                <span className="product-price">
+                  {formatPrice(discountPrice)}
+                </span>
+                <span className="product-old-price">{formatPrice(price)}</span>
+                <span className="product-discount">{displayDiscount}</span>
+              </>
+            ) : (
+              <span className="product-price">{formatPrice(price)}</span>
+            )}
+          </div>
+
+          <div className="product-status">
+            <i className="fa-solid fa-box me-2"></i>
+            {status}
+          </div>
+
+          <div className="product-actions">
+            <AddToCartButton
+              productId={id}
+              onAddToCart={onAddToCart}
+              disabled={isOutOfStock}
+            />
+            <AddToFavoritesButton
+              productId={id}
+              onAddToFavorites={onAddToFavorites}
+              isFavorite={isCurrentlyFavorite}
+            />
+          </div>
         </div>
-
-        <div className="product-status">
-          <i className="fa-solid fa-box me-2"></i>
-          {status}
-        </div>
-
-        <div className="product-actions">
-          <AddToCartButton
-            productId={id}
-            onAddToCart={onAddToCart}
-            disabled={isOutOfStock}
-          />
-          <AddToFavoritesButton
-            productId={id}
-            onAddToFavorites={onAddToFavorites}
-            isFavorite={isCurrentlyFavorite}
-          />
-        </div>
-
+        {/* 狀態標籤 */}
         {isOutOfStock && <span className="stock-badge">缺貨中</span>}
         {hasDiscount && <span className="stock-badge sale">特價中</span>}
       </div>

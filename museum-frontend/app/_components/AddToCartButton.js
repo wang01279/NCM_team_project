@@ -13,7 +13,7 @@ export default function AddToCartButton({ productId, onAddToCart, disabled }) {
 
   return (
     <button
-      className={`btn-cart ${disabled ? 'disabled' : ''}`}
+      className={`btn btn-primary ${disabled ? 'disabled' : ''}`}
       onClick={handleClick}
       disabled={disabled}
     >

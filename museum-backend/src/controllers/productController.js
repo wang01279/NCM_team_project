@@ -22,7 +22,7 @@ export async function getProducts(req, res) {
 }
 
 /**
- * 取得最新商品（前 4 筆，給 HeroSlider 用）
+ * 取得最新商品（前 5 筆，給 HeroSlider 用）
  * 前端：/api/products/latest
  */
 export async function getLatestProducts(req, res) {

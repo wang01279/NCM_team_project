@@ -117,7 +117,7 @@ export async function fetchProducts({
   };
 }
 
-/* 取得最新商品（預設 4 筆）*/
+/* 取得最新商品*/
 export async function fetchLatestProducts(limit = 5) {
   const [rows] = await db.query(
     `SELECT id, main_img, name_zh, description FROM products WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT ?`,
