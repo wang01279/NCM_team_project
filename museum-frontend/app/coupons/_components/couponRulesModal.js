@@ -35,7 +35,7 @@ export default function CouponRulesModal() {
       <Modal.Footer className="justify-content-center">
         <Button
           variant="primary"
-          className="submitButton" // ✅ 同樣直接使用樣式名稱
+          className="btn-primary " // ✅ 同樣直接使用樣式名稱
           onClick={() => setShow(false)}
         >
           知道了

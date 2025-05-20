@@ -29,7 +29,7 @@
 
 .tabItem {
   text-decoration: none;
-  color: $;
+  color: $sub-text;
   font-weight: bold;
   font-size: 16px;
   position: relative;
@@ -50,7 +50,7 @@
   width: 0;
   height: 2px;
   color: $muted;
-  background-color: $primary;
+  background-color: $secondary;
   transform: translateX(-50%);
   transition: width 0.3s ease;
 }
@@ -70,7 +70,7 @@
 }
 
 .active {
-  color: $primary;
+  color: $secondary;
   text-decoration: none !important;
   // border: 0px solid !important;
 }
