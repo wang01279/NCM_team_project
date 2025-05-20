@@ -54,3 +54,5 @@ yarn.lock
 *.svg
 *.webp
 
+# Google Cloud credentials
+museum-backend/src/config/serviceAccountKey.json
