@@ -9,7 +9,7 @@ import {
 
 const router = express.Router();
 
-router.get("/recommend/:id", getRecommendedProducts);
+router.get("/recommend/:id", getRecommendedProducts); //推薦8筆
 router.get("/latest", getLatestProducts); // 最新商品
 router.get("/categories", getCategories); // 取得分類
 router.get("/:id", getProductById); //id

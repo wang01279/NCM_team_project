@@ -1,5 +1,5 @@
 .group-hover-opacity-100 {
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.4s ease-in-out;
 }
 
@@ -37,9 +37,9 @@
     opacity: 1;
   }
 
-  .hover-card:hover {
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  }
+  // .hover-card:hover {
+  //   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  // }
 
   .hover-card:hover img {
     transform: scale(1.1);
@@ -49,9 +49,9 @@
     transform: scale(1.8) translateX(35%);
   }
 
-  .hover-card:hover h2::after {
-    width: 100%;
-  }
+  // .hover-card:hover h2::after {
+  //   width: 100%;
+  // }
 }
 
 /* 手機自動顯示動畫，不用 hover */

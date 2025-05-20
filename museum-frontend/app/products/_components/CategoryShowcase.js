@@ -62,7 +62,7 @@ export default function CategoryShowcase({ onCategoryClick }) {
                     />
                   </div>
                   <div className="col-md-6 col-6 text-start">
-                    <h2 className="fw-bold mb-3">文創商品</h2>
+                    <h1 className="fw-bold mb-3">文創商品</h1>
                     <p className="group-hover-opacity-100 transition-opacity">
                       融合創意與傳統，打造兼具匠心的精緻文創商品，為生活帶來藝術氣息與文化記憶。
                     </p>
@@ -183,7 +183,7 @@ export default function CategoryShowcase({ onCategoryClick }) {
               >
                 <div className="row align-items-center animate-slidein">
                   <div className="col-6 text-start text-lg-start">
-                    <h2 className="fw-bold mb-3">典藏精品</h2>
+                    <h1 className="fw-bold mb-3">典藏精品</h1>
                     <p className="group-hover-opacity-100 transition-opacity text-white">
                       匠藝與美學融合，限期入藏計畫展現文化創作，感受精緻收藏的非凡之美。
                     </p>
