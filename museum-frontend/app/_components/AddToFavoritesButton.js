@@ -7,10 +7,7 @@ const AddToFavoritesButton = ({
   itemId,
   itemType, // 'product' | 'course' | 'exhibition'
   isFavorite: initialIsFavorite,
-<<<<<<< Updated upstream
-=======
   onToggleFavorite,
->>>>>>> Stashed changes
 }) => {
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite || false)
 
