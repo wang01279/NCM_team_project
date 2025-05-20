@@ -12,13 +12,13 @@ export default function Tabs() {
   return (
     <ul className={`${styles.tabs} ${styles['tab-menu']} mt-5`}>
       <li>
-        <Link
+        <Link 
           href="/exhibitions"
           className={`${styles.tabItem} ${state === 'current' ? styles.active : ''}`}
         >
           當期展覽
         </Link>
-      </li>
+      </li> 
       <li>
         <Link
           href="/exhibitions?state=future"

@@ -1,3 +1,5 @@
+// app/exhibitions/[id]/page.js
+
 'use client'
 
 import '@/app/_styles/globals.scss'
@@ -10,12 +12,19 @@ import Image from 'next/image'
 import styles from '../_styles/ex-detail.module.scss'
 import TextToggle from '../_components/text-toggle.js'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
+import { addFavoriteByType, removeFavoriteByType } from '@/app/api/favorites'
+import { useAuth } from '@/app/_hooks/useAuth'
+import { useToast } from '@/app/_components/ToastManager'
+import { FaHome, FaReply } from 'react-icons/fa'
 
 export default function ExhibitionDetailPage() {
   const { id } = useParams()
   const [exhibits, setExhibits] = useState()
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
+  const { member } = useAuth()
+  const memberId = member?.id
+  const { showToast } = useToast()
 
   useEffect(() => {
     if (!id) return
@@ -82,9 +91,33 @@ export default function ExhibitionDetailPage() {
                 itemId={exhibits.id}
                 itemType="exhibition"
                 isFavorite={exhibits.isFavorite}
-                onToggleFavorite={(id, type, state) => {
-                  // 發 API：新增或移除收藏
-                  console.log('收藏展覽:', id, type, state)
+                onToggleFavorite={async (itemId, itemType, state) => {
+                  try {
+                    if (!memberId) {
+                      showToast('danger', '請先登入會員')
+                      return
+                    }
+
+                    if (state) {
+                      await addFavoriteByType(itemType, memberId, itemId)
+                      showToast('success', '成功加入收藏')
+                    } else {
+                      await removeFavoriteByType(itemType, memberId, itemId)
+                      showToast('warning', '已移除收藏')
+                    }
+
+                    setExhibits((prev) => ({
+                      ...prev,
+                      isFavorite: state,
+                    }))
+                  } catch (err) {
+                    console.error('收藏操作失敗：', err)
+                    showToast('danger', '收藏操作失敗')
+                  }
+                  // console.log('🧪 itemId:', itemId)
+                  // console.log('🧪 memberId:', memberId)
+                  // console.log('🧪 itemType:', itemType)
+                  // console.log('🧪 state:', state)
                 }}
               />
             </div>
@@ -119,21 +152,30 @@ export default function ExhibitionDetailPage() {
           </div>
         </div>
 
-        <div className={`container py-4 ${styles.exhibitionDescription}`}>
+        <div className={`container py-4 `}>
           <h4 className={`${styles.subEx} fw-bold mb-3`}>展覽概述</h4>
-          <TextToggle text={exhibits.intro} maxLine={5} />
+          <TextToggle
+            text={exhibits.intro}
+            maxLine={5}
+            className={`${styles.exhibitionDescription} fs-4`}
+          />
         </div>
       </div>
 
       <div className="container my-5 d-flex justify-content-center gap-3">
-        <Link href="/" className="btn btn-outline-dark px-4">
+        <Link
+          href="/"
+          className="btn btn-dark px-4 text-decoration-none d-flex align-items-center"
+        >
+          <FaHome className="me-2" />
           返回首頁
         </Link>
         <button
           type="button"
-          className="btn btn-outline-secondary px-4"
+          className="btn btn-secondary px-4 d-flex align-items-center"
           onClick={() => history.back()}
         >
+          <FaReply className="me-2" />
           返回上一頁
         </button>
       </div>

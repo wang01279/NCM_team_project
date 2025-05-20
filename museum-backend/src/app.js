@@ -8,9 +8,9 @@ import chatRoutes from './routes/chatRoutes.js';
 import exhibitionsRoutes from './routes/exhibitions/index.js';
 import couponsRoutes from './routes/coupons/index.js'
 import memberCouponRoutes from './routes/member-coupons.js'
-import productFavRoutes from './favorites/products.js'
-import courseFavRoutes from './favorites/courses.js'
-import exhibitionFavRoutes from './favorites/exhibitions.js'
+import productFavRoutes from './routes/favorites/products.js'
+import courseFavRoutes from './routes/favorites/courses.js'
+import exhibitionFavRoutes from './routes/favorites/exhibitions.js'
 import db from './config/database.js';
 import path from 'path';
 import { fileURLToPath } from 'url';

@@ -5,25 +5,74 @@
   margin-top: 20px;
   font-size: 24px;
 }
-.borderCustom{
+.borderCustom {
   border: 1px solid $dark;
 }
+
+.tabMenu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  padding: rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  gap: 2rem;
+  list-style: none;
+  margin-bottom: 2rem;
+  padding: 10px;
+}
+
 .tabItem {
-  color: $main-text;
-  background-color: $muted;
-  // margin-right: 4px;
-  border-radius:0 !important;
-  transition: all 0.2s ease;
+  text-decoration: none;
+  color: $;
+  font-weight: bold;
+  font-size: 16px;
+  position: relative;
+  transition: color 0.3s ease;
+  font-family: 'Noto Serif TC', serif;
+}
 
-  &:hover {
-    background-color: $light;
-    color: $info;
-  }
+.tabItem:hover {
+  color: $secondary;
+  text-decoration: none;
+}
 
-  &.active {
-    background-color: $main-bg !important;
-    font-weight: bold;
+.tabItem::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  color: $muted;
+  background-color: $primary;
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
+}
+
+.tabItem {
+  &:focus {
+    color: $muted;
+    outline: none;
+    box-shadow: none;
   }
+}
+
+.tabItem:hover::after,
+.active::after {
+  width: 100%;
+  text-decoration: none !important;
+}
+
+.active {
+  color: $primary;
+  text-decoration: none !important;
+  // border: 0px solid !important;
 }
 
 .sidebar {

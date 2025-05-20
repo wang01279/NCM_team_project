@@ -3,14 +3,14 @@
 
 .heroBanner img {
   display: block;
-  max-width: 100%;
+  max-width: 80%;
   height: auto; // 等比例縮放重點
   object-fit: contain;
   object-position: center;
 }
 
 .heroBanner {
-  margin-top: 80px;
+  margin-top: 60px;
   text-align: center;
 
   @media (max-width: 375px) {
@@ -38,7 +38,7 @@
 
 .exhibitionDescription {
   max-width: 768px;
-  font-size: 1.05rem;
+  font-size: 28px;
   line-height: 1.8;
   color: $sub-text;
 }

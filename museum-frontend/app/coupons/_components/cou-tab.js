@@ -1,14 +1,14 @@
 // cou-tab.js
-'use client' 
+'use client'
 import { useEffect, useState } from 'react'
-import Tab from 'react-bootstrap/Tab'
-import Tabs from 'react-bootstrap/Tabs'
 import TabProducts from './tab-products'
 import TabCourses from './tab-courses'
 import styles from '../_styles/coupon.module.scss'
 import axios from 'axios'
+import { FaBookOpen, FaGift } from 'react-icons/fa'
 
 export default function CouTab() {
+  const [activeTab, setActiveTab] = useState('products')
   const [allCoupons, setAllCoupons] = useState([])
 
   useEffect(() => {
@@ -22,26 +22,37 @@ export default function CouTab() {
   }, [])
 
   // 分類（依 category 欄位）
-  const productCoupons = Array.isArray(allCoupons)
-    ? allCoupons.filter((c) => c.category === '商品')
-    : []
+  const productCoupons = allCoupons.filter((c) => c.category === '商品')
+  const courseCoupons = allCoupons.filter((c) => c.category === '課程')
 
-  const courseCoupons = Array.isArray(allCoupons)
-    ? allCoupons.filter((c) => c.category === '課程')
-    : []
- 
   return (
-    <Tabs
-      defaultActiveKey="products"
-      className="d-flex justify-content-center mt-5 mb-2"
-      justify
-    >
-      <Tab eventKey="products" title="商品適用" tabClassName={styles.tabItem}>
-        <TabProducts coupons={productCoupons} />
-      </Tab>
-      <Tab eventKey="courses" title="課程適用" tabClassName={styles.tabItem}>
-        <TabCourses coupons={courseCoupons} />
-      </Tab>
-    </Tabs>
+    <>
+      <ul className={`mt-5 ${styles.tabs} ${styles.tabMenu}`}>
+        <li>
+          <div
+            type="button"
+            className={`fs-4 d-flex align-items-center ${styles.tabItem} ${activeTab === 'products' ? styles.active : ''}`}
+            onClick={() => setActiveTab('products')}
+          >
+            <FaGift className='me-2 p-0'/>
+            商品適用
+          </div>
+        </li>
+        <li>
+          <div
+            type="button"
+            className={`fs-4 d-flex align-items-center  ${styles.tabItem} ms-2 ${activeTab === 'courses' ? styles.active : ''}`}
+            onClick={() => setActiveTab('courses')}
+          >
+            <FaBookOpen className='me-2'/>
+            課程適用
+          </div>
+        </li>
+      </ul>
+      <div className="tab-content">
+        {activeTab === 'products' && <TabProducts coupons={productCoupons} />}
+        {activeTab === 'courses' && <TabCourses coupons={courseCoupons} />}
+      </div>
+    </>
   )
 }

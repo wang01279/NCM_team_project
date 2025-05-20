@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { useToast } from '@/app/_components/ToastManager'
 import jwt from 'jsonwebtoken'
 
+
 export default function CouponCard({ coupon }) {
   const showToast = useToast()
 
