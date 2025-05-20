@@ -4,30 +4,28 @@ import db from "../config/database.js";
  * 取得所有分類（包含子分類和 id）
  */
 export async function fetchAllCategories() {
-  try {
-    const [categories] = await db.query(`
-      SELECT
-        c.id AS category_id,
-        c.name AS category_name,
-        JSON_ARRAYAGG(
-          JSON_OBJECT(
-            'id', s.id,
-            'name', s.name
-          )
-        ) AS subcategories
-      FROM product_categories c
-      LEFT JOIN product_subcategories s ON c.id = s.category_id
-      GROUP BY c.id, c.name
-    `);
-    // 如果 categories 是 null 或只有一個 null 元素，將其轉換為空陣列
-    if (!categories || (categories.length === 1 && categories[0] === null)) {
-      return [];
-    }
-    return categories;
-  } catch (error) {
-    console.error("取得所有分類失敗:", error);
-    throw error;
-  }
+  // 撈主分類
+  const [categories] = await db.query(
+    `SELECT id AS category_id, name AS category_name FROM product_categories`
+  );
+
+  // 撈子分類
+  const [subcategories] = await db.query(
+    `SELECT id, name, category_id FROM product_subcategories`
+  );
+
+  // 將子分類歸類到對應主分類底下
+  const result = categories.map((cat) => {
+    const subs = subcategories.filter(
+      (sub) => sub.category_id === cat.category_id
+    );
+    return {
+      ...cat,
+      subcategories: subs,
+    };
+  });
+
+  return result;
 }
 
 /**
@@ -131,8 +129,46 @@ export async function fetchLatestProducts(limit = 5) {
 /* 根據商品 ID 取得單筆商品詳情*/
 export async function fetchProductById(id) {
   const [rows] = await db.query(
-    `SELECT * FROM products WHERE id = ? AND deleted_at IS NULL`,
+    `SELECT 
+      p.*,
+      m.name AS material_name,
+      o.name AS origin_name,
+      f.name AS function_name
+     FROM products p
+     LEFT JOIN product_materials m ON p.material_id = m.id
+     LEFT JOIN product_origins o ON p.origin_id = o.id
+     LEFT JOIN product_functions f ON p.function_id = f.id
+     WHERE p.id = ? AND p.deleted_at IS NULL`,
     [id]
   );
-  return rows[0] || null;
+  const product = rows[0] || null;
+  if (!product) return null;
+
+  // 撈出多張圖片
+  const [images] = await db.query(
+    `SELECT image_path FROM product_images WHERE product_id = ? ORDER BY sort_order ASC`,
+    [id]
+  );
+
+  product.images = images.map((img) => img.image_path);
+  return product;
+}
+
+export async function fetchRecommendedProducts(productId, categoryId) {
+  const [rows] = await db.query(
+    `SELECT id, name_zh, price, discount_rate, stock, main_img 
+     FROM products 
+     WHERE category_id = ? AND id != ? AND deleted_at IS NULL 
+     ORDER BY stock DESC 
+     LIMIT 8`, // 推薦 8 筆，依庫存排序
+    [categoryId, productId]
+  );
+  return rows;
+}
+export async function fetchProductCategoryId(id) {
+  const [rows] = await db.query(
+    "SELECT category_id FROM products WHERE id = ? AND deleted_at IS NULL",
+    [id]
+  );
+  return rows[0]?.category_id || null;
 }

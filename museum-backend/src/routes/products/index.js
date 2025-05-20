@@ -3,11 +3,13 @@ import {
   getProducts,
   getProductById,
   getLatestProducts,
-  getCategories, // 引入 getCategories
+  getCategories,
+  getRecommendedProducts,
 } from "../../controllers/productController.js";
 
 const router = express.Router();
 
+router.get("/recommend/:id", getRecommendedProducts);
 router.get("/latest", getLatestProducts); // 最新商品
 router.get("/categories", getCategories); // 取得分類
 router.get("/:id", getProductById); //id

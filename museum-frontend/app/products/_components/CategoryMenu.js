@@ -6,7 +6,7 @@ const categories = [
   { name: '全部商品', sub: ['熱銷精選'] },
   {
     name: '典藏精品',
-    sub: ['陶瓷', '迷你陶器', '琉璃'],
+    sub: ['陶瓷', '迷你陶瓷', '琉璃'],
   },
   {
     name: '餐廚用品',
@@ -25,33 +25,29 @@ const categories = [
 export default function CategoryMenu({ onCategoryClick }) {
   const [activeIndex, setActiveIndex] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
-  const categoryMenuRef = useRef(null) // 用於監聽外部點擊
+  const categoryMenuRef = useRef(null)
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768)
     }
-
     handleResize()
-
     window.addEventListener('resize', handleResize)
-
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const handleCategoryClick = (index, categoryName) => {
     if (onCategoryClick) {
-      onCategoryClick({ category: categoryName, subcategory: null }) // 修改：傳遞主分類
+      onCategoryClick({ category: categoryName, subcategory: null })
     }
     if (isMobile) {
-      // 手機版：點擊時切換子選單顯示
       setActiveIndex(activeIndex === index ? null : index)
     }
   }
 
   const handleSubCategoryClick = (subCategoryName, categoryName) => {
     if (onCategoryClick) {
-      onCategoryClick({ category: categoryName, subcategory: subCategoryName }) // 修改：傳遞子分類
+      onCategoryClick({ category: categoryName, subcategory: subCategoryName })
     }
   }
 
@@ -63,11 +59,9 @@ export default function CategoryMenu({ onCategoryClick }) {
         categoryMenuRef.current &&
         !categoryMenuRef.current.contains(e.target)
       ) {
-        // 手機版：點擊選單外部時關閉子選單
         setActiveIndex(null)
       }
     }
-
     document.addEventListener('click', handleOutsideClick)
     return () => document.removeEventListener('click', handleOutsideClick)
   }, [isMobile, activeIndex])
@@ -90,6 +84,7 @@ export default function CategoryMenu({ onCategoryClick }) {
               }
             }}
             role="button"
+            aria-pressed={activeIndex === idx}
             tabIndex={0}
           >
             <span>{cat.name}</span>
@@ -100,16 +95,17 @@ export default function CategoryMenu({ onCategoryClick }) {
                     key={item}
                     href="#"
                     onClick={(e) => {
+                      e.preventDefault()
                       e.stopPropagation()
-                      handleSubCategoryClick(item, cat.name) // 修改：傳遞 categoryName
+                      handleSubCategoryClick(item, cat.name)
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
                         e.stopPropagation()
-                        handleSubCategoryClick(item, cat.name) // 修改：傳遞 categoryName
+                        handleSubCategoryClick(item, cat.name)
                       }
                     }}
-                    role="button"
                     tabIndex={0}
                   >
                     {item}

@@ -6,41 +6,36 @@ import '../_styles/ProductDetail.scss'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 
 export default function ProductDetail({ product }) {
-  const [mainImageSrc, setMainImageSrc] = useState(null) // 初始化為 null
+  const [mainImageSrc, setMainImageSrc] = useState('')
   const [currentThumbnailIndex, setCurrentThumbnailIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
 
+  // ✅ 初始化主圖為主圖網址
   useEffect(() => {
-    if (product) {
-      if (product.thumbnails && product.thumbnails.length > 0) {
-        setMainImageSrc(product.thumbnails[currentThumbnailIndex] || null) // 如果是 undefined 就設為 null
-      } else if (product.imageUrl) {
-        setMainImageSrc(product.imageUrl || null) // 如果是 undefined 就設為 null
-      } else {
-        setMainImageSrc(null)
-      }
-    } else {
-      setMainImageSrc(null)
+    if (product?.main_img) {
+      setMainImageSrc(product.main_img)
     }
-  }, [currentThumbnailIndex, product?.imageUrl, product?.thumbnails, product])
+  }, [product])
 
   const handlePrevClick = () => {
-    if (product?.thumbnails && currentThumbnailIndex > 0) {
-      setCurrentThumbnailIndex(currentThumbnailIndex - 1)
+    if (currentThumbnailIndex > 0) {
+      const newIndex = currentThumbnailIndex - 1
+      setCurrentThumbnailIndex(newIndex)
+      setMainImageSrc(product.images[newIndex])
     }
   }
 
   const handleNextClick = () => {
-    if (
-      product?.thumbnails &&
-      currentThumbnailIndex < product.thumbnails.length - 1
-    ) {
-      setCurrentThumbnailIndex(currentThumbnailIndex + 1)
+    if (product.images && currentThumbnailIndex < product.images.length - 1) {
+      const newIndex = currentThumbnailIndex + 1
+      setCurrentThumbnailIndex(newIndex)
+      setMainImageSrc(product.images[newIndex])
     }
   }
 
   const handleThumbnailClick = (index) => {
     setCurrentThumbnailIndex(index)
+    setMainImageSrc(product.images[index])
   }
 
   const handleQuantityIncrement = () => {
@@ -54,7 +49,6 @@ export default function ProductDetail({ product }) {
   }
 
   const handleToggleFavorite = (productId, isCurrentlyFavorite) => {
-    // 在這裡處理收藏邏輯
     console.log(
       `Product ${productId} is now ${isCurrentlyFavorite ? 'a favorite' : 'not a favorite'}`
     )
@@ -64,48 +58,45 @@ export default function ProductDetail({ product }) {
     return <div>Loading...</div>
   }
 
+  //僅用副圖作為輪播縮圖
+  const thumbnails = product.images || []
+
   return (
     <section>
       <div className="container py-4">
         <div className="product-page">
           <div className="product-left">
-            {mainImageSrc && (
+            {mainImageSrc ? (
               <Image
                 src={mainImageSrc}
                 className="main-image"
-                alt={product.title}
-                width={400}
-                height={400}
+                alt={product.name_zh}
+                width={300}
+                height={300}
               />
-            )}
-            {!mainImageSrc && (
+            ) : (
               <div className="placeholder-image">No Image Available</div>
             )}
-            {product.thumbnails && product.thumbnails.length > 1 && (
+
+            {thumbnails.length > 0 && (
               <div className="thumbnail-carousel-wrapper">
                 <button className="thumb-prev" onClick={handlePrevClick}>
                   &lt;
                 </button>
                 <div className="thumbnail-fixed-view">
-                  {product.thumbnails &&
-                    product.thumbnails.map(
-                      (thumbnailUrl, index) =>
-                        thumbnailUrl &&
-                        typeof thumbnailUrl === 'string' &&
-                        thumbnailUrl.trim() !== '' && ( // 確保不是空字串
-                          <Image
-                            key={index}
-                            src={thumbnailUrl}
-                            alt=""
-                            width={60}
-                            height={60}
-                            className={
-                              index === currentThumbnailIndex ? 'active' : ''
-                            }
-                            onClick={() => handleThumbnailClick(index)}
-                          />
-                        )
-                    )}
+                  {thumbnails.map((thumbnailUrl, index) => (
+                    <Image
+                      key={index}
+                      src={thumbnailUrl}
+                      alt=""
+                      width={60}
+                      height={60}
+                      className={
+                        index === currentThumbnailIndex ? 'active' : ''
+                      }
+                      onClick={() => handleThumbnailClick(index)}
+                    />
+                  ))}
                 </div>
                 <button className="thumb-next" onClick={handleNextClick}>
                   &gt;
@@ -113,10 +104,16 @@ export default function ProductDetail({ product }) {
               </div>
             )}
           </div>
+
           <div className="product-right">
-            <h2 className="product-title">{product?.title}</h2>
-            <p className="product-subtitle">{product?.subtitle}</p>
-            <div className="product-price">NT${product?.price}</div>
+            <h2 className="product-title">{product.name_zh}</h2>
+            <p className="product-subtitle">{product.name_en}</p>
+            <div className="product-price">
+              NT$
+              {product.discount_rate
+                ? Math.round(product.price * (product.discount_rate / 10))
+                : product.price}
+            </div>
             <div className="quantity-cart">
               <div className="quantity-control">
                 <button className="qty-btn" onClick={handleQuantityDecrement}>
@@ -136,18 +133,18 @@ export default function ProductDetail({ product }) {
             </div>
             <div className="wishlist">
               <AddToFavoritesButton
-                productId={product?.id}
+                productId={product.id}
                 onToggleFavorite={handleToggleFavorite}
                 isFavorite={false}
               />
               加入心願清單
             </div>
-            <div className="stock-info">剩餘數量：{product?.stock} 件</div>
+            <div className="stock-info">剩餘數量：{product.stock} 件</div>
             <hr />
-            <div className="product-description">{product?.description}</div>
+            <div className="product-description">{product.description}</div>
           </div>
         </div>
-        {/* 手機版固定下方購物列 */}
+
         <div className="mobile-fixed-bar d-md-none">
           <div className="container d-flex justify-content-between align-items-center gap-2">
             <div className="quantity-control">

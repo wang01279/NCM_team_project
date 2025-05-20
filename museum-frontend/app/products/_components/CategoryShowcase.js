@@ -2,16 +2,41 @@
 
 import React from 'react'
 import '../_styles/categoryShowcase.scss'
-import Image from 'next/image' // 引入 Image 組件
+import Image from 'next/image'
 
-export default function CategoryShowcase() {
+export default function CategoryShowcase({ onCategoryClick }) {
+  const handleClick = (categoryName) => {
+    if (onCategoryClick) {
+      onCategoryClick({ category: categoryName, subcategory: null })
+    }
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const section = document.getElementById('product-list')
+        if (section) {
+          const yOffset = -80 // 可根據 header 高度微調
+          const y =
+            section.getBoundingClientRect().top + window.scrollY + yOffset
+          window.scrollTo({ top: y, behavior: 'smooth' })
+        }
+      }, 100) // 給前端分類變動一點渲染時間
+    })
+  }
+
   return (
     <section className="py-4">
       <div className="container px-0">
         <div className="row g-0">
           {/* 文創商品 */}
           <div className="col-lg-6 d-flex flex-column">
-            <a href="#" className="text-decoration-none text-reset">
+            <a
+              href="#"
+              style={{ outline: 'none' }}
+              className="text-decoration-none text-reset"
+              onClick={(e) => {
+                e.preventDefault()
+                handleClick('文創商品')
+              }}
+            >
               <div
                 className="hover-card h-100 d-flex align-items-center p-4 rounded-0 overflow-hidden group"
                 style={{ minHeight: '320px', backgroundColor: '#ebd0a5' }}
@@ -32,7 +57,7 @@ export default function CategoryShowcase() {
                         position: 'relative',
                         top: '80px',
                         right: '80px',
-                        height: 'auto', // 加入這一行
+                        height: 'auto',
                       }}
                     />
                   </div>
@@ -48,7 +73,15 @@ export default function CategoryShowcase() {
             <div className="row g-0">
               {/* 餐廚用品 */}
               <div className="col-md-6">
-                <a href="#" className="text-decoration-none text-reset">
+                <a
+                  href="#"
+                  style={{ outline: 'none' }}
+                  className="text-decoration-none text-reset"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleClick('餐廚用品')
+                  }}
+                >
                   <div
                     className="hover-card p-4 h-100 overflow-hidden group d-flex align-items-center"
                     style={{ minHeight: '320px', backgroundColor: '#EAEAEA' }}
@@ -86,7 +119,15 @@ export default function CategoryShowcase() {
               </div>
               {/* 圖書影音 */}
               <div className="col-md-6">
-                <a href="#" className="text-decoration-none text-reset">
+                <a
+                  href="#"
+                  style={{ outline: 'none' }}
+                  className="text-decoration-none text-reset"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleClick('圖書影音')
+                  }}
+                >
                   <div
                     className="hover-card p-4 h-100 overflow-hidden group d-flex align-items-center"
                     style={{ minHeight: '320px', backgroundColor: '#3f3f3f9a' }}
@@ -127,7 +168,15 @@ export default function CategoryShowcase() {
 
           {/* 右側：典藏精品 */}
           <div className="col-lg-6">
-            <a href="#" className="text-decoration-none text-reset">
+            <a
+              href="#"
+              style={{ outline: 'none' }}
+              className="text-decoration-none text-reset"
+              onClick={(e) => {
+                e.preventDefault()
+                handleClick('典藏精品')
+              }}
+            >
               <div
                 className="hover-card text-white h-100 d-flex align-items-center justify-content-between position-relative overflow-hidden group p-4"
                 style={{ minHeight: '320px', backgroundColor: '#9B3413' }}

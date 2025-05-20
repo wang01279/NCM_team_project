@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Marquee from './_components/Marquee'
 import HeroSlider from './_components/HeroSlider'
 import CategoryShowcase from './_components/CategoryShowcase'
@@ -10,53 +10,74 @@ import ProductCard from '../_components/ProductCard'
 import './_styles/productPage.scss'
 
 export default function ProductPage() {
-  // 儲存目前第幾頁
   const [currentPage, setCurrentPage] = useState(1)
-
-  // 儲存後端傳來的商品陣列
   const [products, setProducts] = useState([])
-
-  // 總共有幾頁
   const [totalPages, setTotalPages] = useState(1)
-
-  // 新增一個 state 來儲存目前選取的分類
   const [selectedCategory, setSelectedCategory] = useState({
     category: null,
     subcategory: null,
-  }) // 修改：初始值為物件
+  })
+  const [categoryMap, setCategoryMap] = useState({})
+  const [subcategoryMap, setSubcategoryMap] = useState({})
 
-  // 當 currentPage 或 selectedCategory 改變時，自動重新 fetch 該頁的資料
+  // 撈分類對照表（名稱 ➜ ID）
   useEffect(() => {
-    let url = `http://localhost:3005/api/products?page=${currentPage}`
-    if (selectedCategory.category) {
-      // 修改：判斷 category 是否存在
-      url += `&category=${selectedCategory.category}`
-    }
-    if (selectedCategory.subcategory) {
-      // 修改：判斷 subcategory 是否存在
-      url += `&subcategory=${selectedCategory.subcategory}`
-    }
-
-    fetch(url)
+    fetch('http://localhost:3005/api/products/categories')
       .then((res) => res.json())
       .then((data) => {
-        // 設定商品資料與總頁數
+        const cMap = {}
+        const sMap = {}
+
+        data.forEach((cat) => {
+          cMap[cat.category_name] = cat.category_id
+          cat.subcategories.forEach((sub) => {
+            sMap[sub.name] = sub.id
+          })
+        })
+
+        setCategoryMap(cMap)
+        setSubcategoryMap(sMap)
+      })
+  }, [])
+
+  // 點分類時：轉成 ID 傳入 selectedCategory
+  const handleCategoryClick = ({ category, subcategory }) => {
+    const categoryId = category ? categoryMap[category] : null
+    const subcategoryId = subcategory ? subcategoryMap[subcategory] : null
+    setSelectedCategory({ category: categoryId, subcategory: subcategoryId })
+    setCurrentPage(1)
+  }
+
+  // 組查詢字串
+  const buildQuery = useCallback(() => {
+    const params = new URLSearchParams()
+    params.set('page', currentPage)
+    if (selectedCategory.category) {
+      params.set('category', selectedCategory.category)
+    }
+    if (selectedCategory.subcategory) {
+      params.set('subcategory', selectedCategory.subcategory)
+    }
+    return params.toString()
+  }, [currentPage, selectedCategory])
+
+  // 撈商品資料
+  useEffect(() => {
+    const query = buildQuery()
+    fetch(`http://localhost:3005/api/products?${query}`)
+      .then((res) => res.json())
+      .then((data) => {
         setProducts(data.products || [])
         setTotalPages(data.totalPages || 1)
       })
       .catch(() => {
-        // 錯誤處理：清空資料避免報錯
         setProducts([])
         setTotalPages(1)
       })
-  }, [currentPage, selectedCategory.category, selectedCategory.subcategory]) // 修改：監聽 category 和 subcategory
+  }, [buildQuery])
 
-  // 切換目前頁碼
-  const goToPage = (pageNumber) => {
-    setCurrentPage(pageNumber)
-  }
+  const goToPage = (pageNumber) => setCurrentPage(pageNumber)
 
-  // 產生分頁按鈕（根據 totalPages 數量）
   const renderPaginationButtons = () => {
     const buttons = []
     for (let i = 1; i <= totalPages; i++) {
@@ -73,33 +94,21 @@ export default function ProductPage() {
     return <div className="pagination">{buttons}</div>
   }
 
-  // 新增一個函式來處理分類選取
-  const handleCategoryClick = (categoryInfo) => {
-    // 修改：接收一個物件
-    setSelectedCategory(categoryInfo) // 修改：更新 selectedCategory
-    setCurrentPage(1) // 重置到第一頁
-  }
-
   return (
     <>
-      {/* 頁面固定上方區塊（跑馬燈、輪播、分類選單等） */}
       <Marquee />
       <HeroSlider />
-      <CategoryShowcase />
-      {/* 修改 CategoryMenu，傳入 handleCategoryClick */}
-      <CategoryMenu onCategoryClick={handleCategoryClick} />
+      <CategoryShowcase onCategoryClick={handleCategoryClick} />
+      <div id="product-list">
+        <CategoryMenu onCategoryClick={handleCategoryClick} />
+      </div>
       <ProductFilter />
-
-      {/* 商品清單區塊 */}
       <div className="container py-2">
         <div className="row g-4">
-          {/* 每一筆商品資料渲染一張商品卡 */}
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
-
-        {/* 顯示分頁按鈕（超過 1 頁才出現） */}
         {totalPages > 1 && renderPaginationButtons()}
       </div>
     </>
