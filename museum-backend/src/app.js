@@ -130,77 +130,77 @@ app.use('/api/favorites/exhibitions', exhibitionFavRoutes);
 app.use('/api/products', productRoutes)
 
 // Socket.IO 連接
-io.use(async (socket, next) => {
-  try {
-    const token = socket.handshake.auth.token;
-    if (!token) {
-      return next(new Error('未提供認證令牌'));
-    }
+// io.use(async (socket, next) => {
+//   try {
+//     const token = socket.handshake.auth.token;
+//     if (!token) {
+//       return next(new Error('未提供認證令牌'));
+//     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const [user] = await db.query(
-      'SELECT id, role FROM members WHERE id = ? AND is_deleted = FALSE',
-      [decoded.id]
-    );
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     const [user] = await db.query(
+//       'SELECT id, role FROM members WHERE id = ? AND is_deleted = FALSE',
+//       [decoded.id]
+//     );
 
-    if (!user) {
-      return next(new Error('用戶不存在'));
-    }
+//     if (!user) {
+//       return next(new Error('用戶不存在'));
+//     }
 
-    socket.user = user;
-    next();
-  } catch (error) {
-    next(new Error('認證失敗'));
-  }
-});
+//     socket.user = user;
+//     next();
+//   } catch (error) {
+//     next(new Error('認證失敗'));
+//   }
+// });
 
-io.on('connection', (socket) => {
-  console.log('用戶已連接:', socket.user.id);
+// io.on('connection', (socket) => {
+//   console.log('用戶已連接:', socket.user.id);
 
-  // 加入用戶的房間
-  socket.join(`user_${socket.user.id}`);
+//   // 加入用戶的房間
+//   socket.join(`user_${socket.user.id}`);
 
-  // 處理消息
-  socket.on('message', async (data) => {
-    try {
-      const { toUserId, content } = data;
+//   // 處理消息
+//   socket.on('message', async (data) => {
+//     try {
+//       const { toUserId, content } = data;
       
-      // 保存消息到數據庫
-      const messageId = await saveMessage(socket.user.id, toUserId, content);
+//       // 保存消息到數據庫
+//       const messageId = await saveMessage(socket.user.id, toUserId, content);
 
-      // 獲取發送者信息
-      const [sender] = await db.query(
-        'SELECT name, avatar FROM members WHERE id = ?',
-        [socket.user.id]
-      );
+//       // 獲取發送者信息
+//       const [sender] = await db.query(
+//         'SELECT name, avatar FROM members WHERE id = ?',
+//         [socket.user.id]
+//       );
 
-      // 構建消息對象
-      const message = {
-        id: messageId,
-        from_user_id: socket.user.id,
-        to_user_id: toUserId,
-        content,
-        timestamp: new Date(),
-        from_name: sender[0].name,
-        from_avatar: sender[0].avatar
-      };
+//       // 構建消息對象
+//       const message = {
+//         id: messageId,
+//         from_user_id: socket.user.id,
+//         to_user_id: toUserId,
+//         content,
+//         timestamp: new Date(),
+//         from_name: sender[0].name,
+//         from_avatar: sender[0].avatar
+//       };
 
-      // 發送消息給接收者
-      io.to(`user_${toUserId}`).emit('message', message);
+//       // 發送消息給接收者
+//       io.to(`user_${toUserId}`).emit('message', message);
       
-      // 如果是客服發送消息，也發送給自己
-      if (socket.user.role === 'staff') {
-        socket.emit('message', message);
-      }
-    } catch (error) {
-      console.error('發送消息失敗:', error);
-    }
-  });
+//       // 如果是客服發送消息，也發送給自己
+//       if (socket.user.role === 'staff') {
+//         socket.emit('message', message);
+//       }
+//     } catch (error) {
+//       console.error('發送消息失敗:', error);
+//     }
+//   });
 
-  socket.on('disconnect', () => {
-    console.log('用戶已斷開連接:', socket.user.id);
-  });
-});
+//   socket.on('disconnect', () => {
+//     console.log('用戶已斷開連接:', socket.user.id);
+//   });
+// });
 
 // 設置端口
 const PORT = process.env.PORT || 3005;
