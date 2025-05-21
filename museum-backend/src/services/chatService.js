@@ -16,29 +16,19 @@ export const getCustomerServiceList = async () => {
 };
 
 // 獲取聊天記錄
-export const getChatHistory = async (userId, staffId) => {
+export const getChatHistory = async (userId, otherUserId) => {
   try {
     const [messages] = await db.query(
       `SELECT 
-        m.id,
-        m.sender_id,
-        m.receiver_id,
-        m.content,
-        m.message_type,
-        m.status,
-        m.created_at,
-        m.updated_at,
+        m.*,
         sender.name as sender_name,
-        sender.avatar as sender_avatar,
-        receiver.name as receiver_name,
-        receiver.avatar as receiver_avatar
+        sender.avatar as sender_avatar
       FROM chat_messages m
       JOIN member_profiles sender ON m.sender_id = sender.member_id
-      JOIN member_profiles receiver ON m.receiver_id = receiver.member_id
       WHERE (m.sender_id = ? AND m.receiver_id = ?)
       OR (m.sender_id = ? AND m.receiver_id = ?)
       ORDER BY m.created_at ASC`,
-      [userId, staffId, staffId, userId]
+      [userId, otherUserId, otherUserId, userId]
     );
     return messages;
   } catch (error) {
@@ -47,13 +37,13 @@ export const getChatHistory = async (userId, staffId) => {
 };
 
 // 保存消息
-export const saveMessage = async (senderId, receiverId, content, messageType = 'text') => {
+export const saveMessage = async (senderId, receiverId, content) => {
   try {
     const [result] = await db.query(
       `INSERT INTO chat_messages 
-       (sender_id, receiver_id, content, message_type, status) 
-       VALUES (?, ?, ?, ?, 'sent')`,
-      [senderId, receiverId, content, messageType]
+       (sender_id, receiver_id, content, status) 
+       VALUES (?, ?, ?, 'sent')`,
+      [senderId, receiverId, content]
     );
     return result.insertId;
   } catch (error) {

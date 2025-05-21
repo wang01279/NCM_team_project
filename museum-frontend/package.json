@@ -14,14 +14,19 @@
     "axios": "^1.9.0",
     "bootstrap": "^5.3.5",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "firebase": "^11.7.3",
     "framer-motion": "^12.11.0",
+    "framework7": "^8.3.4",
+    "framework7-icons": "^5.0.5",
+    "framework7-react": "^8.3.4",
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.56.2",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.6",

@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model ChatMessage {
+  id           Int                         @id @default(autoincrement())
+  sender_id    Int
+  receiver_id  Int
+  content      String                      @db.Text
+  image_url    String?                     @db.Text
+  is_read      Boolean?                    @default(false)
+  created_at   DateTime?                   @default(now()) @db.DateTime(0)
+  updated_at   DateTime?                   @default(now()) @updatedAt @db.DateTime(0)
+  message_type chat_messages_message_type? @default(text)
+  status       chat_messages_status?       @default(sent)
+  sender       members                     @relation("SentMessages", fields: [sender_id], references: [id], onUpdate: Restrict, map: "chat_messages_ibfk_1")
+  receiver     members                     @relation("ReceivedMessages", fields: [receiver_id], references: [id], onUpdate: Restrict, map: "chat_messages_ibfk_2")
+
+  @@index([created_at], map: "idx_created_at")
+  @@index([sender_id, receiver_id], map: "idx_sender_receiver")
+  @@index([status], map: "idx_status")
+  @@index([receiver_id], map: "receiver_id")
+  @@map("chat_messages")
+}
+
+model chat_room_members {
+  room_id    Int
+  member_id  Int
+  role       chat_room_members_role? @default(member)
+  joined_at  DateTime?               @default(now()) @db.DateTime(0)
+  chat_rooms chat_rooms              @relation(fields: [room_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "chat_room_members_ibfk_1")
+  members    members                 @relation(fields: [member_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "chat_room_members_ibfk_2")
+
+  @@id([room_id, member_id])
+  @@index([room_id, member_id], map: "idx_room_member")
+  @@index([member_id], map: "member_id")
+}
+
+model chat_room_messages {
+  id           Int                              @id @default(autoincrement())
+  room_id      Int
+  sender_id    Int
+  content      String                           @db.Text
+  message_type chat_room_messages_message_type? @default(text)
+  status       chat_room_messages_status?       @default(sent)
+  created_at   DateTime?                        @default(now()) @db.DateTime(0)
+  updated_at   DateTime?                        @default(now()) @db.DateTime(0)
+  chat_rooms   chat_rooms                       @relation(fields: [room_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "chat_room_messages_ibfk_1")
+  members      members                          @relation(fields: [sender_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "chat_room_messages_ibfk_2")
+
+  @@index([room_id, created_at], map: "idx_room_messages")
+  @@index([sender_id], map: "sender_id")
+}
+
+model chat_rooms {
+  id                 Int                  @id @default(autoincrement())
+  name               String?              @db.VarChar(255)
+  created_at         DateTime?            @default(now()) @db.DateTime(0)
+  updated_at         DateTime?            @default(now()) @db.DateTime(0)
+  chat_room_members  chat_room_members[]
+  chat_room_messages chat_room_messages[]
+}
+
+model member_profiles {
+  id         Int                     @id @default(autoincrement())
+  member_id  Int
+  name       String?                 @db.VarChar(100)
+  gender     member_profiles_gender?
+  phone      String?                 @db.VarChar(20)
+  address    String?                 @db.Text
+  avatar     String?                 @default("https://example.com/default-avatar.png") @db.VarChar(255)
+  is_deleted Boolean?                @default(false)
+  birthday   DateTime?               @db.Date
+  members    members                 @relation(fields: [member_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "member_profiles_ibfk_1")
+
+  @@index([member_id], map: "member_id")
+}
+
+model members {
+  id                                      Int                  @id @default(autoincrement())
+  email                                   String               @unique(map: "email") @db.VarChar(255)
+  password                                String?              @db.VarChar(255)
+  reset_token                             String?              @db.VarChar(255)
+  reset_token_expiry                      DateTime?            @db.DateTime(0)
+  google_id                               String?              @db.VarChar(255)
+  role                                    members_role?        @default(member)
+  is_deleted                              Boolean?             @default(false)
+  created_at                              DateTime?            @default(now()) @db.DateTime(0)
+  firebase_uid                            String?              @unique(map: "firebase_uid") @db.VarChar(255)
+  sentMessages                            ChatMessage[]        @relation("SentMessages")
+  receivedMessages                        ChatMessage[]        @relation("ReceivedMessages")
+  chat_room_members                       chat_room_members[]
+  chat_room_messages                      chat_room_messages[]
+  member_profiles                         member_profiles[]
+  messages_messages_from_user_idTomembers messages[]           @relation("messages_from_user_idTomembers")
+  messages_messages_to_user_idTomembers   messages[]           @relation("messages_to_user_idTomembers")
+}
+
+model messages {
+  id                                     Int      @id @default(autoincrement())
+  from_user_id                           Int
+  to_user_id                             Int
+  content                                String   @db.Text
+  timestamp                              DateTime @default(now()) @db.Timestamp(0)
+  members_messages_from_user_idTomembers members  @relation("messages_from_user_idTomembers", fields: [from_user_id], references: [id], onUpdate: Restrict, map: "messages_ibfk_1")
+  members_messages_to_user_idTomembers   members  @relation("messages_to_user_idTomembers", fields: [to_user_id], references: [id], onUpdate: Restrict, map: "messages_ibfk_2")
+
+  @@index([from_user_id], map: "from_user_id")
+  @@index([to_user_id], map: "to_user_id")
+}
+
+enum chat_room_members_role {
+  owner
+  admin
+  member
+}
+
+enum member_profiles_gender {
+  M
+  F
+  O
+}
+
+enum chat_room_messages_message_type {
+  text
+  image
+  file
+}
+
+enum chat_room_messages_status {
+  sent
+  delivered
+  read
+}
+
+enum members_role {
+  member
+  admin
+  staff
+}
+
+enum chat_messages_message_type {
+  text
+  image
+  file
+}
+
+enum chat_messages_status {
+  sent
+  delivered
+  read
+}

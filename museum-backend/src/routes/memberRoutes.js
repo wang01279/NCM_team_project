@@ -181,7 +181,12 @@ router.post("/login", async (req, res) => {
 
     // 生成 JWT token
     const token = jwt.sign(
-      { id: user.id, email: user.email },
+      { 
+        id: user.id, 
+        email: user.email,
+        type: user.role,  // 添加 type 字段
+        role: user.role   // 添加 role 字段
+      },
       process.env.JWT_SECRET || "your-secret-key",
       { expiresIn: "24h" }
     );
@@ -977,7 +982,12 @@ router.post("/auth/firebase", async (req, res) => {
 
     // 發你自己的 JWT
     const accessToken = jwt.sign(
-      { id: member.id, email: member.email },
+      { 
+        id: member.id, 
+        email: member.email,
+        type: member.role,
+        role: member.role
+      },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
