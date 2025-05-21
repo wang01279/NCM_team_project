@@ -21,6 +21,8 @@ import Image from 'next/image'
 
 // toast
 import { useToast } from './ToastManager'
+import { io } from 'socket.io-client'
+import ChatSidebar from './Chat/ChatSidebar'
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -35,12 +37,14 @@ export default function Navbar() {
     googleLogin,
     updateMember,
     avatarSrc,
+    token,
   } = useAuth()
 
   /* ---------------------- State ---------------------- */
   const [isScrolled, setIsScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
   /* -------------------- Effects ---------------------- */
   // 1. 監聽捲動：縮小／還原 Header
@@ -116,6 +120,14 @@ export default function Navbar() {
 
   const handleNavigateToMemberCenter = () => {
     router.push('/member/center')
+  }
+
+  const handleChatClick = () => {
+    if (!isLoggedIn) {
+      setIsLoginModalOpen(true)
+      return
+    }
+    setIsChatOpen(!isChatOpen)
   }
 
   //管理區不需要選單列
@@ -203,7 +215,11 @@ export default function Navbar() {
                       >
                         <FaUser className="icon" /> 個人檔案
                       </a>
-                      <a href="#" className="user-dropdown-item">
+                      <a
+                        href="#"
+                        className="user-dropdown-item"
+                        onClick={handleChatClick}
+                      >
                         <span className="notification-dot">12</span>
                         <FaCommentDots className="icon" /> 我的訊息
                       </a>
@@ -299,6 +315,14 @@ export default function Navbar() {
         show={isLoginModalOpen}
         onHide={handleCloseLoginModal}
         onSubmit={handleSubmitLogin}
+      />
+
+      {/* 聊天室側邊欄 */}
+      <ChatSidebar 
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        receiverId={member?.role === 'member' ? 93 : member?.role === 'staff' ? 92 : undefined}
+        isStaff={member?.role === 'staff'}
       />
     </>
   )

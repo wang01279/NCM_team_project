@@ -5,6 +5,7 @@ import '@/app/_styles/formCustom.scss'
 import Footer from './_components/footer'
 import { ToastProvider } from '@/app/_components/ToastManager'
 import { Inter } from 'next/font/google'
+import ChatSidebar from './_components/Chat/ChatSidebar'
 
 // import { AuthProvider } from './_components/Auth/AuthProvider'
 // import { AuthProvider } from '@/app/_components/Auth/AuthProvider'
@@ -21,13 +22,14 @@ export default function RootLayout({ children }) {
     <html lang="zh-TW">
       <body className={inter.className}>
         {/* <AuthProvider> */}
-          <ToastProvider>
-            {/* <Navbar /> */}
-            {/* <div style={{ border: '2px solid green', height: '100%' }}> */}
-            {children}
-            {/* </div> */}
-            {/* <Footer /> */}
-          </ToastProvider>
+        <ToastProvider>
+          {/* <Navbar /> */}
+          {/* <div style={{ border: '2px solid green', height: '100%' }}> */}
+          {children}
+          <ChatSidebar />
+          {/* </div> */}
+          {/* <Footer /> */}
+        </ToastProvider>
         {/* </AuthProvider> */}
       </body>
     </html>
