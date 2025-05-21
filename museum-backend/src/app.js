@@ -32,7 +32,7 @@ const server = http.createServer(app);
 // 中間件
 app.use(cors({
   origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Content-Type', 'Authorization']
