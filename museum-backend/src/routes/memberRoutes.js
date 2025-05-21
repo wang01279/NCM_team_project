@@ -493,7 +493,7 @@ router.post("/change-password", authenticateToken, async (req, res) => {
     }
 
     // 加密新密碼
-    // const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     if (!isValidPassword(newPassword)) {
       return res.status(400).json({
         success: false,
@@ -910,7 +910,7 @@ router.post("/reset-password", async (req, res) => {
     }
 
     // 加密新密碼
-    // const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     if (!isValidPassword(newPassword)) {
       return res.status(400).json({
         success: false,
