@@ -10,7 +10,6 @@ import { IoLocationSharp } from 'react-icons/io5'
 import { FaRegCalendarPlus } from 'react-icons/fa6'
 import Image from 'next/image'
 import styles from '../_styles/ex-detail.module.scss'
-import TextToggle from '../_components/text-toggle.js'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 import { addFavoriteByType, removeFavoriteByType } from '@/app/api/favorites'
 import { useAuth } from '@/app/_hooks/useAuth'
@@ -59,10 +58,10 @@ export default function ExhibitionDetailPage() {
   const googleCalendarUrl =
     exhibits?.startDate && exhibits?.endDate
       ? `https://calendar.google.com/calendar/render?action=TEMPLATE` +
-        `&text=${encodeURIComponent(exhibits.title)}` +
-        `&details=${encodeURIComponent(exhibits.intro?.slice(0, 100) || '')}` +
-        `&location=${encodeURIComponent(exhibits.venueId || '國立故瓷博物館')}` +
-        `&dates=${toUTCString(exhibits.startDate)}/${toUTCString(exhibits.endDate)}`
+      `&text=${encodeURIComponent(exhibits.title)}` +
+      `&details=${encodeURIComponent(exhibits.intro?.slice(0, 100) || '')}` +
+      `&location=${encodeURIComponent(exhibits.venueId || '國立故瓷博物館')}` +
+      `&dates=${toUTCString(exhibits.startDate)}/${toUTCString(exhibits.endDate)}`
       : '#'
 
   return (
@@ -154,11 +153,10 @@ export default function ExhibitionDetailPage() {
 
         <div className={`container py-4 `}>
           <h4 className={`${styles.subEx} fw-bold mb-3`}>展覽概述</h4>
-          <TextToggle
-            text={exhibits.intro}
-            maxLine={5}
-            className={`${styles.exhibitionDescription} fs-4`}
-          />
+          <div style={{ textIndent: '2rem' }}>{exhibits.intro}。</div>
+          <br />
+          <div style={{ textIndent: '2rem' }}>{exhibits.intro}</div>
+          
         </div>
       </div>
 
