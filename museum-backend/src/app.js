@@ -7,7 +7,8 @@ import memberRoutes from './routes/memberRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import exhibitionsRoutes from './routes/exhibitions/index.js';
 import couponsRoutes from './routes/coupons/index.js'
-import memberCouponRoutes from './routes/member-coupons.js'
+import couponsClaimRoutes from './routes/couponsClaim/index.js'
+import memberCouponRoutes from './routes/memberCoupons.js'
 import productFavRoutes from './routes/favorites/products.js'
 import courseFavRoutes from './routes/favorites/courses.js'
 import exhibitionFavRoutes from './routes/favorites/exhibitions.js'
@@ -122,7 +123,8 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/artists', artistRoutes);
 app.use('/api/exhibitions', exhibitionsRoutes);
 app.use('/api/coupons', couponsRoutes);
-app.use('/api/member-coupons', memberCouponRoutes)
+app.use('/api/couponsClaim', couponsClaimRoutes);
+app.use('/api/memberCoupons', memberCouponRoutes);
 app.use('/api/favorites/products', productFavRoutes);
 app.use('/api/favorites/courses', courseFavRoutes);
 app.use('/api/favorites/exhibitions', exhibitionFavRoutes);

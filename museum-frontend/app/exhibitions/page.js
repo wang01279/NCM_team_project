@@ -25,9 +25,10 @@ export default function ExhibitionPage() {
       <main className="container">
         <div className={styles.customMargin}>
           <div className="d-flex justify-content-center align-items-center flex-column fw-bold">
-            <h2 className="mb-0 pb-0">展覽</h2>
-            <p className="mb-0 pb-0">-</p>
-            <h5 className="mt-0 pt-0 m-0">Exhibition</h5>
+            <h3 className="mb-0 pb-0 fw-bold" style={{ letterSpacing: '5px' }}>
+           展覽
+          </h3>
+          <h6 className="mt-2 pt-0 m-0 fw-bold">Exhibition</h6>
           </div>
 
           <Tabs />

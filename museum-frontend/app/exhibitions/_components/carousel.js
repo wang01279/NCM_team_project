@@ -25,7 +25,7 @@ export default function Carousel() {
       id="carouselExampleIndicators"
       className="carousel slide pt-0 "
       data-bs-ride="carousel"
-      style={{ maxWidth: '1000px', width: '100%' }} // ← 控制整體寬度
+      style={{ maxWidth: '1800px', width: '100%' }} // ← 控制整體寬度
     >
       <div className="carousel-indicators">
         {exhibitions.map((_, index) => (
