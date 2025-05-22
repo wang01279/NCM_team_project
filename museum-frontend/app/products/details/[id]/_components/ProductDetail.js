@@ -1,16 +1,16 @@
 'use client'
-
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import '../_styles/ProductDetail.scss'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
+import AddToCartButton from '@/app/_components/AddToCartButton'
+import { FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 
 export default function ProductDetail({ product }) {
   const [mainImageSrc, setMainImageSrc] = useState('')
   const [currentThumbnailIndex, setCurrentThumbnailIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
 
-  // ✅ 初始化主圖為主圖網址
   useEffect(() => {
     if (product?.main_img) {
       setMainImageSrc(product.main_img)
@@ -48,18 +48,18 @@ export default function ProductDetail({ product }) {
     }
   }
 
-  const handleToggleFavorite = (productId, isCurrentlyFavorite) => {
-    console.log(
-      `Product ${productId} is now ${isCurrentlyFavorite ? 'a favorite' : 'not a favorite'}`
-    )
-  }
+  const displayPrice = product?.price
+    ? product.discount_rate
+      ? Math.round(
+          Number(product.price) * (product.discount_rate / 10)
+        ).toLocaleString()
+      : Number(product.price).toLocaleString()
+    : '價格未提供'
 
-  if (!product) {
-    return <div>Loading...</div>
-  }
+  if (!product) return <div>Loading...</div>
 
-  //僅用副圖作為輪播縮圖
   const thumbnails = product.images || []
+  const isOutOfStock = product.stock === 0
 
   return (
     <section>
@@ -71,8 +71,8 @@ export default function ProductDetail({ product }) {
                 src={mainImageSrc}
                 className="main-image"
                 alt={product.name_zh}
-                width={300}
-                height={300}
+                width={350}
+                height={350}
               />
             ) : (
               <div className="placeholder-image">No Image Available</div>
@@ -81,7 +81,7 @@ export default function ProductDetail({ product }) {
             {thumbnails.length > 0 && (
               <div className="thumbnail-carousel-wrapper">
                 <button className="thumb-prev" onClick={handlePrevClick}>
-                  &lt;
+                  <FaChevronLeft />
                 </button>
                 <div className="thumbnail-fixed-view">
                   {thumbnails.map((thumbnailUrl, index) => (
@@ -99,24 +99,33 @@ export default function ProductDetail({ product }) {
                   ))}
                 </div>
                 <button className="thumb-next" onClick={handleNextClick}>
-                  &gt;
+                  <FaChevronRight />
                 </button>
               </div>
             )}
           </div>
 
           <div className="product-right">
-            <h2 className="product-title">{product.name_zh}</h2>
-            <p className="product-subtitle">{product.name_en}</p>
-            <div className="product-price">
-              NT$
-              {product.discount_rate
-                ? Math.round(product.price * (product.discount_rate / 10))
-                : product.price}
+            <div className="product-header-row">
+              <h2 className="product-title">{product.name_zh}</h2>
+              <AddToFavoritesButton
+                productId={product.id}
+                onToggleFavorite={() => {}}
+                isFavorite={false}
+                className="favorite-button"
+              />
             </div>
-            <div className="quantity-cart">
+
+            <p className="product-subtitle">{product.name_en}</p>
+            <div className="product-price">NT${displayPrice}</div>
+
+            <div className="quantity-cart d-none d-md-flex">
               <div className="quantity-control">
-                <button className="qty-btn" onClick={handleQuantityDecrement}>
+                <button
+                  className="qty-btn"
+                  onClick={handleQuantityDecrement}
+                  disabled={isOutOfStock}
+                >
                   -
                 </button>
                 <input
@@ -125,20 +134,22 @@ export default function ProductDetail({ product }) {
                   className="qty-input"
                   readOnly
                 />
-                <button className="qty-btn" onClick={handleQuantityIncrement}>
+                <button
+                  className="qty-btn"
+                  onClick={handleQuantityIncrement}
+                  disabled={isOutOfStock}
+                >
                   +
                 </button>
               </div>
-              <button className="add-to-cart d-flex">加入購物車</button>
-            </div>
-            <div className="wishlist">
-              <AddToFavoritesButton
+              <AddToCartButton
                 productId={product.id}
-                onToggleFavorite={handleToggleFavorite}
-                isFavorite={false}
+                quantity={quantity}
+                disabled={isOutOfStock}
+                className="add-to-cart"
               />
-              加入心願清單
             </div>
+
             <div className="stock-info">剩餘數量：{product.stock} 件</div>
             <hr />
             <div className="product-description">{product.description}</div>
@@ -148,7 +159,11 @@ export default function ProductDetail({ product }) {
         <div className="mobile-fixed-bar d-md-none">
           <div className="container d-flex justify-content-between align-items-center gap-2">
             <div className="quantity-control">
-              <button className="qty-btn" onClick={handleQuantityDecrement}>
+              <button
+                className="qty-btn"
+                onClick={handleQuantityDecrement}
+                disabled={isOutOfStock}
+              >
                 -
               </button>
               <input
@@ -157,13 +172,20 @@ export default function ProductDetail({ product }) {
                 className="qty-input"
                 readOnly
               />
-              <button className="qty-btn" onClick={handleQuantityIncrement}>
+              <button
+                className="qty-btn"
+                onClick={handleQuantityIncrement}
+                disabled={isOutOfStock}
+              >
                 +
               </button>
             </div>
-            <button className="add-to-cart d-flex justify-content-center align-items-center flex-grow-1">
-              加入購物車
-            </button>
+            <AddToCartButton
+              productId={product.id}
+              quantity={quantity}
+              disabled={isOutOfStock}
+              className="add-to-cart"
+            />
           </div>
         </div>
       </div>

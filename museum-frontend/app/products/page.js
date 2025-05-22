@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Marquee from './_components/Marquee'
 import HeroSlider from './_components/HeroSlider'
 import CategoryShowcase from './_components/CategoryShowcase'
@@ -20,7 +21,25 @@ export default function ProductPage() {
   const [categoryMap, setCategoryMap] = useState({})
   const [subcategoryMap, setSubcategoryMap] = useState({})
 
-  // 撈分類對照表（名稱 ➜ ID）
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const categoryId = searchParams.get('category')
+    const subcategoryId = searchParams.get('subcategory')
+
+    if (categoryId || subcategoryId) {
+      setSelectedCategory({
+        category: categoryId || null,
+        subcategory: subcategoryId || null,
+      })
+
+      const productList = document.getElementById('product-list')
+      if (productList) {
+        productList.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }, [searchParams])
+
   useEffect(() => {
     fetch('http://localhost:3005/api/products/categories')
       .then((res) => res.json())
@@ -40,7 +59,6 @@ export default function ProductPage() {
       })
   }, [])
 
-  // 點分類時：轉成 ID 傳入 selectedCategory
   const handleCategoryClick = ({ category, subcategory }) => {
     const categoryId = category ? categoryMap[category] : null
     const subcategoryId = subcategory ? subcategoryMap[subcategory] : null
@@ -48,7 +66,6 @@ export default function ProductPage() {
     setCurrentPage(1)
   }
 
-  // 組查詢字串
   const buildQuery = useCallback(() => {
     const params = new URLSearchParams()
     params.set('page', currentPage)
@@ -61,7 +78,6 @@ export default function ProductPage() {
     return params.toString()
   }, [currentPage, selectedCategory])
 
-  // 撈商品資料
   useEffect(() => {
     const query = buildQuery()
     fetch(`http://localhost:3005/api/products?${query}`)
@@ -99,12 +115,10 @@ export default function ProductPage() {
       <Marquee />
       <HeroSlider />
       <CategoryShowcase onCategoryClick={handleCategoryClick} />
-      <div id="product-list">
-        <CategoryMenu onCategoryClick={handleCategoryClick} />
-      </div>
+      <CategoryMenu onCategoryClick={handleCategoryClick} />
       <ProductFilter />
       <div className="container py-2">
-        <div className="row g-4">
+        <div id="product-list" className="row g-4">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

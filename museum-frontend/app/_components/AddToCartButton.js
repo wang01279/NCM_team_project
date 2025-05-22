@@ -2,7 +2,12 @@
 import React from 'react'
 import { FaShoppingCart } from 'react-icons/fa'
 
-export default function AddToCartButton({ productId, onAddToCart, disabled }) {
+export default function AddToCartButton({
+  productId,
+  onAddToCart,
+  disabled,
+  className = '',
+}) {
   const handleClick = () => {
     if (!disabled && onAddToCart) {
       onAddToCart(productId)
@@ -13,7 +18,7 @@ export default function AddToCartButton({ productId, onAddToCart, disabled }) {
 
   return (
     <button
-      className={`btn btn-primary ${disabled ? 'disabled' : ''}`}
+      className={`btn btn-primary ${className} ${disabled ? 'disabled' : ''}`}
       onClick={handleClick}
       disabled={disabled}
     >
