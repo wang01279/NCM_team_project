@@ -149,8 +149,22 @@ export async function fetchProductById(id) {
     `SELECT image_path FROM product_images WHERE product_id = ? ORDER BY sort_order ASC`,
     [id]
   );
-
   product.images = images.map((img) => img.image_path);
+
+  //注意事項
+  try {
+    const [notes] = await db.query(
+      `SELECT n.content FROM product_notes pn
+   JOIN notes n ON pn.note_id = n.id
+   WHERE pn.product_id = ?`,
+      [id]
+    );
+    product.notes = notes.map((row) => row.content);;
+  } catch (e) {
+    console.warn("撈 notes 發生錯誤", e.message);
+    product.notes = [];
+  }
+
   return product;
 }
 
