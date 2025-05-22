@@ -20,6 +20,7 @@ import courseRoutes from './routes/courseRoutes.js';
 import artistRoutes from './routes/artistRoutes.js';
 
 import productRoutes from './routes/products/index.js'
+import orderRoutes from "./routes/orders/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -60,30 +61,31 @@ app.use(session({
 }));
 
 // 靜態文件服務
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // 測試數據庫連接的路由
-app.get('/api/test-db', async (req, res) => {
+app.get("/api/test-db", async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT 1 + 1 AS result');
-    res.json({ 
-      success: true, 
-      message: '數據庫連接正常',
-      result: rows[0].result 
+    const [rows] = await db.query("SELECT 1 + 1 AS result");
+    res.json({
+      success: true,
+      message: "數據庫連接正常",
+      result: rows[0].result,
     });
   } catch (error) {
-    res.status(500).json({ 
-      success: false, 
-      message: '數據庫連接失敗',
-      error: error.message 
+    res.status(500).json({
+      success: false,
+      message: "數據庫連接失敗",
+      error: error.message,
     });
   }
 });
 
 // 查看資料表結構的路由
-app.get('/api/tables', async (req, res) => {
+app.get("/api/tables", async (req, res) => {
   try {
-    const [tables] = await db.query(`
+    const [tables] = await db.query(
+      `
       SELECT TABLE_NAME, TABLE_COMMENT 
       FROM INFORMATION_SCHEMA.TABLES 
       WHERE TABLE_SCHEMA = ?
@@ -103,15 +105,15 @@ app.get('/api/tables', async (req, res) => {
       };
     }));
 
-    res.json({ 
-      success: true, 
-      tables: tableDetails 
+    res.json({
+      success: true,
+      tables: tableDetails,
     });
   } catch (error) {
-    res.status(500).json({ 
-      success: false, 
-      message: '獲取資料表結構失敗',
-      error: error.message 
+    res.status(500).json({
+      success: false,
+      message: "獲取資料表結構失敗",
+      error: error.message,
     });
   }
 });
@@ -128,6 +130,7 @@ app.use('/api/favorites/products', productFavRoutes);
 app.use('/api/favorites/courses', courseFavRoutes);
 app.use('/api/favorites/exhibitions', exhibitionFavRoutes);
 app.use('/api/products', productRoutes)
+app.use("/api/orders", orderRoutes);
 
 // Socket.IO 連接
 // io.use(async (socket, next) => {
