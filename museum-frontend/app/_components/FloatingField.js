@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { FloatingLabel, Form } from 'react-bootstrap';
-import { FaExclamationCircle } from 'react-icons/fa';
-import { useToast } from '@/app/_components/ToastManager';
-import '@/app/_styles/globals.scss';
-import '@/app/_styles/formCustom.scss';
+import { useState } from 'react'
+import { FloatingLabel, Form } from 'react-bootstrap'
+import { FaExclamationCircle } from 'react-icons/fa'
+import { useToast } from '@/app/_components/ToastManager'
+import '@/app/_styles/globals.scss'
+import '@/app/_styles/formCustom.scss'
 
 /**
  * 通用浮動欄位
@@ -26,25 +26,35 @@ export default function FloatingField({
   options = [],
   ...rest
 }) {
-  const [visible, setVisible] = useState(false);
-  const realType = type === 'password' ? (visible ? 'text' : 'password') : type;
+  const [visible, setVisible] = useState(false)
+  const realType = type === 'password' ? (visible ? 'text' : 'password') : type
 
   return (
     <Form.Group className="mb-3 position-relative">
       <Form.Floating>
         {as === 'select' ? (
-          <Form.Select {...register(controlId)} {...rest} isInvalid={!!errorMsg}>
+          <Form.Select
+            {...register(controlId)}
+            {...rest}
+            isInvalid={!!errorMsg}
+          >
             {options.map((opt, i) =>
-              typeof opt === 'string'
-                ? <option key={i} value={opt}>{opt}</option>
-                : <option key={i} value={opt.value}>{opt.label}</option>
+              typeof opt === 'string' ? (
+                <option key={i} value={opt}>
+                  {opt}
+                </option>
+              ) : (
+                <option key={i} value={opt.value}>
+                  {opt.label}
+                </option>
+              )
             )}
           </Form.Select>
         ) : (
-          <Form.Control 
-            {...register(controlId)} 
-            {...rest} 
-            isInvalid={!!errorMsg} 
+          <Form.Control
+            {...register(controlId)}
+            {...rest}
+            isInvalid={!!errorMsg}
             type={realType}
             className={errorMsg ? 'has-error' : ''}
           />
@@ -61,5 +71,5 @@ export default function FloatingField({
         </div>
       )}
     </Form.Group>
-  );
+  )
 }

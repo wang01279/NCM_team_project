@@ -5,18 +5,16 @@ import { usePathname } from 'next/navigation'
 import '@/app/_styles/globals.scss'
 
 export default function Footer(props) {
+  const pathname = usePathname()
 
-    const pathname = usePathname()
-  
-    //管理區不需要選單列
-    if (pathname.includes('/admin')) {
-      return <></>
-    }
-  
+  //管理區不需要選單列
+  if (pathname.includes('/admin')) {
+    return <></>
+  }
+
   return (
     <>
       <div
-      
         style={{
           // border: '2px solid red',
           height: 80,
@@ -29,7 +27,7 @@ export default function Footer(props) {
         }}
       >
         <div className="container">
-          <div className="row"> 
+          <div className="row">
             <div className="col-12">
               <h1 className="text-center text-white">頁尾</h1>
             </div>

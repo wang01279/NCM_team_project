@@ -7,9 +7,13 @@ export default function OrderSummary({ items }) {
   )
   const discount = 200 // 假設固定折扣
   const finalAmount = totalAmount - discount
+
   return (
     <div className="col-md-4 col-12">
-      <div className="card p-3" style={{ borderRadius: '8px' }}>
+      <div
+        className="card sticky-top p-3"
+        style={{ position: 'sticky', top: '66px', zIndex: 11 }}
+      >
         <div className="card-body">
           <div className="card-title fs-4 mb-4">訂單資訊</div>
           <div className="mb-3">

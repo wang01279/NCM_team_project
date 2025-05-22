@@ -5,7 +5,7 @@ export default function EnrollmentSection({ course, onEnroll }) {
     return new Intl.NumberFormat('zh-TW', {
       style: 'currency',
       currency: 'TWD',
-      minimumFractionDigits: 0
+      minimumFractionDigits: 0,
     }).format(price)
   }
 
@@ -37,10 +37,7 @@ export default function EnrollmentSection({ course, onEnroll }) {
           {course.materials_included ? '含材料與工具' : '不含材料'}
         </li>
       </ul>
-      <button 
-        className="btn btn-enroll mb-3"
-        onClick={onEnroll}
-      >
+      <button className="btn btn-enroll mb-3" onClick={onEnroll}>
         <i className="bi bi-cart-plus"></i> 立即報名
       </button>
       <button className="btn btn-enroll btn-outline">
@@ -48,4 +45,4 @@ export default function EnrollmentSection({ course, onEnroll }) {
       </button>
     </div>
   )
-} 
+}

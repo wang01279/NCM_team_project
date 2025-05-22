@@ -1,8 +1,7 @@
 body {
-  margin: 100px auto;
-  font-family: Helvetica;
-  background-color: #f8f1e3;
-  background-image: url(http://www.transparenttextures.com/patterns/asfalt-dark.png);
+  margin-top: 120px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .myCart {
@@ -197,5 +196,12 @@ body {
       transform: none;
       background-color: #7b2c12a9;
     }
+  }
+}
+.quantity-selector button {
+  box-shadow: none;
+
+  &:hover {
+    box-shadow: none;
   }
 }

@@ -21,13 +21,13 @@ export default function RootLayout({ children }) {
     <html lang="zh-TW">
       <body className={inter.className}>
         {/* <AuthProvider> */}
-          <ToastProvider>
-            {/* <Navbar /> */}
-            {/* <div style={{ border: '2px solid green', height: '100%' }}> */}
-            {children}
-            {/* </div> */}
-            {/* <Footer /> */}
-          </ToastProvider>
+        <ToastProvider>
+          {/* <Navbar /> */}
+          {/* <div style={{ border: '2px solid green', height: '100%' }}> */}
+          {children}
+          {/* </div> */}
+          {/* <Footer /> */}
+        </ToastProvider>
         {/* </AuthProvider> */}
       </body>
     </html>

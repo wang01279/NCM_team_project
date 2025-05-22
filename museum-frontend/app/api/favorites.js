@@ -11,7 +11,7 @@ export async function toggleFavoriteAPI(id, type, isNowFavorite) {
     await axios.post('/api/favorites', { itemId: id, itemType: type })
   } else {
     await axios.delete('/api/favorites', {
-      data: { itemId: id, itemType: type }
+      data: { itemId: id, itemType: type },
     })
   }
 }
