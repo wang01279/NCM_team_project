@@ -9,6 +9,13 @@ export default function CouponsTab() {
   const [coupons, setCoupons] = useState([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('可使用')
+  const [reload, setReload] = useState(false)
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      getCoupons()
+    }
+  }, [isLoggedIn, reload])
 
   const TABS = ['可使用', '已失效']
 
@@ -71,6 +78,7 @@ export default function CouponsTab() {
       <CouponTable
         coupons={filteredCoupons}
         isExpiredMode={activeTab === '已失效'}
+        onActionSuccess={() => setReload((r) => !r)}
       />
     </div>
   )

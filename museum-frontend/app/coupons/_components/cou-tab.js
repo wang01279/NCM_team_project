@@ -24,6 +24,11 @@ export default function CouTab() {
   const productCoupons = allCoupons.filter((c) => c.category === '商品')
   const courseCoupons = allCoupons.filter((c) => c.category === '課程')
 
+  console.log('✅ 商品券', productCoupons)
+  console.log('✅ 課程券', courseCoupons)
+
+
+
   return (
     <>
       <ul className={`mt-5 ${styles.tabs} ${styles.tabMenu}`}>

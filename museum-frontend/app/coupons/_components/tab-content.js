@@ -9,35 +9,26 @@ import { FaTicketAlt } from 'react-icons/fa'
 import { useToast } from '@/app/_components/ToastManager'
 import { useAuth } from '@/app/_hooks/useAuth'
 
-export default function TabCoupons({ category }) {
-  const [allCoupons, setAllCoupons] = useState([])
+export default function TabCoupons({ category, coupons }) {
   const [sortedCoupons, setSortedCoupons] = useState([])
   const [claimedIds, setClaimedIds] = useState([])
   const { member } = useAuth()
   const memberId = member?.id
   const { showToast } = useToast()
 
-  // ✅ 初始化與資料載入
+  // ✅ 初始化 sorted 與 localStorage 中已領取的 ID
   useEffect(() => {
-    if (!memberId) return
+    setSortedCoupons(coupons)
 
-    const STORAGE_KEY = `claimed_${category}_${memberId}`
-    const saved = localStorage.getItem(STORAGE_KEY)
-    const parsed = saved ? JSON.parse(saved) : []
-    setClaimedIds(parsed)
-
-    axios
-      .get('http://localhost:3005/api/coupons')
-      .then((res) => {
-        const filtered = res.data.data.filter((c) => c.category === category)
-        setAllCoupons(filtered)
-        setSortedCoupons(filtered)
-      })
-      .catch((err) => {
-        console.error('❌ 無法取得優惠券資料:', err)
-        showToast('danger', '無法載入優惠券資料')
-      })
-  }, [category, memberId, showToast])
+    if (typeof window !== 'undefined' && memberId) {
+      const STORAGE_KEY = `claimed_${category}_${memberId}`
+      const saved = localStorage.getItem(STORAGE_KEY)
+      const parsed = saved ? JSON.parse(saved) : []
+      setClaimedIds(parsed)
+    } else {
+      setClaimedIds([])
+    }
+  }, [category, memberId, coupons])
 
   // ✅ 更新 localStorage 與狀態
   const updateClaimedStorage = (newIds) => {
@@ -91,7 +82,7 @@ export default function TabCoupons({ category }) {
 
   // ✅ 過濾已領取
   const visibleCoupons = sortedCoupons.filter((c) => !claimedIds.includes(c.id))
-
+  console.log('👉 可見優惠券', visibleCoupons)
   return (
     <div className={`container my-4 ${styles.borderCustom}`}>
       <div className="row pt-3 px-3 mb-3 align-items-center">
@@ -113,7 +104,7 @@ export default function TabCoupons({ category }) {
 
         <div className="col-12 col-md-6 d-flex justify-content-md-end">
           <CouponSorter
-            coupons={allCoupons}
+            coupons={coupons}
             onSorted={(sorted) => setSortedCoupons(sorted)}
           />
         </div>
@@ -123,7 +114,7 @@ export default function TabCoupons({ category }) {
 
       <div
         className="row row-cols-1 row-cols-md-4 g-4 pb-4 justify-content-center"
-        style={{ minHeight: '300px' }} // ✅ 保持高度避免閃動
+        style={{ minHeight: '300px' }}
       >
         {visibleCoupons.length === 0 ? (
           <div className="text-center text-muted fs-5 mt-5">
