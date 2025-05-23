@@ -228,10 +228,10 @@ export default function Navbar() {
                         <FaTicketAlt className="icon" /> 我的優惠券
                       </a>
 
-                      <a href="#" className="user-dropdown-item">
+                      <a href="/member/center?tab=orders" className="user-dropdown-item">
                         <FaShoppingBag className="icon" /> 我的訂單
                       </a>
-                      <a href="#" className="user-dropdown-item">
+                      <a href="/member/center?tab=favorites" className="user-dropdown-item">
                         <FaHeart className="icon" /> 我的收藏
                       </a>
 

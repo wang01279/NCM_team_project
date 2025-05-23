@@ -18,6 +18,9 @@ import OrdersTab from './features/tabs/OrdersTab'
 import CouponsTab from './features/tabs/CouponsTab'
 import FavoritesTab from './features/tabs/FavoritesTab'
 
+import { useSearchParams } from 'next/navigation' // ✅ 加這行
+
+
 export default function MemberCenter() {
   const router = useRouter()
   const { showToast } = useToast()
@@ -29,7 +32,9 @@ export default function MemberCenter() {
     updateMember,
   } = useAuth()
 
-  const [activeTab, setActiveTab] = useState('profile')
+  const searchParams = useSearchParams() // ✅ 加這行
+  const [activeTab, setActiveTab] = useState('profile') // ✅ 加這行
+
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -38,6 +43,16 @@ export default function MemberCenter() {
     address: '',
     birthday: '',
   })
+
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab')
+    const validTabs = ['profile', 'coupons', 'orders', 'favorites']
+    const safeTab = validTabs.includes(tabFromUrl) ? tabFromUrl : 'profile'
+
+    if (safeTab !== activeTab) {
+      setActiveTab(safeTab)
+    }
+  }, [searchParams, activeTab])
 
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
@@ -270,7 +285,7 @@ export default function MemberCenter() {
           setActiveTab={setActiveTab}
           activeTab={activeTab}
           member={member || {}}
-          // onAvatarUpload={handleAvatarUpload}
+        // onAvatarUpload={handleAvatarUpload}
         />
       </div>
       <main className={styles.mainContent}>{renderMainContent()}</main>

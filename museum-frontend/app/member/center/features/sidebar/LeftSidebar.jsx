@@ -3,10 +3,13 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import styles from './sidebar.module.scss'
+import { useRouter } from 'next/navigation'
+
 
 import { FaUser, FaTicketAlt, FaHistory, FaBookmark, FaCrown } from 'react-icons/fa'
 
 export default function Sidebar({ member, activeTab, setActiveTab, onAvatarUpload }) {
+  const router = useRouter() // ✅ 加這行
   const tabs = [
     { id: 'profile', icon: <FaUser />, label: '個人檔案', subLabel: '簡歷' },
     { id: 'coupons', icon: <FaTicketAlt />, label: '我的優惠券', subLabel: '優惠券' },
@@ -55,7 +58,10 @@ export default function Sidebar({ member, activeTab, setActiveTab, onAvatarUploa
           <React.Fragment key={tab.id} >
             <a
               className={`${styles.navLink} ${activeTab === tab.id ? styles.active : ''}`}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                setActiveTab(tab.id) // ✅ 加這行
+                router.push(`/member/center?tab=${tab.id}`) // ✅ 更新網址
+              }}
               style={{ cursor: 'pointer' }}
             >
               {/* <i className={`${tab.icon} me-2`}></i> */}
