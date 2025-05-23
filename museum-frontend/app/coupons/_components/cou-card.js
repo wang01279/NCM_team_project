@@ -1,3 +1,5 @@
+//components/cou-card.js
+
 'use client'
 import Image from 'next/image'
 import { useToast } from '@/app/_components/ToastManager'
@@ -46,8 +48,9 @@ export default function CouponCard({ coupon, memberId, onClaimed }) {
     <div
       type="button"
       tabIndex={0}
-      className={`${styles.couponCard} d-flex flex-row position-relative ${isClaimed ? styles.claimed : ''
-        }`}
+      className={`${styles.couponCard} d-flex flex-row position-relative ${
+        isClaimed ? styles.claimed : ''
+      }`}
       onClick={handleClaim}
       aria-label="點擊可領取"
       style={{
@@ -58,11 +61,7 @@ export default function CouponCard({ coupon, memberId, onClaimed }) {
         width: '100%',
       }}
     >
-     {isClaimed && (
-    <div className={styles.claimedLabel}>
-      已領取
-    </div>
-  )}
+      {isClaimed && <div className={styles.claimedLabel}>已領取</div>}
       {/* 圖片欄位 */}
       <div
         className={styles.imageContainer}

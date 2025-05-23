@@ -1,4 +1,9 @@
-import { useState } from 'react'
+//_components/CouponTable.js
+
+'use client'
+
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import styles from '../_style/memCoupons.module.scss'
 import {
   FaAngleUp,
@@ -9,10 +14,22 @@ import {
   FaTimesCircle,
 } from 'react-icons/fa'
 
-export default function CouponTable({ coupons = [], isExpiredMode = false  }) {
+export default function CouponTable({
+  coupons = [],
+  isExpiredMode = false,
+  onActionSuccess = () => {},
+}) {
+  const [hasMounted, setHasMounted] = useState(false)
   const [sortField, setSortField] = useState(null)
   const [sortDirection, setSortDirection] = useState('asc')
-   const tableClass = `${styles.couponTable} ${isExpiredMode ? styles.expired : ''}`
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  if (!hasMounted) return null
+
+  const tableClass = `table table-bordered ${styles.couponTable} ${isExpiredMode ? styles.expired : ''}`
 
   const handleSort = (field) => {
     if (sortField === field) {
@@ -30,13 +47,18 @@ export default function CouponTable({ coupons = [], isExpiredMode = false  }) {
 
     if (diff > 0)
       return (
-        <span className=" d-inline-flex align-items-center gap-1">
+        <span className="d-inline-flex align-items-center gap-1">
           <FaHourglassHalf /> 剩下 {diff} 天
         </span>
       )
-    if (diff === 0) return `✅ 今日到期`
+    if (diff === 0)
+      return (
+        <span className="d-inline-flex align-items-center gap-1 text-warning">
+          <FaHourglassHalf /> 今日到期
+        </span>
+      )
     return (
-      <span className=" d-inline-flex align-items-center gap-1">
+      <span className="d-inline-flex align-items-center gap-1 text-danger">
         <FaTimesCircle /> 已過期
       </span>
     )
@@ -78,12 +100,12 @@ export default function CouponTable({ coupons = [], isExpiredMode = false  }) {
   const courseCoupons = coupons.filter((c) => c.category === '課程')
 
   const renderTable = (data, typeName, icon) => (
-    <div className="mb-5 ">
+    <div className="mb-5">
       <h5 className="fw-bold mb-3 d-flex align-items-center">
         {icon} {typeName}優惠券
       </h5>
       <div className="table-responsive">
-        <table className={`table table-bordered ${tableClass}`}>
+        <table className={tableClass}>
           <thead className="table-light text-center">
             <tr>
               <th>名稱</th>
@@ -93,11 +115,7 @@ export default function CouponTable({ coupons = [], isExpiredMode = false  }) {
               >
                 折扣{' '}
                 {sortField === 'discount' &&
-                  (sortDirection === 'asc' ? (
-                    <FaAngleUp className="mb-2" />
-                  ) : (
-                    <FaAngleDown />
-                  ))}
+                  (sortDirection === 'asc' ? <FaAngleUp /> : <FaAngleDown />)}
               </th>
               <th
                 onClick={() => handleSort('minSpend')}
@@ -105,11 +123,7 @@ export default function CouponTable({ coupons = [], isExpiredMode = false  }) {
               >
                 最低消費{' '}
                 {sortField === 'minSpend' &&
-                  (sortDirection === 'asc' ? (
-                    <FaAngleUp className="mb-2" />
-                  ) : (
-                    <FaAngleDown />
-                  ))}
+                  (sortDirection === 'asc' ? <FaAngleUp /> : <FaAngleDown />)}
               </th>
               <th
                 onClick={() => handleSort('expired_at')}
@@ -117,11 +131,7 @@ export default function CouponTable({ coupons = [], isExpiredMode = false  }) {
               >
                 使用期限{' '}
                 {sortField === 'expired_at' &&
-                  (sortDirection === 'asc' ? (
-                    <FaAngleUp className="mb-2" />
-                  ) : (
-                    <FaAngleDown />
-                  ))}
+                  (sortDirection === 'asc' ? <FaAngleUp /> : <FaAngleDown />)}
               </th>
               <th>剩餘天數</th>
             </tr>
@@ -136,8 +146,23 @@ export default function CouponTable({ coupons = [], isExpiredMode = false  }) {
             ) : (
               getSorted(data).map((c) => (
                 <tr key={c.record_id}>
-                  <td>{c.name}</td>
-                  <td className="fw-bold text-danger">
+                  <td>
+                    <Link
+                      href={
+                        c.category === '商品'
+                          ? `/products/${c.target_id}`
+                          : `/courses/${c.target_id}`
+                      }
+                      className="text-decoration-none fw-bold"
+                    >
+                      {c.name}
+                    </Link>
+                  </td>
+                  <td
+                    className={
+                      isExpiredMode ? 'text-muted' : 'fw-bold text-danger'
+                    }
+                  >
                     {c.type === '現金'
                       ? `NT$ ${formatNumber(c.discount)}`
                       : `${c.discount}%`}

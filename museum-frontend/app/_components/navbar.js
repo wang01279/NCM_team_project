@@ -6,6 +6,7 @@ import '../_styles/navbar.scss'
 import AuthModal from '@/app/_components/Auth/AuthModal'
 import { useAuth } from '@/app/_hooks/useAuth'
 // import { useAuth } from '@/app/_components/Auth/AuthProvider'
+import Link from 'next/link'
 
 import {
   FaUserCircle,
@@ -170,7 +171,7 @@ export default function Navbar() {
 
           {/* Desktop nav ----------------------------------------------------------------*/}
           <div className="nav-menu d-none d-md-flex">
-            <a href="#">展覽 Exhibition</a>
+            <Link href="/exhibitions">展覽 Exhibition</Link>
             <a href="#">課程 Courses</a>
             <a href="#">故瓷電商 Shop</a>
 
@@ -223,9 +224,10 @@ export default function Navbar() {
                         <span className="notification-dot">12</span>
                         <FaCommentDots className="icon" /> 我的訊息
                       </a>
-                      <a href="#" className="user-dropdown-item">
+                      <a href="/member/center?tab=coupons" className="user-dropdown-item">
                         <FaTicketAlt className="icon" /> 我的優惠券
                       </a>
+
                       <a href="#" className="user-dropdown-item">
                         <FaShoppingBag className="icon" /> 我的訂單
                       </a>
@@ -260,7 +262,7 @@ export default function Navbar() {
         {/* Mobile nav (side‑drawer) ----------------------------------------------------- */}
         <aside className={`mobile-nav ${menuOpen ? 'active' : ''}`}>
           <nav className="nav-menu" onClick={closeMenu}>
-            <a href="#">展覽 Exhibition</a>
+            <Link href="/exhibition">展覽 Exhibition</Link>
             <a href="#">課程 Courses</a>
             <a href="#">故瓷電商 Shop</a>
           </nav>
