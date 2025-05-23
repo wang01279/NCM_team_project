@@ -7,90 +7,589 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model blog {
-  id         Int      @id @default(autoincrement())
-  created_at DateTime @default(now())
-  updated_at DateTime
-  title      String   @db.VarChar(255)
-  content    String?  @db.Text
-  published  Boolean  @default(false)
+model admins {
+  id               Int                @id @default(autoincrement())
+  name             String             @db.VarChar(100)
+  email            String             @unique(map: "email") @db.VarChar(100)
+  password         String             @db.VarChar(255)
+  role             admins_role?       @default(admin)
+  is_active        Boolean?           @default(true)
+  last_login       DateTime?          @db.DateTime(0)
+  created_at       DateTime?          @default(now()) @db.DateTime(0)
+  updated_at       DateTime?          @default(now()) @db.DateTime(0)
+  course_revisions course_revisions[]
+  courses          courses[]
 }
 
-model brand {
-  id      Int       @id @default(autoincrement())
-  name    String    @unique(map: "Brand_name_key")
-  img     String?
-  info    String    @db.Text
-  product product[]
+model artist_experiences {
+  id         Int     @id @default(autoincrement())
+  artist_id  Int
+  experience String  @db.VarChar(255)
+  sort_order Int?    @default(0)
+  artists    artists @relation(fields: [artist_id], references: [id], onUpdate: Restrict, map: "artist_experiences_ibfk_1")
+
+  @@index([artist_id], map: "artist_id")
 }
 
-model category {
+model artists {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(100)
+  type               String?              @db.VarChar(50)
+  bio                String?              @db.Text
+  avatar             String?              @db.VarChar(255)
+  artist_experiences artist_experiences[]
+  courses            courses[]
+  teachers           teachers?
+}
+
+model chat_messages {
+  id                                         Int                         @id @default(autoincrement())
+  sender_id                                  Int
+  receiver_id                                Int
+  content                                    String                      @db.Text
+  image_url                                  String?                     @db.Text
+  is_read                                    Boolean?                    @default(false)
+  created_at                                 DateTime?                   @default(now()) @db.DateTime(0)
+  updated_at                                 DateTime?                   @default(now()) @db.DateTime(0)
+  message_type                               chat_messages_message_type? @default(text)
+  status                                     chat_messages_status?       @default(sent)
+  members_chat_messages_sender_idTomembers   members                     @relation("chat_messages_sender_idTomembers", fields: [sender_id], references: [id], onUpdate: Restrict, map: "chat_messages_ibfk_1")
+  members_chat_messages_receiver_idTomembers members                     @relation("chat_messages_receiver_idTomembers", fields: [receiver_id], references: [id], onUpdate: Restrict, map: "chat_messages_ibfk_2")
+
+  @@index([created_at], map: "idx_created_at")
+  @@index([sender_id, receiver_id], map: "idx_sender_receiver")
+  @@index([status], map: "idx_status")
+  @@index([receiver_id], map: "receiver_id")
+}
+
+model chat_room_members {
+  room_id    Int
+  member_id  Int
+  role       chat_room_members_role? @default(member)
+  joined_at  DateTime?               @default(now()) @db.DateTime(0)
+  chat_rooms chat_rooms              @relation(fields: [room_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "chat_room_members_ibfk_1")
+  members    members                 @relation(fields: [member_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "chat_room_members_ibfk_2")
+
+  @@id([room_id, member_id])
+  @@index([room_id, member_id], map: "idx_room_member")
+  @@index([member_id], map: "member_id")
+}
+
+model chat_room_messages {
+  id           Int                              @id @default(autoincrement())
+  room_id      Int
+  sender_id    Int
+  content      String                           @db.Text
+  message_type chat_room_messages_message_type? @default(text)
+  status       chat_room_messages_status?       @default(sent)
+  created_at   DateTime?                        @default(now()) @db.DateTime(0)
+  updated_at   DateTime?                        @default(now()) @db.DateTime(0)
+  chat_rooms   chat_rooms                       @relation(fields: [room_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "chat_room_messages_ibfk_1")
+  members      members                          @relation(fields: [sender_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "chat_room_messages_ibfk_2")
+
+  @@index([room_id, created_at], map: "idx_room_messages")
+  @@index([sender_id], map: "sender_id")
+}
+
+model chat_rooms {
+  id                 Int                  @id @default(autoincrement())
+  name               String?              @db.VarChar(255)
+  created_at         DateTime?            @default(now()) @db.DateTime(0)
+  updated_at         DateTime?            @default(now()) @db.DateTime(0)
+  chat_room_members  chat_room_members[]
+  chat_room_messages chat_room_messages[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model coupons {
+  id             Int              @id @default(autoincrement())
+  name           String           @db.VarChar(255)
+  code           String           @db.VarChar(50)
+  category       coupons_category
+  type           coupons_type
+  discount       Int
+  minSpend       Int?             @db.UnsignedInt
+  endDate        DateTime         @db.Date
+  status         coupons_status?  @default(dbgenerated("啟用"))
+  expired_at     DateTime?        @db.Date
+  member_coupons member_coupons[]
+}
+
+model course_categories {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @db.VarChar(255)
+  parent_id           Int?
+  course_category_map course_category_map[]
+}
+
+model course_category_map {
+  course_id         Int
+  category_id       Int
+  courses           courses           @relation(fields: [course_id], references: [id], onUpdate: Restrict, map: "course_category_map_ibfk_1")
+  course_categories course_categories @relation(fields: [category_id], references: [id], onUpdate: Restrict, map: "course_category_map_ibfk_2")
+
+  @@id([course_id, category_id])
+  @@index([category_id], map: "category_id")
+}
+
+model course_favorites {
+  member_id Int
+  course_id Int
+
+  @@unique([member_id, course_id], map: "member_id_course_id")
+}
+
+model course_images {
+  id         Int     @id @default(autoincrement())
+  course_id  Int
+  image_path String  @db.VarChar(255)
+  is_main    Int?    @default(0) @db.TinyInt
+  sort_order Int?    @default(0)
+  courses    courses @relation(fields: [course_id], references: [id], onUpdate: Restrict, map: "course_images_ibfk_1")
+
+  @@index([course_id], map: "course_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model course_revisions {
+  id           Int                      @id @default(autoincrement())
+  course_id    Int
+  modified_by  Int
+  modified_at  DateTime?                @default(now()) @db.DateTime(0)
+  changes      String?                  @db.LongText
+  status       course_revisions_status? @default(pending)
+  reviewed_by  Int?
+  reviewed_at  DateTime?                @db.DateTime(0)
+  review_notes String?                  @db.Text
+  courses      courses                  @relation(fields: [course_id], references: [id], onUpdate: Restrict, map: "course_revisions_ibfk_1")
+  teachers     teachers                 @relation(fields: [modified_by], references: [id], map: "fk_revisions_modified_by")
+  admins       admins?                  @relation(fields: [reviewed_by], references: [id], onDelete: Restrict, map: "fk_revisions_reviewed_by")
+
+  @@index([course_id], map: "course_id")
+  @@index([course_id, status], map: "idx_course_status")
+  @@index([status, modified_at], map: "idx_status_modified")
+  @@index([modified_by], map: "modified_by")
+  @@index([reviewed_by], map: "reviewed_by")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model courses {
+  id                     Int                    @id @default(autoincrement())
+  title                  String                 @db.VarChar(150)
+  artist_id              Int
+  venue_id               Int
+  start_time             DateTime               @db.DateTime(0)
+  end_time               DateTime               @db.DateTime(0)
+  price                  Decimal?               @default(0) @db.Decimal(10, 0)
+  status                 courses_status         @default(pending)
+  created_at             DateTime?              @default(now()) @db.DateTime(0)
+  updated_at             DateTime?              @default(now()) @db.DateTime(0)
+  video_url              String?                @db.VarChar(255)
+  duration_value         Int?
+  max_students           Int?
+  sessions_per_week      Int?
+  hours_per_session      Decimal?               @db.Decimal(4, 0)
+  materials_included     Boolean?
+  duration_unit          courses_duration_unit? @default(dbgenerated("週"))
+  submitted_at           DateTime?              @default(now()) @db.DateTime(0)
+  reviewed_by            Int?
+  reviewed_at            DateTime?              @db.DateTime(0)
+  review_notes           String?                @db.Text
+  description_intro      String?                @db.Text
+  description_content    String?                @db.Text
+  description_notice     String?                @db.Text
+  description_highlights String?                @db.Text
+  admin_submitted_id     Int?
+  teacher_submitted_id   Int?
+  course_category_map    course_category_map[]
+  course_images          course_images[]
+  course_revisions       course_revisions[]
+  artists                artists                @relation(fields: [artist_id], references: [id], onUpdate: Restrict, map: "courses_ibfk_1")
+  venues                 venues                 @relation(fields: [venue_id], references: [id], onUpdate: Restrict, map: "courses_ibfk_2")
+  admins                 admins?                @relation(fields: [admin_submitted_id], references: [id], onDelete: Restrict, map: "fk_courses_admin_submitted")
+  teachers               teachers?              @relation(fields: [teacher_submitted_id], references: [id], onDelete: Restrict, map: "fk_courses_teacher_submitted")
+  venue_bookings         venue_bookings[]
+
+  @@index([admin_submitted_id], map: "fk_courses_admin_submitted")
+  @@index([teacher_submitted_id], map: "fk_courses_teacher_submitted")
+  @@index([artist_id, status], map: "idx_artist_status")
+  @@index([status, submitted_at], map: "idx_status_submitted")
+  @@index([venue_id], map: "venue_id")
+}
+
+model exhibition_favorites {
+  member_id     Int
+  exhibition_id Int
+
+  @@unique([member_id, exhibition_id], map: "uq_member_exhibition")
+}
+
+model exhibitions {
   id        Int       @id @default(autoincrement())
-  name      String    @unique(map: "Category_name_key")
-  parent_id Int?
-  product   product[]
+  title     String?   @db.VarChar(255)
+  startDate DateTime? @db.Date
+  endDate   DateTime? @db.Date
+  intro     String?   @db.Text
+  image     String?   @db.Text
+  state     String?   @db.VarChar(50)
+  venue_id  String?   @db.VarChar(50)
 }
 
-model favorite {
-  user_id    Int
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model member_coupons {
+  id         Int                      @id @default(autoincrement())
+  member_id  Int
+  coupon_id  Int
+  uuid_code  String                   @unique(map: "uuid_code") @db.Char(36)
+  claimed_at DateTime?                @default(now()) @db.DateTime(0)
+  used       Boolean?                 @default(false)
+  used_at    DateTime?                @db.DateTime(0)
+  usage_note String?                  @db.VarChar(255)
+  expired_at DateTime?                @db.DateTime(0)
+  is_used    Int?                     @db.TinyInt
+  category   member_coupons_category?
+  name       String?                  @db.Char(50)
+  minSpend   Int?
+  type       member_coupons_type?
+  coupons    coupons                  @relation(fields: [coupon_id], references: [id], onUpdate: Restrict, map: "member_coupons_ibfk_1")
+
+  @@index([coupon_id], map: "coupon_id")
+}
+
+model member_orders {
+  id                Int          @id @default(autoincrement())
+  member_id         Int?
+  order_number      String?      @db.VarChar(255)
+  shipping_method   String?      @db.VarChar(255)
+  payment_method    String?      @db.VarChar(255)
+  discount          Int?
+  shipping_fee      Int?
+  recipient_name    String?      @db.VarChar(255)
+  recipient_email   String?      @db.VarChar(255)
+  recipient_phone   String?      @db.VarChar(255)
+  recipient_address String?      @db.VarChar(255)
+  created_at        DateTime     @default(now()) @db.DateTime(0)
+  order_item        order_item[]
+}
+
+model member_profiles {
+  id         Int                     @id @default(autoincrement())
+  member_id  Int
+  name       String?                 @db.VarChar(100)
+  gender     member_profiles_gender?
+  phone      String?                 @db.VarChar(20)
+  address    String?                 @db.Text
+  avatar     String?                 @default("https://example.com/default-avatar.png") @db.VarChar(255)
+  is_deleted Boolean?                @default(false)
+  birthday   DateTime?               @db.Date
+  members    members                 @relation(fields: [member_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "member_profiles_ibfk_1")
+
+  @@index([member_id], map: "member_id")
+}
+
+model members {
+  id                                               Int                  @id @default(autoincrement())
+  email                                            String               @unique(map: "email") @db.VarChar(255)
+  password                                         String?              @db.VarChar(255)
+  reset_token                                      String?              @db.VarChar(255)
+  reset_token_expiry                               DateTime?            @db.DateTime(0)
+  google_id                                        String?              @db.VarChar(255)
+  role                                             members_role?        @default(member)
+  is_deleted                                       Boolean?             @default(false)
+  created_at                                       DateTime?            @default(now()) @db.DateTime(0)
+  firebase_uid                                     String?              @unique(map: "firebase_uid") @db.VarChar(255)
+  chat_messages_chat_messages_sender_idTomembers   chat_messages[]      @relation("chat_messages_sender_idTomembers")
+  chat_messages_chat_messages_receiver_idTomembers chat_messages[]      @relation("chat_messages_receiver_idTomembers")
+  chat_room_members                                chat_room_members[]
+  chat_room_messages                               chat_room_messages[]
+  member_profiles                                  member_profiles[]
+  messages_messages_from_user_idTomembers          messages[]           @relation("messages_from_user_idTomembers")
+  messages_messages_to_user_idTomembers            messages[]           @relation("messages_to_user_idTomembers")
+}
+
+model messages {
+  id                                     Int      @id @default(autoincrement())
+  from_user_id                           Int
+  to_user_id                             Int
+  content                                String   @db.Text
+  timestamp                              DateTime @default(now()) @db.Timestamp(0)
+  members_messages_from_user_idTomembers members  @relation("messages_from_user_idTomembers", fields: [from_user_id], references: [id], onUpdate: Restrict, map: "messages_ibfk_1")
+  members_messages_to_user_idTomembers   members  @relation("messages_to_user_idTomembers", fields: [to_user_id], references: [id], onUpdate: Restrict, map: "messages_ibfk_2")
+
+  @@index([from_user_id], map: "from_user_id")
+  @@index([to_user_id], map: "to_user_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model notes {
+  id            Int             @id @default(autoincrement())
+  content       String?         @db.Text
+  product_notes product_notes[]
+}
+
+model order_item {
+  id            Int           @id @default(autoincrement())
+  order_id      Int
+  quantity      Int
+  price         Int
+  item_type     String        @db.VarChar(255)
+  item_id       Int
+  member_orders member_orders @relation(fields: [order_id], references: [id], onDelete: Cascade, map: "order_item_ibfk_1")
+
+  @@index([order_id], map: "order_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model product_categories {
+  id                    Int                     @id @default(autoincrement())
+  name                  String?                 @db.VarChar(255)
+  product_subcategories product_subcategories[]
+  products              products[]
+}
+
+model product_favorites {
+  member_id  Int
   product_id Int
-  product    product @relation(fields: [product_id], references: [id], map: "Favorite_product_id_fkey")
-  user       user    @relation(fields: [user_id], references: [id], map: "Favorite_user_id_fkey")
 
-  @@id([user_id, product_id])
-  @@index([product_id], map: "Favorite_product_id_fkey")
+  @@unique([member_id, product_id], map: "member_id_product_id")
 }
 
-model otp {
-  id         Int      @id @default(autoincrement())
-  email      String
-  token      String
-  hash       String?
-  created_at DateTime @default(now())
-  expired_at DateTime
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model product_functions {
+  id       Int        @id @default(autoincrement())
+  name     String?    @db.VarChar(255)
+  products products[]
 }
 
-model product {
-  id          Int        @id @default(autoincrement())
-  name        String
-  sn          String     @unique(map: "Product_sn_key")
-  photos      String?    @db.Text
-  stock       Int        @default(0)
-  price       Int        @default(0)
-  info        String     @db.Text
-  brand_id    Int
-  category_id Int
-  favorite    favorite[]
-  brand       brand      @relation(fields: [brand_id], references: [id], map: "Product_brand_id_fkey")
-  category    category   @relation(fields: [category_id], references: [id], map: "Product_category_id_fkey")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model product_images {
+  id         Int       @id @default(autoincrement())
+  product_id Int?
+  image_path String?   @db.VarChar(255)
+  sort_order Int?
+  products   products? @relation(fields: [product_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "product_images_ibfk_1")
 
-  @@index([brand_id], map: "Product_brand_id_fkey")
-  @@index([category_id], map: "Product_category_id_fkey")
+  @@index([product_id], map: "product_id")
 }
 
-model profile {
-  id       Int       @id @default(autoincrement())
-  name     String?
-  bio      String?   @db.Text
-  avatar   String?
-  sex      String?
-  birth    DateTime? @db.Date
-  phone    String?
-  postcode String?
-  address  String?
-  user_id  Int       @unique(map: "Profile_user_id_key")
-  user     user      @relation(fields: [user_id], references: [id], map: "Profile_user_id_fkey")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model product_materials {
+  id       Int        @id @default(autoincrement())
+  name     String?    @db.VarChar(255)
+  products products[]
 }
 
-model user {
-  id                Int        @id @default(autoincrement())
-  username          String     @unique(map: "User_username_key")
-  password          String
-  email             String     @unique(map: "User_email_key")
-  email_validated   Boolean    @default(false)
-  google_uid        String?    @unique(map: "User_google_uid_key")
-  line_uid          String?    @unique(map: "User_line_uid_key")
-  line_access_token String?    @db.Text
-  favorite          favorite[]
-  profile           profile?
+model product_notes {
+  id         Int       @id @default(autoincrement())
+  product_id Int?
+  note_id    Int?
+  products   products? @relation(fields: [product_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "product_notes_ibfk_1")
+  notes      notes?    @relation(fields: [note_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "product_notes_ibfk_2")
+
+  @@index([note_id], map: "note_id")
+  @@index([product_id], map: "product_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model product_origins {
+  id       Int        @id @default(autoincrement())
+  name     String?    @db.VarChar(255)
+  products products[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model product_subcategories {
+  id                 Int                 @id @default(autoincrement())
+  category_id        Int?
+  name               String?             @db.VarChar(255)
+  product_categories product_categories? @relation(fields: [category_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "product_subcategories_ibfk_1")
+  products           products[]
+
+  @@index([category_id], map: "category_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model products {
+  id                    Int                    @id @default(autoincrement())
+  name_zh               String?                @db.VarChar(255)
+  name_en               String?                @db.VarChar(255)
+  main_img              String?                @db.VarChar(255)
+  price                 Decimal?               @db.Decimal(10, 2)
+  discount_rate         Decimal?               @db.Decimal(10, 2)
+  description           String?                @db.Text
+  details               String?                @db.Text
+  category_id           Int?
+  subcategory_id        Int?
+  material_id           Int?
+  origin_id             Int?
+  function_id           Int?
+  stock                 Int?
+  created_at            DateTime?              @db.DateTime(0)
+  updated_at            DateTime?              @db.DateTime(0)
+  deleted_at            DateTime?              @db.DateTime(0)
+  product_images        product_images[]
+  product_notes         product_notes[]
+  product_categories    product_categories?    @relation(fields: [category_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "products_ibfk_1")
+  product_subcategories product_subcategories? @relation(fields: [subcategory_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "products_ibfk_2")
+  product_materials     product_materials?     @relation(fields: [material_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "products_ibfk_3")
+  product_origins       product_origins?       @relation(fields: [origin_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "products_ibfk_4")
+  product_functions     product_functions?     @relation(fields: [function_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "products_ibfk_5")
+
+  @@index([category_id], map: "category_id")
+  @@index([function_id], map: "function_id")
+  @@index([material_id], map: "material_id")
+  @@index([origin_id], map: "origin_id")
+  @@index([subcategory_id], map: "subcategory_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model teachers {
+  id               Int                @id @default(autoincrement())
+  artist_id        Int                @unique(map: "artist_id")
+  email            String             @unique(map: "email") @db.VarChar(100)
+  password         String             @db.VarChar(255)
+  status           teachers_status?   @default(active)
+  last_login       DateTime?          @db.DateTime(0)
+  created_at       DateTime?          @default(now()) @db.DateTime(0)
+  updated_at       DateTime?          @default(now()) @db.DateTime(0)
+  course_revisions course_revisions[]
+  courses          courses[]
+  artists          artists            @relation(fields: [artist_id], references: [id], onUpdate: Restrict, map: "teachers_ibfk_1")
+}
+
+model venue_bookings {
+  id              Int                            @id @default(autoincrement())
+  venue_id        Int
+  course_id       Int
+  start_time      DateTime                       @db.DateTime(0)
+  end_time        DateTime                       @db.DateTime(0)
+  status          venue_bookings_status?         @default(pending)
+  created_by      Int
+  created_by_type venue_bookings_created_by_type
+  created_at      DateTime?                      @default(now()) @db.DateTime(0)
+  updated_at      DateTime?                      @default(now()) @db.DateTime(0)
+  venues          venues                         @relation(fields: [venue_id], references: [id], onUpdate: Restrict, map: "venue_bookings_ibfk_1")
+  courses         courses                        @relation(fields: [course_id], references: [id], onUpdate: Restrict, map: "venue_bookings_ibfk_2")
+
+  @@index([course_id], map: "course_id")
+  @@index([created_by], map: "created_by")
+  @@index([status, start_time, end_time], map: "idx_status_dates")
+  @@index([venue_id, start_time, end_time], map: "idx_venue_dates")
+  @@index([venue_id], map: "venue_id")
+}
+
+model venues {
+  id             Int              @id @default(autoincrement())
+  name           String           @db.VarChar(100)
+  type           String?          @db.VarChar(50)
+  description    String?          @db.Text
+  image          String?          @db.VarChar(255)
+  capacity       Int?
+  courses        courses[]
+  venue_bookings venue_bookings[]
+}
+
+enum chat_room_members_role {
+  owner
+  admin
+  member
+}
+
+enum coupons_category {
+  商品 @map("商品")
+  課程 @map("課程")
+}
+
+enum member_profiles_gender {
+  M
+  F
+  O
+}
+
+enum admins_role {
+  super_admin
+  admin
+}
+
+enum chat_room_messages_message_type {
+  text
+  image
+  file
+}
+
+enum coupons_type {
+  百分比 @map("百分比")
+  現金 @map("現金")
+}
+
+enum teachers_status {
+  active
+  inactive
+}
+
+enum chat_room_messages_status {
+  sent
+  delivered
+  read
+}
+
+enum course_revisions_status {
+  pending
+  approved
+  rejected
+}
+
+enum venue_bookings_status {
+  pending
+  approved
+  rejected
+}
+
+enum members_role {
+  member
+  admin
+  staff
+}
+
+enum courses_status {
+  pending
+  approved
+  rejected
+}
+
+enum venue_bookings_created_by_type {
+  admin
+  teacher
+}
+
+enum chat_messages_message_type {
+  text
+  image
+  file
+}
+
+enum coupons_status {
+  啟用 @map("啟用")
+  停用 @map("停用")
+}
+
+enum chat_messages_status {
+  sent
+  delivered
+  read
+}
+
+enum member_coupons_category {
+  商品 @map("商品")
+  課程 @map("課程")
+}
+
+enum member_coupons_type {
+  百分比 @map("百分比")
+  現金 @map("現金")
+}
+
+enum courses_duration_unit {
+  天 @map("天")
+  週 @map("週")
 }
