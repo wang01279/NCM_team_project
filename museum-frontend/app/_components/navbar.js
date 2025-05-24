@@ -6,7 +6,6 @@ import '../_styles/navbar.scss'
 import AuthModal from '@/app/_components/Auth/AuthModal'
 import { useAuth } from '@/app/_hooks/useAuth'
 // import { useAuth } from '@/app/_components/Auth/AuthProvider'
-import Link from 'next/link'
 
 import {
   FaUserCircle,
@@ -171,7 +170,7 @@ export default function Navbar() {
 
           {/* Desktop nav ----------------------------------------------------------------*/}
           <div className="nav-menu d-none d-md-flex">
-            <Link href="/exhibitions">展覽 Exhibition</Link>
+            <a href="/exhibitions">展覽 Exhibition</a>
             <a href="#">課程 Courses</a>
             <a href="#">故瓷電商 Shop</a>
 
@@ -262,7 +261,7 @@ export default function Navbar() {
         {/* Mobile nav (side‑drawer) ----------------------------------------------------- */}
         <aside className={`mobile-nav ${menuOpen ? 'active' : ''}`}>
           <nav className="nav-menu" onClick={closeMenu}>
-            <Link href="/exhibition">展覽 Exhibition</Link>
+            <a href="/exhibition">展覽 Exhibition</a>
             <a href="#">課程 Courses</a>
             <a href="#">故瓷電商 Shop</a>
           </nav>

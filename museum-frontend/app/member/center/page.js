@@ -19,6 +19,7 @@ import CouponsTab from './features/tabs/CouponsTab'
 import FavoritesTab from './features/tabs/FavoritesTab'
 
 import { useSearchParams } from 'next/navigation' // ✅ 加這行
+import Loader from '@/app/_components/load'
 
 
 export default function MemberCenter() {
@@ -258,13 +259,19 @@ export default function MemberCenter() {
   }
 
   // 載入中
-  if (authLoading) {
+  // if (authLoading) {
+  //   return (
+  //     <div className="loading-container">
+  //       <div className="spinner-border text-primary" role="status">
+  //         <span className="visually-hidden">載入中...</span>
+  //       </div>
+  //     </div>
+  //   )
+  // }
+
+    if (authLoading) {
     return (
-      <div className="loading-container">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">載入中...</span>
-        </div>
-      </div>
+      <Loader />
     )
   }
 

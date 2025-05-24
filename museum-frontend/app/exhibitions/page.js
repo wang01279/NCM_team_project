@@ -1,11 +1,12 @@
 'use client'
 
-import Carousel from './_components/carousel'
-import Menu from './_components/menu'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import ExhibitionList from './_components/list'
-import Tabs from './_components/tabs' // 若你有 tab 切換功能
+import Tabs from './_components/tabs'
+import Navbar from '../_components/navbar'
+import Carousel from './_components/carousel'
+import Menu from './_components/menu'
 import styles from '../exhibitions/_styles/ex-page.module.scss'
 
 export default function ExhibitionPage() {
@@ -22,13 +23,14 @@ export default function ExhibitionPage() {
 
   return (
     <>
+      <Navbar />
       <main className="container">
         <div className={styles.customMargin}>
           <div className="d-flex justify-content-center align-items-center flex-column fw-bold">
             <h3 className="mb-0 pb-0 fw-bold" style={{ letterSpacing: '5px' }}>
-           展覽
-          </h3>
-          <h6 className="mt-2 pt-0 m-0 fw-bold">Exhibition</h6>
+              展覽
+            </h3>
+            <h6 className="mt-2 pt-0 m-0 fw-bold">Exhibition</h6>
           </div>
 
           <Tabs />
