@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/app/_hooks/useAuth'
 import { getFavoritesByType, removeFavoriteByType } from '@/app/api/favorites'
 import FavoriteCard from './_components/FavoriteCard'
+import Loader from '@/app/_components/load'
 
 export default function FavoritesTab() {
   const { member } = useAuth()
@@ -63,7 +64,7 @@ export default function FavoritesTab() {
       </div>
 
       {isLoading ? (
-        <p className="text-center py-5">載入中...</p>
+        <Loader />
       ) : (
         <div className="row">
           {data.length > 0 ? (

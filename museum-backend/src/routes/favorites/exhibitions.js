@@ -21,7 +21,8 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const sql = `INSERT INTO exhibition_favorites (member_id, exhibition_id) VALUES (?, ?)`
+    const sql = `INSERT IGNORE INTO exhibition_favorites (member_id, exhibition_id) VALUES (?, ?)`
+    
     const [result] = await db.query(sql, [memberId, exhibitionId])
     console.log('✅ 資料庫寫入結果:', result)
     successResponse(res, '收藏成功')

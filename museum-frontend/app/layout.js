@@ -1,5 +1,5 @@
-import '@/app/_styles/globals.scss'
-import '@/app/_styles/formCustom.scss'
+import './_styles/globals.scss'
+import './_styles/formCustom.scss'
 // 導入
 // import Navbar from './_components/navbar'
 import Footer from './_components/footer'

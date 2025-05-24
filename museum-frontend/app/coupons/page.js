@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import CouTab from './_components/cou-tab.js'
 // import DiceCouponGame from './game.js'
 import CouponRulesModal from './_components/couponRulesModal.js'
