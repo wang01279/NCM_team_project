@@ -29,7 +29,7 @@ export default function FavoriteCard({ item, type, onRemove }) {
         </div>
 
         {/* 只有這部分可以跳轉 */}
-        <Link
+        <a
           href={detailPath[type]}
           className="text-decoration-none text-dark"
         >
@@ -46,7 +46,7 @@ export default function FavoriteCard({ item, type, onRemove }) {
               </h6>
             )}
           </div>
-        </Link>
+        </a>
       </div>
     </div>
   )

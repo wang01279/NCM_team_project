@@ -18,6 +18,10 @@ import OrdersTab from './features/tabs/OrdersTab'
 import CouponsTab from './features/tabs/CouponsTab'
 import FavoritesTab from './features/tabs/FavoritesTab'
 
+import { useSearchParams } from 'next/navigation' // ✅ 加這行
+import Loader from '@/app/_components/load'
+
+
 export default function MemberCenter() {
   const router = useRouter()
   const { showToast } = useToast()
@@ -29,7 +33,9 @@ export default function MemberCenter() {
     updateMember,
   } = useAuth()
 
-  const [activeTab, setActiveTab] = useState('profile')
+  const searchParams = useSearchParams() // ✅ 加這行
+  const [activeTab, setActiveTab] = useState('profile') // ✅ 加這行
+
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -38,6 +44,16 @@ export default function MemberCenter() {
     address: '',
     birthday: '',
   })
+
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab')
+    const validTabs = ['profile', 'coupons', 'orders', 'favorites']
+    const safeTab = validTabs.includes(tabFromUrl) ? tabFromUrl : 'profile'
+
+    if (safeTab !== activeTab) {
+      setActiveTab(safeTab)
+    }
+  }, [searchParams, activeTab])
 
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
@@ -56,6 +72,13 @@ export default function MemberCenter() {
       })
     }
   }, [member])
+
+  // useEffect(() => {
+  //   const hash = window.location.hash.replace('#', '')
+  //   if (hash && ['profile', 'orders', 'coupons', 'favorites'].includes(hash)) {
+  //     setActiveTab(hash)
+  //   }
+  // }, [])
 
   // 編輯
   const handleEdit = () => {
@@ -243,13 +266,19 @@ export default function MemberCenter() {
   }
 
   // 載入中
-  if (authLoading) {
+  // if (authLoading) {
+  //   return (
+  //     <div className="loading-container">
+  //       <div className="spinner-border text-primary" role="status">
+  //         <span className="visually-hidden">載入中...</span>
+  //       </div>
+  //     </div>
+  //   )
+  // }
+
+    if (authLoading) {
     return (
-      <div className="loading-container">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">載入中...</span>
-        </div>
-      </div>
+      <Loader />
     )
   }
 
@@ -261,7 +290,6 @@ export default function MemberCenter() {
   // 渲染頁面
   return (
     <>
-
       <div className={styles.lowContent}>
         <LowContent />
       </div>
@@ -270,7 +298,7 @@ export default function MemberCenter() {
           setActiveTab={setActiveTab}
           activeTab={activeTab}
           member={member || {}}
-          // onAvatarUpload={handleAvatarUpload}
+        // onAvatarUpload={handleAvatarUpload}
         />
       </div>
       <main className={styles.mainContent}>{renderMainContent()}</main>

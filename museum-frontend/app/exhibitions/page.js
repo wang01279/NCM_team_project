@@ -1,12 +1,14 @@
 'use client'
 
-import Carousel from './_components/carousel'
-import Menu from './_components/menu'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import ExhibitionList from './_components/list'
-import Tabs from './_components/tabs' // 若你有 tab 切換功能
+import Tabs from './_components/tabs'
+import Navbar from '../_components/navbar'
+import Carousel from './_components/carousel'
+import Menu from './_components/menu'
 import styles from '../exhibitions/_styles/ex-page.module.scss'
+import CouponLink from '@/app/_components/CouponLink.js'
 
 export default function ExhibitionPage() {
   const searchParams = useSearchParams()
@@ -22,14 +24,17 @@ export default function ExhibitionPage() {
 
   return (
     <>
+      <Navbar />
+      
       <main className="container">
         <div className={styles.customMargin}>
           <div className="d-flex justify-content-center align-items-center flex-column fw-bold">
-            <h2 className="mb-0 pb-0">展覽</h2>
-            <p className="mb-0 pb-0">-</p>
-            <h5 className="mt-0 pt-0 m-0">Exhibition</h5>
+            <h3 className="mb-0 pb-0 fw-bold" style={{ letterSpacing: '5px' }}>
+              展覽
+            </h3>
+            <h6 className="mt-2 pt-0 m-0 fw-bold">Exhibition</h6>
           </div>
-
+<CouponLink />
           <Tabs />
         </div>
         <div>

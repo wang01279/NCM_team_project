@@ -1,0 +1,59 @@
+
+
+.couponTable {
+  border-radius: 6px;
+  overflow: hidden;
+  min-width: 600px;
+  width: 100%;
+  table-layout: fixed; // 固定欄寬必備
+
+  th {
+    background-color:#7B2D12;
+    color:#F4F1EA;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    padding: 12px;
+    border: 1px solid darken(#7B2D12, 10%);
+  }
+
+  td {
+    background-color: #F4F1EA;
+    text-align: center;
+    vertical-align: middle;
+    padding: 12px;
+    border: 1px solid #ddd;
+  }
+
+  tbody tr:hover td {
+    background-color: #F2DFD7;
+  }
+
+  thead {
+    border-radius: 6px;
+  }
+
+  tr {
+    transition: background-color 0.2s ease;
+  }
+}
+
+.expired {
+  filter: grayscale(100%);
+
+  td {
+    color: #78716C !important;
+  }
+  th {
+    color: #C7BFB5 !important;
+  }
+
+  .text-danger {
+    color: #78716C !important; // 把紅色字也蓋掉
+  }
+
+  a {
+    color: #78716C;
+    pointer-events: none; // 禁止點擊（可選）
+  }
+}

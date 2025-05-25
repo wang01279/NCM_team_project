@@ -10,6 +10,7 @@ export default function ProductDetail({
   product,
   isFavorite,
   onToggleFavorite,
+  onAddToCart,
 }) {
   const [mainImageSrc, setMainImageSrc] = useState('')
   const [currentThumbnailIndex, setCurrentThumbnailIndex] = useState(0)
@@ -149,7 +150,15 @@ export default function ProductDetail({
                   +
                 </button>
               </div>
-              <AddToCartButton
+              <button
+                className="add-to-cart d-flex"
+                onClick={() => onAddToCart(quantity)}
+              >
+                加入購物車
+              </button>
+            </div>
+            <div className="wishlist">
+              <AddToFavoritesButton
                 productId={product.id}
                 quantity={quantity}
                 disabled={isOutOfStock}
@@ -187,12 +196,12 @@ export default function ProductDetail({
                 +
               </button>
             </div>
-            <AddToCartButton
-              productId={product.id}
-              quantity={quantity}
-              disabled={isOutOfStock}
-              className="add-to-cart"
-            />
+            <button
+              onClick={() => onAddToCart(quantity)}
+              className="add-to-cart d-flex justify-content-center align-items-center flex-grow-1"
+            >
+              加入購物車
+            </button>
           </div>
         </div>
       </div>

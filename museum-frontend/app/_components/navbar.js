@@ -21,6 +21,8 @@ import Image from 'next/image'
 
 // toast
 import { useToast } from './ToastManager'
+import { io } from 'socket.io-client'
+import ChatSidebar from './Chat/ChatSidebar'
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -35,12 +37,14 @@ export default function Navbar() {
     googleLogin,
     updateMember,
     avatarSrc,
+    token,
   } = useAuth()
 
   /* ---------------------- State ---------------------- */
   const [isScrolled, setIsScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
   /* -------------------- Effects ---------------------- */
   // 1. 監聽捲動：縮小／還原 Header
@@ -118,6 +122,14 @@ export default function Navbar() {
     router.push('/member/center')
   }
 
+  const handleChatClick = () => {
+    if (!isLoggedIn) {
+      setIsLoginModalOpen(true)
+      return
+    }
+    setIsChatOpen(!isChatOpen)
+  }
+
   //管理區不需要選單列
   if (pathname.includes('/admin')) {
     return <></>
@@ -158,7 +170,7 @@ export default function Navbar() {
 
           {/* Desktop nav ----------------------------------------------------------------*/}
           <div className="nav-menu d-none d-md-flex">
-            <a href="#">展覽 Exhibition</a>
+            <a href="/exhibitions">展覽 Exhibition</a>
             <a href="#">課程 Courses</a>
             <a href="#">故瓷電商 Shop</a>
 
@@ -203,17 +215,22 @@ export default function Navbar() {
                       >
                         <FaUser className="icon" /> 個人檔案
                       </a>
-                      <a href="#" className="user-dropdown-item">
+                      <a
+                        href="#"
+                        className="user-dropdown-item"
+                        onClick={handleChatClick}
+                      >
                         <span className="notification-dot">12</span>
                         <FaCommentDots className="icon" /> 我的訊息
                       </a>
-                      <a href="#" className="user-dropdown-item">
+                      <a href="/member/center?tab=coupons" className="user-dropdown-item">
                         <FaTicketAlt className="icon" /> 我的優惠券
                       </a>
-                      <a href="#" className="user-dropdown-item">
+
+                      <a href="/member/center?tab=orders" className="user-dropdown-item">
                         <FaShoppingBag className="icon" /> 我的訂單
                       </a>
-                      <a href="#" className="user-dropdown-item">
+                      <a href="/member/center?tab=favorites" className="user-dropdown-item">
                         <FaHeart className="icon" /> 我的收藏
                       </a>
 
@@ -244,7 +261,7 @@ export default function Navbar() {
         {/* Mobile nav (side‑drawer) ----------------------------------------------------- */}
         <aside className={`mobile-nav ${menuOpen ? 'active' : ''}`}>
           <nav className="nav-menu" onClick={closeMenu}>
-            <a href="#">展覽 Exhibition</a>
+            <a href="/exhibition">展覽 Exhibition</a>
             <a href="#">課程 Courses</a>
             <a href="#">故瓷電商 Shop</a>
           </nav>
@@ -299,6 +316,14 @@ export default function Navbar() {
         show={isLoginModalOpen}
         onHide={handleCloseLoginModal}
         onSubmit={handleSubmitLogin}
+      />
+
+      {/* 聊天室側邊欄 */}
+      <ChatSidebar 
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        receiverId={member?.role === 'member' ? 93 : member?.role === 'staff' ? 92 : undefined}
+        isStaff={member?.role === 'staff'}
       />
     </>
   )

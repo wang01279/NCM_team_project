@@ -11,8 +11,10 @@ import CategoryMenu from './_components/CategoryMenu'
 import ProductFilter from './_components/ProductFilter'
 import ProductCard from '../_components/ProductCard'
 import './_styles/productPage.scss'
+import { useToast } from '@/app/_components/ToastManager'
 
 export default function ProductPage() {
+  const { showToast } = useToast()
   const [currentPage, setCurrentPage] = useState(1)
   const [products, setProducts] = useState([])
   const [totalPages, setTotalPages] = useState(1)
@@ -140,6 +142,31 @@ export default function ProductPage() {
     return <div className="pagination">{buttons}</div>
   }
 
+  const handleAddToCart = (productId) => {
+    const product = products.find((p) => p.id === productId)
+    if (!product) return
+
+    const cartItem = {
+      id: product.id,
+      name: product.name_zh,
+      image: product.main_img,
+      price: product.price,
+      quantity: 1,
+    }
+
+    const existing = JSON.parse(localStorage.getItem('cartItems')) || []
+    const index = existing.findIndex((item) => item.id === cartItem.id)
+
+    if (index > -1) {
+      existing[index].quantity += 1
+    } else {
+      existing.push(cartItem)
+    }
+
+    localStorage.setItem('cartItems', JSON.stringify(existing))
+    showToast('success', '已加入購物車', 3000)
+  }
+
   return (
     <>
       <Navbar />
@@ -169,6 +196,7 @@ export default function ProductPage() {
               product={product}
               isFavorite={isFavorite(product.id)}
               onToggleFavorite={toggleFavorite}
+              onAddToCart={handleAddToCart}
             />
           ))}
         </div>

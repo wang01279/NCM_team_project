@@ -6,7 +6,8 @@
   font-size: 24px;
 }
 .borderCustom {
-  border: 1px solid $dark;
+  // border: 1px solid $sub-text;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
 }
 
 .tabMenu {
@@ -14,7 +15,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 2rem;
-  padding: rem;
+  // padding: rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -40,6 +41,7 @@
 .tabItem:hover {
   color: $secondary;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .tabItem::after {
@@ -75,53 +77,92 @@
   // border: 0px solid !important;
 }
 
-.sidebar {
-  background: url('/images/456.jpg');
-  background-size: 400px;
-  // background-attachment: fixed;
+.sortBtn{
+  background: $light !important;
+  cursor: pointer;
+}
+
+/////////// coupon card style /////////
+
+.couponCard {
+  width: 300px;
+  overflow: hidden;
+  border-radius: 12px;
+  // background-color: #E3DCD2;
+  background-color: $light !important;
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  position: relative; // ✅ 必加：給 overlay 定位參考
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(132, 93, 76, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 3; // 高於圖片與文字
+  }
+
+  &:hover .overlay {
+    opacity: 1;
+  }
+
+  .hintText {
+    color: $light;
+    font-size: 1rem;
+    background-color: rgba(67, 47, 16, 0.5);
+    padding: 1rem 1.1rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .imageContainer {
+    width: 60px;
+    min-height: 155px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+  }
+
+  .cardbody {
+    width: 244px;
+    color: $danger;
+    z-index: 2;
+  }
+}
+
+// 領取後灰階樣式
+.claimed {
+  filter: grayscale(100%);
+  opacity: 0.65;
+  pointer-events: none; // 讓使用者不能再點擊
+}
+
+.claimedLabel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  color: $light;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
   border-radius: 6px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px $muted;
-  /* 微微陰影提昇立體感 */
 }
 
-.infoInner {
-  background: rgba(255, 255, 255, 0.9); /* 90%白色透明，看起來更柔和 */
-  border-radius: 6px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
+.verticleText {
+  writing-mode: sideways-rl; /* 垂直從右到左 */
+  transform: 'rotate(90deg)';
+  letter-spacing: 0.1em;
+  color: $main-text; 
+  
 
-.infoInner ul li {
-  margin-bottom: 0.5rem;
-}
-
-.infoInner .btn {
-  font-size: 0.8rem;
-  padding: 0.25rem 0.75rem;
-}
-
-button:focus,
-input:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-}
-
-/* =========================導覽列================================ */
-.subTitle {
-  border-top: 2px double $primary;
-  border-bottom: 2px double $primary;
-  color: $primary;
-  letter-spacing: 1px;
-}
-
-.innerLine {
-  border-top: 1px solid $primary;
-  border-bottom: 1px solid $primary;
-}
-
-.subBtn:hover::after,
-.subBtn.active::after {
-  transform: translateX(-50%) scaleX(1);
 }

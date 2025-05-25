@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/app/_hooks/useAuth'
 import { getFavoritesByType, removeFavoriteByType } from '@/app/api/favorites'
 import FavoriteCard from './_components/FavoriteCard'
+import Loader from '@/app/_components/load'
 import styles from './_styles/favoritesTab.module.scss'
 import { FaReply } from 'react-icons/fa'
 
@@ -131,7 +132,7 @@ export default function FavoritesTab() {
       </button>
 
       {isLoading ? (
-        <p className={styles.loadingText}>載入中...</p>
+        <Loader />
       ) : data.length > 0 ? (
         type === 'product' ? (
           <div className="table-responsive">

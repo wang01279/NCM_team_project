@@ -181,7 +181,12 @@ router.post("/login", async (req, res) => {
 
     // 生成 JWT token
     const token = jwt.sign(
-      { id: user.id, email: user.email },
+      { 
+        id: user.id, 
+        email: user.email,
+        type: user.role,  // 添加 type 字段
+        role: user.role   // 添加 role 字段
+      },
       process.env.JWT_SECRET || "your-secret-key",
       { expiresIn: "24h" }
     );
@@ -488,7 +493,7 @@ router.post("/change-password", authenticateToken, async (req, res) => {
     }
 
     // 加密新密碼
-    // const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     if (!isValidPassword(newPassword)) {
       return res.status(400).json({
         success: false,
@@ -905,7 +910,7 @@ router.post("/reset-password", async (req, res) => {
     }
 
     // 加密新密碼
-    // const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     if (!isValidPassword(newPassword)) {
       return res.status(400).json({
         success: false,
@@ -977,7 +982,12 @@ router.post("/auth/firebase", async (req, res) => {
 
     // 發你自己的 JWT
     const accessToken = jwt.sign(
-      { id: member.id, email: member.email },
+      { 
+        id: member.id, 
+        email: member.email,
+        type: member.role,
+        role: member.role
+      },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );

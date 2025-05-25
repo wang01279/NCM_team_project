@@ -118,7 +118,12 @@ const register = async (email, password, name, avatar = null) => {
 
     // 生成 JWT token
     const token = jwt.sign(
-      { id: memberId, email, role: 'member' },
+      { 
+        id: memberId, 
+        email, 
+        type: 'member',  // 添加 type 字段
+        role: 'member'   // 同時保留 role 字段
+      },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '24h' }
     );
@@ -173,6 +178,11 @@ const login = async (email, password) => {
     }
 
     const member = members[0];
+    console.log('登入 - 用戶資料:', {
+      id: member.id,
+      email: member.email,
+      role: member.role
+    });
 
     // 驗證密碼
     const isValidPassword = await bcrypt.compare(password, member.password);
@@ -181,8 +191,16 @@ const login = async (email, password) => {
     }
 
     // 生成 JWT token
+    const tokenPayload = { 
+      id: member.id, 
+      email: member.email, 
+      type: member.role,  // 確保包含 role 作為 type
+      role: member.role   // 同時保留 role 字段
+    };
+    console.log('登入 - Token 載荷:', tokenPayload);
+
     const token = jwt.sign(
-      { id: member.id, email: member.email, role: member.role },
+      tokenPayload,
       JWT_SECRET,
       { expiresIn: '24h' }
     );

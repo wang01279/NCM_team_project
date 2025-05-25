@@ -1,0 +1,23 @@
+table.order-table {
+  border-radius: 8px;
+  overflow: hidden;
+
+  th {
+    background-color: #7b2d12;
+    color: #f4f1ea;
+    font-weight: bold;
+    vertical-align: middle;
+    padding: 12px;
+  }
+  
+  td {
+    background-color: #f4f1ea;
+    vertical-align: middle;
+    padding: 12px;
+  }
+}
+
+.no-data {
+  color: #888;
+  padding: 20px;
+}

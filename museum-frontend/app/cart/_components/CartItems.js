@@ -1,7 +1,9 @@
 import CartItem from './CartItem'
 
 export default function CartItems({ items, updateQuantity, deleteItem }) {
-  const productItems = items.filter((item) => item.type === 'product')
+  const productItems = items.filter(
+    (item) => item.type === 'product' || item.type === undefined
+  )
   const courseItems = items.filter((item) => item.type === 'course')
 
   return (
@@ -13,8 +15,8 @@ export default function CartItems({ items, updateQuantity, deleteItem }) {
             {productItems.map((item) => (
               <CartItem
                 key={item.id}
-                imageSrc={item.imageSrc}
-                title={item.title}
+                image={item.image}
+                name={item.name}
                 price={item.price}
                 quantity={item.quantity}
                 subtotal={item.price * item.quantity}

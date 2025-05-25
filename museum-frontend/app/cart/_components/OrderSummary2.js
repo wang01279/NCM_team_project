@@ -1,11 +1,29 @@
 'use client'
 
-import React from 'react'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import Accordion from 'react-bootstrap/Accordion'
 
-export default function OrderSummary2() {
+export default function OrderSummary2({ cartItems }) {
+  // cartItems 範例格式：
+  // [{ id, name, quantity, price, discount }, ...]
+
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  )
+  const totalDiscount = cartItems.reduce(
+    (sum, item) => sum + (item.discount || 0),
+    0
+  )
+  const shippingFee = 50
+  const finalTotal = totalPrice - totalDiscount + shippingFee
+
   return (
     <div className="col-md-4 col-12 mb-4">
-      <div className="card sticky-top p-3">
+      <div
+        className="card sticky-top p-3"
+        style={{ position: 'sticky', top: '66px', zIndex: 10 }}
+      >
         <div className="card-body">
           <div
             className="fs-4 mb-4 pb-3"
@@ -14,107 +32,48 @@ export default function OrderSummary2() {
             訂單資訊
           </div>
 
-          {/* 商品詳情 */}
-          <div className="accordion mb-4" id="orderAccordion">
-            <div className="accordion-item">
-              <h2 className="accordion-header" id="headingProduct">
-                <button
-                  className="accordion-button p-0"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseProduct"
-                  aria-expanded="true"
-                  aria-controls="collapseProduct"
-                >
-                  商品詳情
-                </button>
-              </h2>
-              <div
-                id="collapseProduct"
-                className="accordion-collapse collapse show"
-                aria-labelledby="headingProduct"
-                data-bs-parent="#orderAccordion"
-              >
-                <div
-                  className="accordion-body"
-                  style={{ borderBottom: '2px dashed #000' }}
-                >
-                  <div className="d-flex justify-content-between">
-                    <div>青花瓷瓶天球瓶(小)*1</div>
-                    <div>$1,200</div>
+          <Accordion defaultActiveKey="0" className="mb-4">
+            <Accordion.Item eventKey="0">
+              <Accordion.Header>查看商品詳情</Accordion.Header>
+              <Accordion.Body>
+                {cartItems.map((item) => (
+                  <div className="d-flex justify-content-between" key={item.id}>
+                    <div className="me-3">
+                      {item.name}*{item.quantity}
+                    </div>
+                    <div>${(item.price * item.quantity).toLocaleString()}</div>
                   </div>
-                  <div className="d-flex justify-content-between">
-                    <div>青花瓷瓶天球瓶(小)*1</div>
-                    <div>$1,400</div>
-                  </div>
-                  <div className="d-flex justify-content-between text-muted">
-                    <div>優惠折扣</div>
-                    <div>-$100</div>
-                  </div>
-                  <hr />
-                  <div className="d-flex justify-content-between fw-bold">
-                    <div>合計</div>
-                    <div>$2,500</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                ))}
 
-          {/* 課程詳情 */}
-          <div className="accordion" id="orderAccordion2">
-            <div className="accordion-item">
-              <h2 className="accordion-header" id="headingCourse">
-                <button
-                  className="accordion-button collapsed p-0"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseCourse"
-                  aria-expanded="false"
-                  aria-controls="collapseCourse"
-                >
-                  課程詳情
-                </button>
-              </h2>
-              <div
-                id="collapseCourse"
-                className="accordion-collapse"
-                aria-labelledby="headingCourse"
-                data-bs-parent="#orderAccordion2"
-              >
-                <div className="accordion-body">
-                  <div className="d-flex justify-content-between">
-                    <div>手作陶藝課*1(門)</div>
-                    <div>$2,000</div>
-                  </div>
-                  <div className="d-flex justify-content-between text-muted">
-                    <div>優惠折扣</div>
-                    <div>-$200</div>
-                  </div>
-                  <hr />
-                  <div className="d-flex justify-content-between fw-bold">
-                    <div>合計</div>
-                    <div>$1,900</div>
-                  </div>
+                <hr />
+                <div className="d-flex justify-content-between fw-bold">
+                  <div>小計</div>
+                  <div>${totalPrice.toLocaleString()}</div>
                 </div>
-              </div>
-            </div>
-          </div>
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+
+          {/* 這邊你可以加入課程或其他明細，或移除 */}
 
           {/* 總結金額 */}
           <div className="mt-4">
             <div className="d-flex justify-content-between">
-              <div>總金額</div>
-              <div>$4,600</div>
+              <div>商品總金額</div>
+              <div>${(totalPrice - totalDiscount).toLocaleString()}</div>
+            </div>
+            <div className="d-flex justify-content-between">
+              <div>折扣優惠</div>
+              <div>${totalDiscount}</div>
             </div>
             <div className="d-flex justify-content-between">
               <div>運費</div>
-              <div>$50</div>
+              <div>${shippingFee}</div>
             </div>
             <hr />
             <div className="d-flex justify-content-between fw-bold">
               <div>合計</div>
-              <div>$4,450</div>
+              <div>${finalTotal.toLocaleString()}</div>
             </div>
           </div>
         </div>

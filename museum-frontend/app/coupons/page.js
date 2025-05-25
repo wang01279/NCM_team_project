@@ -1,22 +1,25 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import CouTab from './_components/cou-tab.js'
 // import DiceCouponGame from './game.js'
 import CouponRulesModal from './_components/couponRulesModal.js'
+import Navbar from '../_components/navbar.js'
 
 export default function CouponPage() {
   return (
     <>
-      <CouponRulesModal/>
+      <Navbar />
+      <CouponRulesModal />
       <div className="container">
         <div
-          className="d-flex justify-content-center align-items-center flex-column fw-bold"
+          className="d-flex justify-content-center align-items-center flex-column"
           style={{ marginTop: '80px' }}
         >
-          <h2 className="mb-0 pb-0">優惠券專區</h2>
-          <p className="mb-0 pb-0">-</p>
-          <h5 className="mt-0 pt-0 m-0">Coupon Redemption Area</h5>
+          <h3 className="mb-0 pb-0 fw-bold" style={{ letterSpacing: '2px' }}>
+            優惠券領取專區
+          </h3>
+          <h6 className="mt-2 pt-0 m-0 fw-bold">Coupon Redemption Area</h6>
         </div>
 
         <CouTab />
