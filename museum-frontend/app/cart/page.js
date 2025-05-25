@@ -31,64 +31,7 @@ export default function CartPage() {
   const [deleteTargetId, setDeleteTargetId] = useState(null)
   const { showToast } = useToast()
 
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      imageSrc: '/cart-img/b8.jpg',
-      title: '青花龍紋天球瓶(小)',
-      price: 1399,
-      quantity: 1,
-      type: 'product',
-    },
-    {
-      id: 2,
-      imageSrc: '/cart-img/b8.jpg',
-      title: '青花龍紋天球瓶(小)',
-      price: 1399,
-      quantity: 1,
-      type: 'product',
-    },
-    {
-      id: 3,
-      imageSrc: '/cart-img/image3.webp',
-      title: '手作陶藝課程',
-      price: 1599,
-      quantity: 1,
-      type: 'course',
-    },
-  ])
-
-  //test用 復原刪除的商品
-  const restoreCart = () => {
-    const defaultItems = [
-      {
-        id: 1,
-        imageSrc: '/cart-img/b8.jpg',
-        title: '青花龍紋天球瓶(小)',
-        price: 1399,
-        quantity: 1,
-        type: 'product',
-      },
-      {
-        id: 2,
-        imageSrc: '/cart-img/b8.jpg',
-        title: '青花龍紋天球瓶(小)',
-        price: 1399,
-        quantity: 1,
-        type: 'product',
-      },
-      {
-        id: 3,
-        imageSrc: '/cart-img/image3.webp',
-        title: '手作陶藝課程',
-        price: 1599,
-        quantity: 1,
-        type: 'course',
-      },
-    ]
-    localStorage.setItem('cartItems', JSON.stringify(defaultItems))
-    window.location.reload() // 重新整理頁面載入資料
-  }
+  const [items, setItems] = useState()
 
   // 更新數量
   const updateQuantity = (id, delta) => {
@@ -213,14 +156,6 @@ export default function CartPage() {
             {/* 購物車Title */}
             <div>
               <h3 className="mb-4 py-3 myCart">我的購物車</h3>
-              {/*測試用，還原localstorage */}
-              <button onClick={restoreCart} className="btn btn-secondary">
-                一鍵還原購物車TEST用
-              </button>
-              {/*測試用，同步購物車到後端 */}
-              {/*<button onClick={handleSyncCart} className="btn btn-primary ms-2">
-                同步購物車到後端
-              </button> */}
             </div>
 
             <div className="row">

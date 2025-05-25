@@ -38,8 +38,8 @@ export default function OrderSummary2({ cartItems }) {
               <Accordion.Body>
                 {cartItems.map((item) => (
                   <div className="d-flex justify-content-between" key={item.id}>
-                    <div>
-                      {item.title}*{item.quantity}
+                    <div className="me-3">
+                      {item.name}*{item.quantity}
                     </div>
                     <div>${(item.price * item.quantity).toLocaleString()}</div>
                   </div>

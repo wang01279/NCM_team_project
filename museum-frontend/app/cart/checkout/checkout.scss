@@ -1,8 +1,7 @@
 body {
-  margin: 100px auto;
-  font-family: Helvetica;
-  background-color: #f8f1e3;
-  background-image: url(http://www.transparenttextures.com/patterns/asfalt-dark.png);
+  margin-top: 120px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .myOrder {
@@ -200,7 +199,8 @@ body {
 //   display: block !important;
 // }
 
-.accordion-item-payment, .accordion-item-shipping {
+.accordion-item-payment,
+.accordion-item-shipping {
   .accordion-button::after {
     display: none !important;
   }

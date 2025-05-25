@@ -1,10 +1,10 @@
 // app/page.js
-import LoaderMini from '../../_components/LoadMini'
+import Load from '../../_components/load'
 
 export default function Home() {
   return (
     <main>
-      <LoaderMini />
+      <Load />
     </main>
   )
 }

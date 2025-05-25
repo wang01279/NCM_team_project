@@ -2,18 +2,15 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Accordion from 'react-bootstrap/Accordion'
-
 import React, { useEffect, useState } from 'react'
 import twzipcode from 'twzipcode-data'
+import Image from 'next/image'
 
-export default function Shipping({ value, onChange }) {
+export default function Shipping({ value, onChange, store711, openWindow }) {
+  /* ---------- 區域／縣市下拉 ---------- */
   const [cities, setCities] = useState([])
   const [zipcodes, setZipcodes] = useState([])
   const [districts, setDistricts] = useState([])
-  const methodMap = {
-    home: '宅配',
-    store: '超商',
-  }
 
   useEffect(() => {
     const data = twzipcode()
@@ -21,32 +18,20 @@ export default function Shipping({ value, onChange }) {
     setZipcodes(data.zipcodes)
   }, [])
 
-  // 同步父層選擇縣市的狀態
   const handleCityChange = (e) => {
     const cityName = e.target.value
-    // 更新區域清單
-    const filteredDistricts = zipcodes.filter((z) => z.county === cityName)
-    setDistricts(filteredDistricts)
-    // 回傳父層
-    onChange({
-      ...value,
-      city: cityName,
-      district: '', // 縣市改變區域清空
-    })
+    setDistricts(zipcodes.filter((z) => z.county === cityName))
+    onChange({ ...value, city: cityName, district: '' })
   }
 
-  // 區域改變
-  const handleDistrictChange = (e) => {
-    onChange({
-      ...value,
-      district: e.target.value,
-    })
-  }
+  const handleDistrictChange = (e) =>
+    onChange({ ...value, district: e.target.value })
 
-  // 取貨方式切換
+  /* ---------- 宅配 / 超商 切換 ---------- */
+  const methodMap = { home: '宅配', store: '超商' }
   const selectedMethod =
     Object.entries(methodMap).find(
-      ([, val]) => val === value.shippingMethod
+      ([, v]) => v === value.shippingMethod
     )?.[0] || ''
 
   const selectShipping = (key) => {
@@ -54,34 +39,33 @@ export default function Shipping({ value, onChange }) {
     onChange({
       ...value,
       shippingMethod: method,
-      // 若切換到超商，就清掉地址區欄位；反之亦然
       ...(method === '宅配'
         ? { store: '' }
         : { city: '', district: '', address: '' }),
     })
   }
 
-  // 地址輸入
-  const handleAddressChange = (e) => {
-    onChange({
-      ...value,
-      address: e.target.value,
-    })
-  }
+  /* ---------- 一般地址輸入 ---------- */
+  const handleAddressChange = (e) =>
+    onChange({ ...value, address: e.target.value })
 
-  // 超商門市輸入
-  const handleStoreChange = (e) => {
-    onChange({
-      ...value,
-      store: e.target.value,
-    })
-  }
+  /* ---------- 當 store711 更新時，同步寫入 shipping.store ---------- */
+  useEffect(() => {
+    if (store711?.storename && store711?.storeaddress) {
+      onChange({
+        ...value,
+        store: `${store711.storename} (${store711.storeaddress})`,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [store711])
 
   return (
     <div className="col-md-12">
       <h4 className="mb-4">付款與取貨方式*</h4>
+
       <Accordion defaultActiveKey="home">
-        {/* 宅配 */}
+        {/* ---------- 宅配 ---------- */}
         <Accordion.Item eventKey="home" className="accordion-item-shipping">
           <Accordion.Header onClick={() => selectShipping('home')}>
             <div className="d-flex align-items-center w-100">
@@ -98,19 +82,20 @@ export default function Shipping({ value, onChange }) {
               </label>
             </div>
           </Accordion.Header>
+
           <Accordion.Body>
             <div className="row mb-3">
               <div className="col">
                 <label>縣市</label>
                 <select
                   className="form-select"
-                  onChange={handleCityChange}
                   value={value.city || ''}
+                  onChange={handleCityChange}
                 >
                   <option value="">請選擇縣市</option>
-                  {cities.map((city) => (
-                    <option key={city.name} value={city.name}>
-                      {city.name}
+                  {cities.map((c) => (
+                    <option key={c.name} value={c.name}>
+                      {c.name}
                     </option>
                   ))}
                 </select>
@@ -119,8 +104,8 @@ export default function Shipping({ value, onChange }) {
                 <label>區域</label>
                 <select
                   className="form-select"
-                  onChange={handleDistrictChange}
                   value={value.district || ''}
+                  onChange={handleDistrictChange}
                   disabled={!value.city}
                 >
                   <option value="">請選擇區域</option>
@@ -132,11 +117,12 @@ export default function Shipping({ value, onChange }) {
                 </select>
               </div>
             </div>
+
             <div className="mb-3">
               <label>地址</label>
               <input
-                type="text"
                 className="form-control"
+                type="text"
                 placeholder="輸入詳細地址"
                 value={value.address || ''}
                 onChange={handleAddressChange}
@@ -145,7 +131,7 @@ export default function Shipping({ value, onChange }) {
           </Accordion.Body>
         </Accordion.Item>
 
-        {/* 超商 */}
+        {/* ---------- 超商取貨 ---------- */}
         <Accordion.Item eventKey="store" className="accordion-item-shipping">
           <Accordion.Header onClick={() => selectShipping('store')}>
             <div className="d-flex align-items-center w-100">
@@ -162,15 +148,35 @@ export default function Shipping({ value, onChange }) {
               </label>
             </div>
           </Accordion.Header>
+
           <Accordion.Body className="accordion-body-shipping">
-            <label>門市名稱或編號</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="請輸入您要取貨的門市（例如：7-11 光明店）"
-              value={value.store || ''}
-              onChange={handleStoreChange}
-            />
+            {/* 選店按鈕 */}
+            <div className="mb-3">
+              <label className="d-flex align-items-center mb-3">
+                <Image
+                  className="me-2"
+                  src="/cart-img/7-eleven_logo.svg"
+                  alt="購物車圖示"
+                  width={24}
+                  height={24}
+                />
+                7-11 門市
+              </label>
+              <button
+                type="button"
+                className="btn btn-outline-dark w-100 mb-2"
+                onClick={openWindow}
+              >
+                {store711?.storename ? '更改門市' : '選擇門市'}
+              </button>
+            </div>
+
+            {store711?.storename && store711?.storeaddress && (
+              <div className="border rounded p-3 bg-light mt-2">
+                <p className="mb-1">門市：{store711.storename}</p>
+                <p className="mb-1">地址：{store711.storeaddress}</p>
+              </div>
+            )}
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>

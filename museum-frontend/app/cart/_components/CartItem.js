@@ -2,8 +2,8 @@ import Image from 'next/image'
 import { FaRegTrashAlt } from 'react-icons/fa'
 
 export default function CartItem({
-  imageSrc,
-  title,
+  image,
+  name,
   price,
   quantity,
   subtotal,
@@ -17,12 +17,12 @@ export default function CartItem({
         className="flex-shrink-0 border border-dark"
         style={{ width: '80px', height: '80px', position: 'relative' }}
       >
-        <Image src={imageSrc} alt={title} fill style={{ objectFit: 'cover' }} />
+        <Image src={image} alt={name} fill style={{ objectFit: 'cover' }} />
       </div>
 
       {/* 2.商品資訊 */}
       <div className="col-8 col-md-3">
-        <div>{title}</div>
+        <div>{name}</div>
         <div className="mt-1">{`NT$${price.toLocaleString()}`}</div>
       </div>
 

@@ -73,6 +73,13 @@ export default function MemberCenter() {
     }
   }, [member])
 
+  // useEffect(() => {
+  //   const hash = window.location.hash.replace('#', '')
+  //   if (hash && ['profile', 'orders', 'coupons', 'favorites'].includes(hash)) {
+  //     setActiveTab(hash)
+  //   }
+  // }, [])
+
   // 編輯
   const handleEdit = () => {
     setIsEditing(true)
@@ -283,7 +290,6 @@ export default function MemberCenter() {
   // 渲染頁面
   return (
     <>
-
       <div className={styles.lowContent}>
         <LowContent />
       </div>

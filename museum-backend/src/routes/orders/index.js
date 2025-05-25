@@ -12,9 +12,10 @@ const OrderSchema = z
     email: z.string().email("Email 格式錯誤"),
     phone: z.string().min(8, "請填寫電話"),
     shippingMethod: z.enum(["宅配", "超商"], "請選擇運送方式"),
-    city: z.string().min(1, "請填寫城市"),
-    district: z.string().min(1, "請選擇區域"),
-    address: z.string().min(1, "請填寫地址"),
+    city: z.string().optional(),
+    district: z.string().optional(),
+    address: z.string().optional(),
+    store: z.string().optional(),
     paymentMethod: z.enum(["credit", "linepay"], "請選擇付款方式"),
     cardNumber: z.string().optional(),
     cardExpiry: z.string().optional(),
@@ -30,6 +31,8 @@ const OrderSchema = z
       })
     ),
   })
+
+  // ✅ 驗證信用卡資訊
   .refine(
     (data) => {
       if (data.paymentMethod === "credit") {
@@ -45,6 +48,36 @@ const OrderSchema = z
     {
       message: "請填寫完整信用卡資訊",
       path: ["cardNumber"],
+    }
+  )
+
+  // ✅ 驗證宅配地址
+  .refine(
+    (data) => {
+      if (data.shippingMethod === "宅配") {
+        return (
+          data.city?.trim() && data.district?.trim() && data.address?.trim()
+        );
+      }
+      return true;
+    },
+    {
+      message: "請填寫完整收件地址",
+      path: ["city"], // 可選擇指向某欄位顯示錯誤
+    }
+  )
+
+  // ✅ 驗證超商門市名稱
+  .refine(
+    (data) => {
+      if (data.shippingMethod === "超商") {
+        return data.store?.trim();
+      }
+      return true;
+    },
+    {
+      message: "請選擇超商門市",
+      path: ["store"],
     }
   );
 
