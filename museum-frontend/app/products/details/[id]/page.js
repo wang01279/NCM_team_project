@@ -2,21 +2,22 @@
 
 import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import Navbar from '@/app/_components/navbar'
 import CategoryMenu from '@/app/products/_components/CategoryMenu'
 import ProductDetail from './_components/ProductDetail'
 import ProductTabs from './_components/ProductTabs'
 import ProductServiceTagline from './_components/ProductServiceTagline'
 import YouMightLike from './_components/YouMightLike'
+import useFavorites from '@/app/_hooks/useFavorites'
 
 export default function IdPage() {
   const { id } = useParams()
   const router = useRouter()
-
   const [product, setProduct] = useState(null)
   const [relatedProducts, setRelatedProducts] = useState([])
-
   const [categoryMap, setCategoryMap] = useState({})
   const [subcategoryMap, setSubcategoryMap] = useState({})
+  const { favoriteIds, toggleFavorite, isFavorite } = useFavorites('product')
 
   // 撈分類資料
   useEffect(() => {
@@ -65,13 +66,22 @@ export default function IdPage() {
 
   return (
     <>
+      <Navbar />
       <div style={{ marginTop: '79px' }}>
         <CategoryMenu onCategoryClick={handleCategoryClick} />
       </div>
-      <ProductDetail product={product} />
+      <ProductDetail
+        product={product}
+        isFavorite={isFavorite(product.id)}
+        onToggleFavorite={toggleFavorite}
+      />
       <ProductTabs product={product} notes={product.notes || []} />
       <ProductServiceTagline />
-      <YouMightLike products={relatedProducts} />
+      <YouMightLike
+        products={relatedProducts}
+        favoriteProductIds={favoriteIds}
+        onToggleFavorite={toggleFavorite}
+      />
     </>
   )
 }

@@ -2,7 +2,11 @@ import React from 'react'
 import ProductCard from '@/app/_components/ProductCard'
 import '../_styles/YouMightLike.scss'
 
-export default function YouMightLike({ products }) {
+export default function YouMightLike({
+  products,
+  favoriteProductIds = [],
+  onToggleFavorite,
+}) {
   return (
     <div className="others-section">
       <div className="text-center fw-bold my-4">
@@ -14,7 +18,12 @@ export default function YouMightLike({ products }) {
           products
             .slice(0, 8)
             .map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                isFavorite={favoriteProductIds.includes(product.id)}
+                onToggleFavorite={onToggleFavorite}
+              />
             ))}
         {products && products.length === 0 && <p>暫無相關商品推薦。</p>}
       </div>

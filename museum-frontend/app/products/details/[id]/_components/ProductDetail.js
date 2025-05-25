@@ -6,7 +6,11 @@ import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 import AddToCartButton from '@/app/_components/AddToCartButton'
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 
-export default function ProductDetail({ product }) {
+export default function ProductDetail({
+  product,
+  isFavorite,
+  onToggleFavorite,
+}) {
   const [mainImageSrc, setMainImageSrc] = useState('')
   const [currentThumbnailIndex, setCurrentThumbnailIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
@@ -109,9 +113,12 @@ export default function ProductDetail({ product }) {
             <div className="product-header-row">
               <h2 className="product-title">{product.name_zh}</h2>
               <AddToFavoritesButton
-                productId={product.id}
-                onToggleFavorite={() => {}}
-                isFavorite={false}
+                itemId={product.id}
+                itemType="product"
+                isFavorite={isFavorite}
+                onToggleFavorite={(_, __, state) =>
+                  onToggleFavorite(product.id, state)
+                }
                 className="favorite-button"
               />
             </div>

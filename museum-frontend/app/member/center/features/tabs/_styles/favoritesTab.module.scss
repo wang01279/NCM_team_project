@@ -8,6 +8,12 @@
   --sub-bg: #{$sub-bg};
   --main-text: #{$main-text};
   --sub-text: #{$sub-text};
+  --light-text: #{$light-text};
+  --dark: #{$dark};
+  --danger: #{$danger};
+  --warning: #{$warning};
+  --sidebar-hover: #{$sidebar-hover};
+  --sidebar-active: #{$sidebar-active};
 }
 
 .favoritesTabContainer {
@@ -29,11 +35,12 @@
 }
 
 .emptyText {
-  color: #6c757d;
+  color: var(--sub-text);
 }
 
 .favoriteBlock {
   display: flex;
+  color: var(--main-text);
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
@@ -48,9 +55,9 @@
 
   // 定義子元素的樣式
   & > div:first-child {
-    // 針對包含標題、數量、和 "您目前的收藏數量" 的 div
     h4 {
       margin-bottom: 0;
+      font-weight: 800;
     }
 
     div {
@@ -58,6 +65,11 @@
       font-size: 56px;
       font-weight: bold;
       margin: 16px 0;
+      color: var(--secondary);
+    }
+    p {
+      color: var(--main-text);
+      font-weight: 600;
     }
   }
 
@@ -65,27 +77,77 @@
     // 針對包含描述和按鈕的 div
     p {
       // 描述文字
-      font-size: 14px;
+      font-size: 16px;
       margin-bottom: 20px;
       padding: 0 10px;
+      font-weight: 600;
+      color: var(--main-text);
+    }
+  }
+}
+@media (max-width: 768px) {
+  .favoriteBlock {
+    display: flex;
+    color: var(--main-text);
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 38px 16px;
+    text-align: center;
+    min-height: 50vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+    // 定義子元素的樣式
+    & > div:first-child {
+      h4 {
+        margin-bottom: 0;
+        font-weight: 800;
+      }
+
+      div {
+        // 收藏數量
+        font-size: 50px;
+        font-weight: bold;
+        margin: 8px 0;
+      }
+      p {
+        color: var(--main-text);
+      }
+    }
+
+    & > div:last-child {
+      // 針對包含描述和按鈕的 div
+      p {
+        // 描述文字
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        padding: 0 10px;
+        color: var(--main-text);
+      }
     }
   }
 }
 
 // 針對不同類型的 FavoriteBlock 背景色
 .exhibitionBlock {
-  background-color:var(--main-bg);
+  background-color: var(--main-bg);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.6),rgba(255, 255, 255, 0.6)), url('/image/bg2.webp');
 }
 
-.productBlock{
-  background-color:var(--primary);
+.productBlock {
+  background-color: var(--primary);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.6),rgba(255, 255, 255, 0.6)), url('/image/tbg2.jpg');
 }
 
 .courseBlock {
-  background-color:var(--sub-text);
-}
-
-// 針對有背景圖片的 FavoriteBlock
-.blockWithBgImage {
-  background-image: url('/image/bg2.webp'); // 將圖片路徑直接定義在 SCSS 中
+  background-color: var(--sub-text);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.6),rgba(255, 255, 255, 0.6)), url('/image/tbg3.jpg');
 }
