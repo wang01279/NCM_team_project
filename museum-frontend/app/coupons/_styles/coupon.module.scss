@@ -158,3 +158,11 @@
   border-radius: 6px;
 }
 
+.verticleText {
+  writing-mode: sideways-rl; /* 垂直從右到左 */
+  transform: 'rotate(90deg)';
+  letter-spacing: 0.1em;
+  color: $main-text; 
+  
+
+}

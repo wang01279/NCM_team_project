@@ -69,6 +69,7 @@ export default function CouponCard({ coupon, memberId, onClaimed }) {
           backgroundImage: `url("/images/coupon1.jpg")`,
         }}
       >
+        {/* <h6 className={`text-center {styles.verticleText}`}> COUPON</h6> */}
         <div className={styles.overlay}>
           <span className={styles.hintText}>點擊領取</span>
         </div>
@@ -83,6 +84,7 @@ export default function CouponCard({ coupon, memberId, onClaimed }) {
             width={18}
             height={18}
             className="p-0 pb-1 me-1"
+            style={{ objectFit: 'contain' }}
           />
           {coupon.name}
         </div>
