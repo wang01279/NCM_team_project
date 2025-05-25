@@ -151,21 +151,12 @@ export default function ProductDetail({
                 </button>
               </div>
               <button
-                className="add-to-cart d-flex"
+                className="add-to-cart btn btn-primary d-flex"
                 onClick={() => onAddToCart(quantity)}
               >
                 加入購物車
               </button>
             </div>
-            <div className="wishlist">
-              <AddToFavoritesButton
-                productId={product.id}
-                quantity={quantity}
-                disabled={isOutOfStock}
-                className="add-to-cart"
-              />
-            </div>
-
             <div className="stock-info">剩餘數量：{product.stock} 件</div>
             <hr />
             <div className="product-description">{product.description}</div>
@@ -198,7 +189,7 @@ export default function ProductDetail({
             </div>
             <button
               onClick={() => onAddToCart(quantity)}
-              className="add-to-cart d-flex justify-content-center align-items-center flex-grow-1"
+              className="add-to-cart btn btn-primary d-flex justify-content-center align-items-center flex-grow-1"
             >
               加入購物車
             </button>
