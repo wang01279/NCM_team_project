@@ -1,0 +1,352 @@
+/* SeriesCalendar.module.scss */
+
+.calendar {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: 'Noto Sans TC', sans-serif;
+    color: #333;
+
+
+  }
+  
+  .header {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 1rem 0;
+  }
+  
+  .weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .weekday {
+    padding: 0.5rem 0;
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 0.1rem;
+    white-space: nowrap;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-auto-rows: 80px;
+  }
+  
+  .cell {
+    position: relative;
+    border: 1px solid #f0f0f0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 0.5rem;
+    background: #fff;
+    transition: background 0.2s;
+  }
+  
+  .date {
+    font-size: 1rem;
+  }
+  
+  .closed {
+    background: #f5f5f5;
+    color: #aaa;
+  }
+  
+  .cell.highlight {
+    background: #e8f0fe;
+  }
+  
+  .tooltip {
+    position: absolute;
+    top: -4.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 140px;
+    max-width: 220px;
+    padding: 0.5rem 0.75rem;
+    background: rgba(60, 60, 60, 0.95);
+    color: #fff;
+    font-size: 0.95rem;
+    border-radius: 4px;
+    white-space: pre-line;
+    z-index: 100000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    pointer-events: none;
+    word-break: break-all;
+  }
+  .tooltip::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -8px;
+    transform: translateX(-50%);
+    border-width: 8px 8px 0 8px;
+    border-style: solid;
+    border-color: rgba(60, 60, 60, 0.95) transparent transparent transparent;
+  }
+  
+  .legend {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .legend span::before {
+    content: '';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    margin-right: 0.5em;
+  }
+  
+.calendarBar {
+  width: 100%;
+  max-width: 100vw;
+  margin: 0 auto;
+  font-family: 'Noto Sans TC', sans-serif;
+  color: #333;
+  padding-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.header {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+.barScroller {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: visible;
+  overflow: visible;
+  scrollbar-width: none;
+  padding: 0 2rem;
+  gap: 0.25rem;
+}
+.barScroller::-webkit-scrollbar {
+  display: none;
+}
+.cell {
+  min-width: 36px;
+  min-height: 54px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 0 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  transition: all 0.2s;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-size: 0.95rem;
+  z-index: 1;
+}
+.cell:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
+}
+.date {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-top: 0.3rem;
+}
+.weekday {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.1rem;
+}
+.closed {
+  background: rgba(245, 245, 245, 0.5);
+  color: #aaa;
+}
+.cell.highlight {
+  background: rgba(68, 68, 68, 0.8);
+  color: #fff;
+  z-index: 1;
+}
+.tooltip {
+  position: absolute;
+  top: -4.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 140px;
+  max-width: 220px;
+  padding: 0.5rem 0.75rem;
+  background: rgba(60, 60, 60, 0.95);
+  color: #fff;
+  font-size: 0.95rem;
+  border-radius: 4px;
+  white-space: pre-line;
+  z-index: 100000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  pointer-events: none;
+  word-break: break-all;
+}
+.tooltip::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  border-width: 8px 8px 0 8px;
+  border-style: solid;
+  border-color: rgba(60, 60, 60, 0.95) transparent transparent transparent;
+}
+.legend {
+  position: absolute;
+  top: 1.2rem;
+  right: 2rem;
+  margin-top: 0;
+  padding-left: 0;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+.legend span {
+  display: inline-flex;
+  align-items: center;
+}
+.legend span::before {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  margin-right: 0.5em;
+}
+
+.calendarNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+.arrowBtn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0 0.5rem;
+  user-select: none;
+}
+.arrowBtn:hover {
+  color: #222;
+}
+
+@media (max-width: 900px) {
+  .calendarBar {
+    padding-bottom: 1rem;
+  }
+  .header {
+    font-size: 1.3rem;
+    padding-left: 1rem;
+  }
+  .barScroller {
+    padding: 0 1rem;
+    gap: 0.15rem;
+  }
+  .cell {
+    min-width: 28px;
+    min-height: 44px;
+    font-size: 0.85rem;
+  }
+  .date {
+    font-size: 0.85rem;
+  }
+  .weekday {
+    font-size: 0.7rem;
+  }
+  .legend {
+    right: 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .calendarBar {
+    padding-bottom: 0.5rem;
+  }
+  .header {
+    font-size: 1.05rem;
+    padding-left: 0.5rem;
+  }
+  .calendarNav {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .barScroller {
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 0 0.2rem;
+    gap: 0.15rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .barScroller::-webkit-scrollbar {
+    height: 6px;
+    background: #eee;
+  }
+  .barScroller::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+  .cell {
+    min-width: 40px;
+    min-height: 38px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    margin: 0 1px;
+  }
+  .date {
+    font-size: 0.8rem;
+    margin-top: 0.1rem;
+  }
+  .weekday {
+    font-size: 0.65rem;
+    margin-top: 0;
+  }
+  .legend {
+    right: 0.2rem;
+    top: 0.5rem;
+    font-size: 0.7rem;
+  }
+  .tooltip {
+    min-width: 70px;
+    max-width: 90vw;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.4rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+  

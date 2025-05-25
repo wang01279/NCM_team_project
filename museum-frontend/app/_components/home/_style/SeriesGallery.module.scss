@@ -1,0 +1,94 @@
+/* SeriesMasonryMarquee.module.scss */
+
+.seriesGallery {
+  width: 100vw;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #f7f7f7;
+  padding: 2rem 0;
+
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  justify-content: center;
+}
+.wrapper {
+  position: relative;
+  padding: 2rem 0;
+  background: #f7f7f7;
+}
+.title {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.toggle {
+  position: absolute;
+  top: 1rem;
+  right: 2rem;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.marqueeRows {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.marqueeRow {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+.card {
+  flex: 0 0 auto;
+  width: 180px;
+  margin: 0 1rem 0 0;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  background: #fff;
+  overflow: hidden;
+  position: relative;
+}
+.card img {
+  width: 100%;
+  display: block;
+  border-radius: 16px;
+}
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  border-radius: 16px;
+}
+.card:hover .overlay {
+  opacity: 1;
+}
+@media (max-width: 900px) {
+  .card {
+    width: 140px;
+  }
+  .marqueeRows {
+    gap: 1rem;
+  }
+}
+@media (max-width: 600px) {
+  .card {
+    width: 90vw;
+  }
+  .marqueeRows {
+    gap: 0.5rem;
+  }
+}
