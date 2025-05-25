@@ -132,7 +132,7 @@ export default function Payment({ value, onChange }) {
                   onChange={() => selectPayment('linepay')}
                 />
                 <label htmlFor="linepayRadio" className="mb-0">
-                  LINE Pay付款
+                  ECPay付款
                 </label>
               </div>
               <div className="ms-auto d-flex gap-2">
@@ -146,7 +146,7 @@ export default function Payment({ value, onChange }) {
             </div>
           </Accordion.Header>
           <Accordion.Body className="accordion-body-payment">
-            您將被導向 LinePay 完成付款。
+            您將被導向至 ECPay 完成付款。
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>

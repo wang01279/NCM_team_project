@@ -1,17 +1,13 @@
+// routes/cart/index.js
 import express from "express";
-import {
-  getCartItems,
-  addToCart,
-  removeFromCart,
-  checkoutCart,
-} from "../../controllers/cart.controller.js";
-import db from "../config/database.js";
-
 const router = express.Router();
 
-router.get("/", getCartItems); // GET /api/cart
-router.post("/add", addToCart); // POST /api/cart/add
-router.post("/remove", removeFromCart); // POST /api/cart/remove
-router.post("/checkout", checkoutCart); // POST /api/cart/checkout
+// 設定回傳路由
+const callbackUrl = "http://localhost:3000/cart/checkout/callback";
 
+// POST 接收 7-11 門市選擇後的資料
+router.post("/711", function (req, res) {
+  res.redirect(callbackUrl + "?" + new URLSearchParams(req.body).toString());
+});
 export default router;
+

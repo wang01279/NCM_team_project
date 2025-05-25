@@ -1,13 +1,26 @@
 'use client'
-import Navbar from '../../_components/navbar'
+import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import Image from 'next/image'
+import Navbar from '../../_components/navbar'
 import './orderSuccess.scss'
 
 export default function CartSuccessPage() {
+  const router = useRouter()
+
   useEffect(() => {
     localStorage.removeItem('cartItems')
+    localStorage.removeItem('store711')
   }, [])
+
+  const handleViewOrders = () => {
+    router.push('/member/center')
+    // router.push('/member/center#orders')
+  }
+
+  const handleBackHome = () => {
+    router.push('/')
+  }
 
   return (
     <>
@@ -58,12 +71,18 @@ export default function CartSuccessPage() {
                 <p>如果您有任何問題，請隨時聯繫我們的客服團隊。</p>
                 <p>祝您有美好的一天!</p>
                 <div className="mt-4 text-center">
-                  <a className="btn btn-block m-1" href="#">
+                  <button
+                    className="btn btn-block m-1"
+                    onClick={handleViewOrders}
+                  >
                     查看訂單
-                  </a>
-                  <a className="btn btn-block m-1" href="#">
+                  </button>
+                  <button
+                    className="btn btn-block m-1"
+                    onClick={handleBackHome}
+                  >
                     返回首頁
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>

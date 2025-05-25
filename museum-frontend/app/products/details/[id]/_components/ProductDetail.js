@@ -5,7 +5,7 @@ import Image from 'next/image'
 import '../_styles/ProductDetail.scss'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 
-export default function ProductDetail({ product }) {
+export default function ProductDetail({ product, onAddToCart }) {
   const [mainImageSrc, setMainImageSrc] = useState('')
   const [currentThumbnailIndex, setCurrentThumbnailIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
@@ -129,7 +129,12 @@ export default function ProductDetail({ product }) {
                   +
                 </button>
               </div>
-              <button className="add-to-cart d-flex">加入購物車</button>
+              <button
+                className="add-to-cart d-flex"
+                onClick={() => onAddToCart(quantity)}
+              >
+                加入購物車
+              </button>
             </div>
             <div className="wishlist">
               <AddToFavoritesButton
@@ -161,7 +166,10 @@ export default function ProductDetail({ product }) {
                 +
               </button>
             </div>
-            <button className="add-to-cart d-flex justify-content-center align-items-center flex-grow-1">
+            <button
+              onClick={() => onAddToCart(quantity)}
+              className="add-to-cart d-flex justify-content-center align-items-center flex-grow-1"
+            >
               加入購物車
             </button>
           </div>
