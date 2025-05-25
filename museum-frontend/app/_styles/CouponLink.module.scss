@@ -1,0 +1,74 @@
+@use '../_styles/foundation/palette' as *;
+
+.couponTextColor {
+  color: #e8e6e1;
+}
+
+.customCouponBtn {
+  position: fixed;
+  top: 80px;
+  right: 0;
+  z-index: 33;
+  padding: 5px;
+  margin: 0;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/////////// coupon card style /////////
+
+.couponCard {
+  width: 250px;
+  overflow: hidden;
+  border-radius: 12px;
+  // background-color: #E3DCD2;
+  background-color: $light !important;
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  position: relative; // ✅ 必加：給 overlay 定位參考
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(132, 93, 76, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 3; // 高於圖片與文字
+  }
+
+  &:hover .overlay {
+    opacity: 1;
+  }
+
+  .hintText {
+    color: $light;
+    font-size: 1rem;
+    background-color: rgba(67, 47, 16, 0.6);
+    padding: 5px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .imageContainer {
+    width: 60px;
+    min-height: 155px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+  }
+
+  .cardbody {
+    width: 244px;
+    color: $danger;
+    z-index: 2;
+  }
+}
+
