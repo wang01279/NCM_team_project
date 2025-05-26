@@ -247,8 +247,6 @@ function getOptions(type) {
       { value: '餐具', label: '餐具' },
       { value: '書籍', label: '書籍' },
       { value: '影音光碟', label: '影音光碟' },
-      { value: '玩具', label: '玩具' },
-      { value: '文具', label: '文具' },
       { value: '個人用品', label: '個人用品' },
     ],
   }

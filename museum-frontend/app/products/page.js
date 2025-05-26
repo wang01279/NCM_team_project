@@ -10,8 +10,9 @@ import CategoryShowcase from './_components/CategoryShowcase'
 import CategoryMenu from './_components/CategoryMenu'
 import ProductFilter from './_components/ProductFilter'
 import ProductCard from '../_components/ProductCard'
-import './_styles/productPage.scss'
+import Footer from '../_components/footer3'
 import { useToast } from '@/app/_components/ToastManager'
+import './_styles/productPage.scss'
 
 export default function ProductPage() {
   const { showToast } = useToast()
@@ -202,6 +203,7 @@ export default function ProductPage() {
         </div>
         {totalPages > 1 && renderPaginationButtons()}
       </div>
+      <Footer />
     </>
   )
 }

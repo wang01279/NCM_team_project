@@ -8,8 +8,10 @@ import ProductDetail from './_components/ProductDetail'
 import ProductTabs from './_components/ProductTabs'
 import ProductServiceTagline from './_components/ProductServiceTagline'
 import YouMightLike from './_components/YouMightLike'
+import Footer from '@/app/_components/footer3'
 import useFavorites from '@/app/_hooks/useFavorites'
 import { useToast } from '@/app/_components/ToastManager'
+import Loader from '@/app/_components/load'
 
 export default function IdPage() {
   const { id } = useParams()
@@ -87,7 +89,7 @@ export default function IdPage() {
     showToast('success', `已加入購物車 ${quantity} 件`, 3000)
   }
 
-  if (!product) return <div>Loading...</div>
+  if (!product) return <Loader />
 
   return (
     <>
@@ -108,6 +110,7 @@ export default function IdPage() {
         favoriteProductIds={favoriteIds}
         onToggleFavorite={toggleFavorite}
       />
+      <Footer />
     </>
   )
 }

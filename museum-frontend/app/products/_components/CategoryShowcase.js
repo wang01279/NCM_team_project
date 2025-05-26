@@ -183,8 +183,10 @@ export default function CategoryShowcase({ onCategoryClick }) {
               >
                 <div className="row align-items-center animate-slidein">
                   <div className="col-6 text-start text-lg-start">
-                    <h1 className="fw-bold mb-2 text-white text-center">典藏精品</h1>
-                    <p className="group-hover-opacity-100 transition-opacity text-white text-center">
+                    <h2 className="fw-bold mb-2 text-white text-center">
+                      典藏精品
+                    </h2>
+                    <p className="group-hover-opacity-100 transition-opacity text-white">
                       匠藝與美學融合，限期入藏計畫展現文化創作，感受精緻收藏的非凡之美。
                     </p>
                   </div>

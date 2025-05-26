@@ -40,7 +40,7 @@
 
 .favoriteBlock {
   display: flex;
-  color: var(--main-text);
+  color: var(--light-text);
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
@@ -65,10 +65,10 @@
       font-size: 56px;
       font-weight: bold;
       margin: 16px 0;
-      color: var(--secondary);
+      color: var(--light-text);
     }
     p {
-      color: var(--main-text);
+      color: var(--light-text);
       font-weight: 600;
     }
   }
@@ -81,7 +81,7 @@
       margin-bottom: 20px;
       padding: 0 10px;
       font-weight: 600;
-      color: var(--main-text);
+      color: var(--light-text);
     }
   }
 }
@@ -137,17 +137,17 @@
 .exhibitionBlock {
   background-color: var(--main-bg);
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.6),rgba(255, 255, 255, 0.6)), url('/image/bg2.webp');
+    linear-gradient(rgba(255, 255, 255, 0),rgba(255, 255, 255, 0.5)), url('/image/bg2.webp');
 }
 
 .productBlock {
   background-color: var(--primary);
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.6),rgba(255, 255, 255, 0.6)), url('/image/tbg2.jpg');
+
+
 }
 
 .courseBlock {
   background-color: var(--sub-text);
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.6),rgba(255, 255, 255, 0.6)), url('/image/tbg3.jpg');
+
 }
+
