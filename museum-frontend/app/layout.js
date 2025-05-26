@@ -1,3 +1,5 @@
+
+
 import './_styles/globals.scss'
 import './_styles/formCustom.scss'
 // 導入
@@ -6,21 +8,30 @@ import Footer from './_components/footer'
 import { ToastProvider } from '@/app/_components/ToastManager'
 import { Inter } from 'next/font/google'
 import ChatSidebar from './_components/Chat/ChatSidebar'
+// import ClientCanvas from './_components/home/ClientCanvas'
+
+
+
+
 
 // import { AuthProvider } from './_components/Auth/AuthProvider'
 // import { AuthProvider } from '@/app/_components/Auth/AuthProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
+
 export const metadata = {
-  title: '國立故宮博物院',
-  description: '國立故宮博物院官方網站',
+  title: '國立故瓷博物館',
+  description: '國立故瓷博物館官方網站',
 }
 
 export default function RootLayout({ children }) {
   return (
     <html lang="zh-TW">
       <body className={inter.className}>
+
+        {/* <ClientCanvas /> */}
+
         {/* <AuthProvider> */}
         <ToastProvider>
           {/* <Navbar /> */}
