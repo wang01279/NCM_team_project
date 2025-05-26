@@ -34,6 +34,7 @@ pnpm-debug.log*
 # 作業系統＆暫存
 .DS_Store
 Thumbs.db
+Icon*
 
 # IDE 設定檔
 .vscode/
