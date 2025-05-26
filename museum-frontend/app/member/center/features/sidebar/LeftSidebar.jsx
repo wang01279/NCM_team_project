@@ -5,16 +5,36 @@ import { motion } from 'framer-motion'
 import styles from './sidebar.module.scss'
 import { useRouter } from 'next/navigation'
 
+import {
+  FaUser,
+  FaTicketAlt,
+  FaHistory,
+  FaBookmark,
+  FaCrown,
+} from 'react-icons/fa'
 
-import { FaUser, FaTicketAlt, FaHistory, FaBookmark, FaCrown } from 'react-icons/fa'
-
-export default function Sidebar({ member, activeTab, setActiveTab, onAvatarUpload }) {
+export default function Sidebar({
+  member,
+  activeTab,
+  setActiveTab,
+  onAvatarUpload,
+}) {
   const router = useRouter() // ✅ 加這行
   const tabs = [
     { id: 'profile', icon: <FaUser />, label: '個人檔案', subLabel: '簡歷' },
-    { id: 'coupons', icon: <FaTicketAlt />, label: '我的優惠券', subLabel: '優惠券' },
+    {
+      id: 'coupons',
+      icon: <FaTicketAlt />,
+      label: '我的優惠券',
+      subLabel: '優惠券',
+    },
     { id: 'orders', icon: <FaHistory />, label: '我的訂單', subLabel: '訂單' },
-    { id: 'favorites', icon: <FaBookmark />, label: '我的收藏', subLabel: '收藏' },
+    {
+      id: 'favorites',
+      icon: <FaBookmark />,
+      label: '我的收藏',
+      subLabel: '收藏',
+    },
   ]
 
   return (
@@ -41,21 +61,28 @@ export default function Sidebar({ member, activeTab, setActiveTab, onAvatarUploa
               style={{ width: '100px', height: '100px', objectFit: 'cover' }}
             />
             <img
-              src="/profile/images/cap.png"
+              src="/img/member/cap.png"
               alt="裝飾"
               className={styles.decorationIcon}
             />
           </label>
         </div>
-        <h4>{member.name || '未命名'}</h4>
+        <h4>{member.name || '小磁怪'}</h4>
+        {/* <span>{member.email || '小磁怪@gmail.com'}</span> */}
+        {/* <p>
+          {member.role === '管理員' ? '客服人員' : '一般會員'} <FaCrown />
+        </p> */}
         <p>
-          {member.role === 'VIP' ? '客服人員' : '一般會員'} <FaCrown />
+          {member.role === 'admin' || member.role === '管理員'
+            ? '客服人員'
+            : '一般會員'}{' '}
+          <FaCrown />
         </p>
       </div>
       <hr className={styles.hrLine} />
       <nav className={styles.nav}>
         {tabs.map((tab, i) => (
-          <React.Fragment key={tab.id} >
+          <React.Fragment key={tab.id}>
             <a
               className={`${styles.navLink} ${activeTab === tab.id ? styles.active : ''}`}
               onClick={() => {
@@ -65,7 +92,9 @@ export default function Sidebar({ member, activeTab, setActiveTab, onAvatarUploa
               style={{ cursor: 'pointer' }}
             >
               {/* <i className={`${tab.icon} me-2`}></i> */}
-              <span className={`${styles.iconSize} me-2 my-auto`}>{tab.icon}</span>
+              <span className={`${styles.iconSize} mx-2 my-auto`}>
+                {tab.icon}
+              </span>
 
               <p className={`${styles.label} my-auto`}>{tab.label}</p>
               <p className={`${styles.subLabel} my-auto`}>{tab.subLabel}</p>
@@ -74,7 +103,6 @@ export default function Sidebar({ member, activeTab, setActiveTab, onAvatarUploa
           </React.Fragment>
         ))}
       </nav>
-
 
       {/* <button className={styles.logoutButton}>
         <i className={styles.logoutIcon}></i>

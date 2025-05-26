@@ -9,55 +9,82 @@ $hover-scale: 1.03;
 $active-scale: 1.3;
 
 .sidebar {
-  margin-top: 150px;
+  position: relative;
+
+  margin-top: 100px;
   padding: 20px;
-  border: 1px solid #000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+
+  // border: 1px solid #000;
+  // background-color: #3c3a36;
+  // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  // border-radius: 10px;
+
+   /* 用 rgba(#3c3a36) 當半透明背景 */
+   background: rgba(60, 58, 54, 0.8);  // α＝0.4 可再微調
+
+   /* 模糊與飽和度提升，營造玻璃感 */
+   backdrop-filter: blur(10px) saturate(150%);
+   -webkit-backdrop-filter: blur(10px) saturate(150%);
+ 
+   /* 半透明邊框，加強輪廓 */
+   border: 1px solid rgba(255, 255, 255, 0.15);
+ 
+   /* 柔和陰影，浮起來的感覺 */
+   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+ 
+   border-radius: 10px;
+
 }
+
 
 .userInfo {
   position: relative;
   margin-top: -70px;
   text-align: center;
+  z-index: 2;
 
   .roundedCircle {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    border: 2px solid rgb(255, 255, 255);
+    // border: 2px solid $primary;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
     z-index: 1;
     object-fit: cover;
   }
 
- 
-
   h4 {
     margin-top: 10px;
     z-index: 1;
     position: relative;
+
+    color: $light-text;
   }
 
   p {
-    margin-top: 5px;
-    border: 1px solid #000;
-    border-radius: 6px;
+    // padding: 10px;
+    margin-top: 10px;
+    border: 1px solid $light-text;
+    border-radius: 20px;
     display: inline-block;
-    padding: 2px 8px;
+    padding: 8px 16px;
     font-size: 0.9rem;
     position: relative;
     z-index: 1;
 
+    color: $light-text;
+
     &.vip {
       background-color: $vip-color;
-      color: white;
+      color: $light-text;
       border: none;
     }
 
     &.regular {
-      background-color: $regular-color;
-      color: white;
+      background-color: $primary;
+      color: $light-text;
       border: none;
     }
   }
@@ -68,22 +95,35 @@ $active-scale: 1.3;
   display: inline-block;
 }
 
+@keyframes microShake {
+  0% { transform: translateY(0) rotate(0deg); }
+  20% { transform: translateY(-1px) rotate(-2deg); }
+  40% { transform: translateY(1px) rotate(2deg); }
+  60% { transform: translateY(-1px) rotate(-1deg); }
+  80% { transform: translateY(1px) rotate(1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
 .decorationIcon {
   position: absolute;
-  top: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 100px;
+  top: -10px;
+  left: -10%;
+  transform: translate(-50%, 0);
+
+  width: 120px;
+  height: 120px;
   z-index: 2;
+  animation: microShake 1.2s infinite linear;
 }
 
 .nav {
+  position: relative;
   margin-top: 20px;
-  padding: 2rem 1rem;
+  // padding: 2rem 1rem;
+  z-index: 2;
 
   .hrLine {
-    border-top: 2px dashed #000;
+    border-top: 2px dashed $light-text;
     margin: 10px 0;
   }
 }
@@ -91,22 +131,32 @@ $active-scale: 1.3;
 .navLink {
   display: flex;
   align-items: center;
+  // justify-content: center;
+  margin:  auto 0;
   gap: 10px;
   color: $regular-color;
   text-decoration: none;
   padding: 2rem 1rem;
   border-radius: 4px;
-  transition: all 0.3s ease, transform 0.3s ease;
+  transition:
+    all 0.3s ease,
+    transform 0.3s ease;
   transform-origin: center;
   position: relative;
   overflow: hidden;
 
   .iconSize {
-    font-size: 1.2rem;
+    // font-size: 1.2rem;
     transition: transform 0.3s ease;
+    background-color: #ffffff29;
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin: auto 0;
+    border: 1px solid #ffffff29;
   }
 
   .label {
+    color: $light-text;
     display: block;
     transition: color 0.3s ease;
   }
@@ -117,7 +167,7 @@ $active-scale: 1.3;
   }
 
   &:hover {
-    background-color: rgba(247, 127, 8, 1);
+    background-color: rgba(247, 127, 8, 0.5);
     transform: translateY(-2px) scale($hover-scale);
 
     
@@ -128,8 +178,10 @@ $active-scale: 1.3;
   }
 
   &.active {
-    background-color: #f77f08;
-    color: white;
+    background-color: $primary;
+    color: $light-text;
+
+    // padding: 10px;
 
     .iconSize {
       transform: scale($active-scale);
@@ -138,6 +190,10 @@ $active-scale: 1.3;
 }
 
 @include media-breakpoint-down(md) {
+  .sidebar {
+    margin-top: 150px;
+  }
+
   .nav {
     padding: 0;
     display: flex;
@@ -153,14 +209,17 @@ $active-scale: 1.3;
     padding: 0.5rem;
     text-align: center;
 
+    
+
     .label {
       display: none;
     }
 
     .subLabel {
       display: block;
-      margin-top: 0.5rem;
+      margin: auto 0;
       font-size: 1rem;
+      color: $light-text;
     }
 
     .iconSize {
@@ -171,4 +230,50 @@ $active-scale: 1.3;
   .hrLine {
     display: none;
   }
+}
+
+// .pathTextWrapper {
+//   position: absolute;
+//   inset: 0;
+//   pointer-events: none;
+//   overflow: hidden;
+//   z-index: 0;
+// }
+
+// .pathText {
+//   position: absolute;
+//   white-space: nowrap;
+//   font-size: 14px;
+//   color: #fff;
+
+//   // 先算出終點座標
+//   $end: calc(100% - 10px);
+
+//   // 一行字串、單引號、插值
+//   offset-path: path('M10,10 H#{$end} V#{$end} H10 V10 Z');
+//   -webkit-offset-path: path('M10,10 H#{$end} V#{$end} H10 V10 Z');
+
+//   offset-distance: 0%;
+//   -webkit-offset-distance: 0%;
+//   animation: moveAlong 20s linear infinite;
+// }
+
+// @keyframes moveAlong {
+//   to { offset-distance: 100%; }
+// }
+// @-webkit-keyframes moveAlong {
+//   to { -webkit-offset-distance: 100%; }
+// }
+
+
+.marquee {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.userInfo,
+.nav {
+  position: relative;
+  z-index: 1;
 }

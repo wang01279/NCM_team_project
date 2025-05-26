@@ -7,10 +7,12 @@ import MarqueeGallery from '@/app/_components/home/MarqueeGallery'
 import MuseumVideo from '@/app/_components/home/MuseumVideo'
 import SeriesCalendar from '@/app/_components/home/SeriesCalendar'
 import SeriesGallery from '@/app/_components/home/SeriesGallery'
-import Footer from '@/app/_components/footer'
+// import Footer from '@/app/_components/footer'
 import CardGallery from '@/app/_components/home/CardGallery'
 import '@/app/_styles/globals.scss'
 import '@/app/_styles/home.scss'
+
+import Footer from '@/app/_components/footer3'
 
 export default function AppPage() {
   const [activeSection, setActiveSection] = useState('home')
@@ -93,7 +95,7 @@ export default function AppPage() {
         <MarqueeGallery />
       </section>
 
-      {/* <Footer /> */}
+      <Footer/>
     </>
     // </main>
   )
