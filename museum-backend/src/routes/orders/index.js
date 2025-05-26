@@ -24,8 +24,8 @@ const OrderSchema = z
     cartItems: z.array(
       z.object({
         id: z.number(),
+        name: z.string(),
         type: z.enum(["product", "course"]),
-        title: z.string(),
         price: z.number(),
         quantity: z.number(),
       })
@@ -185,7 +185,7 @@ router.get("/:memberId", async (req, res) => {
   try {
     // 查詢訂單主檔
     const [member_orders] = await db.execute(
-      `SELECT id, member_id, order_number, created_at, recipient_name, shipping_method, payment_method, recipient_address
+      `SELECT id, member_id, order_number, recipient_name, recipient_phone, recipient_email, recipient_address, shipping_method, payment_method, created_at
        FROM member_orders
        WHERE member_id = ?
        ORDER BY created_at DESC`,
