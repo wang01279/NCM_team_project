@@ -1,9 +1,7 @@
 import CartItem from './CartItem'
 
-export default function CartItems({ items, updateQuantity, deleteItem }) {
-  const productItems = items.filter(
-    (item) => item.type === 'product' || item.type === undefined
-  )
+export default function CartItems({ items = [], updateQuantity, deleteItem }) {
+  const productItems = items.filter((item) => item.type === 'product')
   const courseItems = items.filter((item) => item.type === 'course')
 
   return (

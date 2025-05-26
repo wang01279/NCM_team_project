@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Collapse } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { CiShoppingTag } from 'react-icons/ci'
-import { HiOutlineChevronDown } from "react-icons/hi";
+// import { HiOutlineChevronDown } from 'react-icons/hi'
 import './_style/memOrders.scss'
 
 export default function OrdersTab() {
@@ -95,19 +95,33 @@ export default function OrdersTab() {
                       <Collapse in={openOrderId === order.id}>
                         <div className="p-4 bg-light-subtle border-top">
                           <div className="row">
+                            <div className="h2 text-start mb-4">訂單資訊</div>
                             <div className="col-md-6 text-start">
                               <p>
-                                <strong>送貨地址：</strong>
-                                {order.recipient_address}
+                                <strong>訂單編號：</strong>
+                                {order.order_number}
+                              </p>
+                              <p>
+                                <strong>訂單日期：</strong>
+                                {date}
+                              </p>
+                              <p>
+                                <strong>收件人姓名：</strong>
+                                {order.recipient_name}
                               </p>
                               <p>
                                 <strong>聯絡電話：</strong>
                                 {order.recipient_phone}
                               </p>
                               <p>
-                                <strong>運送方式：</strong>
+                                <strong>聯絡信箱：</strong>
+                                {order.recipient_email}
+                              </p>
+                              <p>
+                                <strong>取件方式：</strong>
                                 {order.shipping_method}
                               </p>
+
                               <p>
                                 <strong>付款方式：</strong>
                                 {order.payment_method}
