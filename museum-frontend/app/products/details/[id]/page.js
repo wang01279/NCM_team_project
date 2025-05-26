@@ -13,6 +13,7 @@ import useFavorites from '@/app/_hooks/useFavorites'
 import { useToast } from '@/app/_components/ToastManager'
 import Loader from '@/app/_components/load'
 import Btn from '@/app/datatest/btn'
+import StarRating from '@/app/datatest/star-rating'
 
 export default function IdPage() {
   const { id } = useParams()
@@ -106,8 +107,11 @@ export default function IdPage() {
       />
       <ProductTabs product={product} notes={product.notes || []} />
       <ProductServiceTagline />
-      <div className='container'>
+      <div className="container">
         <Btn />
+      </div>
+      <div className="container">
+        <StarRating />
       </div>
       <YouMightLike
         products={relatedProducts}

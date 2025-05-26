@@ -13,6 +13,7 @@ import ProductCard from '../_components/ProductCard'
 import Footer from '../_components/footer3'
 import { useToast } from '@/app/_components/ToastManager'
 import './_styles/productPage.scss'
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
 
 export default function ProductPage() {
   const { showToast } = useToast()
@@ -110,8 +111,16 @@ export default function ProductPage() {
     if (filters.origin.length > 0) query.set('origin', filters.origin.join(','))
     if (filters.function.length > 0)
       query.set('function', filters.function.join(','))
-    if (filters.minPrice > 0) query.set('minPrice', filters.minPrice)
-    if (filters.maxPrice < 100000) query.set('maxPrice', filters.maxPrice)
+
+    // ✅ 改這裡：參數名稱由 minPrice 改為 price_min
+    if (filters.minPrice !== 0) {
+      query.set('price_min', filters.minPrice)
+    }
+    if (filters.maxPrice !== 100000) {
+      query.set('price_max', filters.maxPrice)
+    }
+
+    console.log(`fetching: /api/products?${query.toString()}`)
 
     fetch(`http://localhost:3005/api/products?${query.toString()}`)
       .then((res) => res.json())
@@ -129,10 +138,39 @@ export default function ProductPage() {
 
   const renderPaginationButtons = () => {
     const buttons = []
-    for (let i = 1; i <= totalPages; i++) {
+    const totalNumbers = 5
+    const half = Math.floor(totalNumbers / 2)
+
+    const goToFirst = () => goToPage(1)
+    const goToLast = () => goToPage(totalPages)
+    const goPrev = () => currentPage > 1 && goToPage(currentPage - 1)
+    const goNext = () => currentPage < totalPages && goToPage(currentPage + 1)
+
+    // 計算要顯示的頁碼範圍
+    let start = Math.max(1, currentPage - half)
+    let end = Math.min(totalPages, start + totalNumbers - 1)
+
+    if (end - start < totalNumbers - 1) {
+      start = Math.max(1, end - totalNumbers + 1)
+    }
+
+    // 首頁與上一頁
+    buttons.push(
+      <button key="first" onClick={goToFirst} disabled={currentPage === 1}>
+        首頁
+      </button>
+    )
+    buttons.push(
+      <button key="prev" onClick={goPrev} disabled={currentPage === 1}>
+        <FaArrowLeft />
+      </button>
+    )
+
+    // 頁碼按鈕
+    for (let i = start; i <= end; i++) {
       buttons.push(
         <button
-          key={i}
+          key={`page-${i}`}
           onClick={() => goToPage(i)}
           className={currentPage === i ? 'active' : ''}
         >
@@ -140,6 +178,23 @@ export default function ProductPage() {
         </button>
       )
     }
+
+    // 下一頁與末頁
+    buttons.push(
+      <button key="next" onClick={goNext} disabled={currentPage === totalPages}>
+        <FaArrowRight />
+      </button>
+    )
+    buttons.push(
+      <button
+        key="last"
+        onClick={goToLast}
+        disabled={currentPage === totalPages}
+      >
+        末頁
+      </button>
+    )
+
     return <div className="pagination">{buttons}</div>
   }
 
@@ -190,7 +245,7 @@ export default function ProductPage() {
         )}
 
         <div className="product-count mb-3">共 {products.length} 項商品</div>
-        <div id="product-list" className="row g-4">
+        <div id="product-list" className="product-grid">
           {products.map((product) => (
             <ProductCard
               key={product.id}

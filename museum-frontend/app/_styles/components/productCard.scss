@@ -190,6 +190,16 @@
       font-size: 16px;
     }
   }
+  .btn {
+    // flex: 1 1 auto;
+    min-width: 0;
+    font-size: 14px;
+    white-space: nowrap;
+    padding: 12px clamp(16px, 5vw, 40px); // ✅ 自適應內左右 padding
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .btn-icon {
     width: 45px;

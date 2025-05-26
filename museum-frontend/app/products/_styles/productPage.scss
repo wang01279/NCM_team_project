@@ -1,21 +1,73 @@
+@use '../../_styles/foundation/palette' as *;
+
+:root {
+  --primary: #{$primary};
+  --secondary: #{$secondary};
+  --success: #{$success};
+  --danger: #{$danger};
+  --warning: #{$warning};
+  --info: #{$info};
+  --light: #{$light};
+  --dark: #{$dark};
+  --main-bg: #{$main-bg};
+  --sub-bg: #{$sub-bg};
+  --main-text: #{$main-text};
+  --sub-text: #{$sub-text};
+  --tertiary: #{$tertiary};
+}
 .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 24px;
-    gap: 8px;
-    flex-wrap: wrap;
-  
-    button {
-      background-color: #f8f9fa;
-      border: 1px solid #ccc;
-      padding: 6px 12px;
-      cursor: pointer;
-      border-radius: 6px;
-  
-      &.active {
-        background-color: #823b20;
-        color: white;
-        border-color: #823b20;
-      }
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+
+  button {
+    border: none;
+    padding: 8px 14px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+    color: #444;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background-color: var(--secondary);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      // cursor: not-allowed;
+    }
+
+    &.active {
+      background-color: var(--secondary);
+      color: #fff;
+      font-weight: bold;
+      box-shadow: 0 2px 10px rgba(199, 67, 17, 0.4);
     }
   }
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.product-card-wrap {
+  width: 100%;
+}

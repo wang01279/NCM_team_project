@@ -38,7 +38,7 @@ export default function ProductCard({
     : ''
 
   return (
-    <div className="col-12 col-sm-6 col-md-4 col-lg-3">
+    <div className="product-card-wrap">
       <div className="product-card">
         {/* 商品圖片 */}
         <div className="product-img">

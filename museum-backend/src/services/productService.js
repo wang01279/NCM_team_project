@@ -114,11 +114,11 @@ export async function fetchProducts({
 
   // ✅ 價格篩選 (考慮折扣)
   if (!isNaN(parsedMinPrice)) {
-    baseQuery += ` AND price * (1 - discount_rate) >= ?`;
+    baseQuery += ` AND IF(discount_rate IS NOT NULL, price * (1 - discount_rate), price) >= ?`;
     params.push(parsedMinPrice);
   }
   if (!isNaN(parsedMaxPrice)) {
-    baseQuery += ` AND price * (1 - discount_rate) <= ?`;
+    baseQuery += ` AND IF(discount_rate IS NOT NULL, price * (1 - discount_rate), price) <= ?`;
     params.push(parsedMaxPrice);
   }
 
@@ -144,15 +144,22 @@ export async function fetchProducts({
 
   // ✅ 排序 + 分頁
   let orderClause = "";
-  if (sort === "price_asc") {
-    orderClause = ` ORDER BY price ASC`;
-  } else if (sort === "price_desc") {
-    orderClause = ` ORDER BY price DESC`;
-  } else {
-    orderClause = ` ORDER BY id ASC`;
+
+  switch (sort) {
+    case "price_asc":
+      orderClause = ` ORDER BY price ASC`;
+      break;
+    case "price_desc":
+      orderClause = ` ORDER BY price DESC`;
+      break;
+    case "newest":
+      orderClause = ` ORDER BY created_at DESC`;
+      break;
+    default:
+      orderClause = ` ORDER BY id ASC`;
   }
 
-  const dataQuery = `SELECT *, price * (1 - discount_rate) AS discounted_price ${baseQuery}${orderClause} LIMIT ? OFFSET ?`;
+  const dataQuery = `SELECT *, IF(discount_rate IS NOT NULL, price * (1 - discount_rate), price) AS discounted_price ${baseQuery}${orderClause} LIMIT ? OFFSET ?`;
   const [rows] = await db.query(dataQuery, [...params, limit, offset]);
 
   return {

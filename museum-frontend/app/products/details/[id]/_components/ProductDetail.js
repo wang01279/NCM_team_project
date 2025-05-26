@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import '../_styles/ProductDetail.scss'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
-import AddToCartButton from '@/app/_components/AddToCartButton'
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 
 export default function ProductDetail({

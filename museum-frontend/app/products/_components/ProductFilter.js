@@ -95,18 +95,17 @@ export default function ProductFilter({ filters, setFilters }) {
             value={filters.sort}
             onChange={handleSort}
           >
-            <option value="">排序</option>
-            <option value="price-asc">價格低到高</option>
-            <option value="price-desc">價格高到低</option>
+            <option value="" disabled hidden>
+              請選擇排序方式
+            </option>
             <option value="newest">最新上架</option>
+            <option value="price_asc">價格低到高</option>
+            <option value="price_desc">價格高到低</option>
           </select>
         </div>
         <div className="col-12 col-md-3">
-          <button
-            className="btn-add btn btn-primary p-3"
-            onClick={openFilterPanel}
-          >
-            <FaFilter className="me-2 " /> 篩選
+          <button className="btn-add btn btn-primary" onClick={openFilterPanel}>
+            <FaFilter className="" /> 篩選
           </button>
         </div>
       </div>
@@ -161,6 +160,7 @@ export default function ProductFilter({ filters, setFilters }) {
             {Math.max(filters.minPrice, filters.maxPrice)}
           </div>
         </div>
+        
 
         {['material', 'origin', 'function'].map((type) => (
           <div className="mb-4" key={type}>

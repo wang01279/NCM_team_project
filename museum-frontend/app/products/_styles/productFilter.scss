@@ -1,8 +1,26 @@
+@use '../../_styles/foundation/palette' as *;
+
+:root {
+  --primary: #{$primary};
+  --secondary: #{$secondary};
+  --success: #{$success};
+  --danger: #{$danger};
+  --warning: #{$warning};
+  --info: #{$info};
+  --light: #{$light};
+  --dark: #{$dark};
+  --main-bg: #{$main-bg};
+  --sub-bg: #{$sub-bg};
+  --main-text: #{$main-text};
+  --sub-text: #{$sub-text};
+}
+
 .input-group {
-  border: 1px solid #ced4da;
+  // border: 0px solid var(--sub-text);
   border-radius: 6px;
   overflow: hidden;
-  background-color: #fff;
+  background-color: var(--light);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
 
   .input-group-text {
     background-color: transparent;
@@ -12,13 +30,40 @@
   .form-control {
     border: none;
     box-shadow: none;
+    padding: 0;
   }
 }
 
-.form-select:focus {
-  box-shadow: none;
-  outline: none;
-  border: 1px solid #ced4da;
+.form-select {
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  background-color: var(--light);
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  padding-right: 2.5rem; // ✅ 這行控制文字與箭頭距離
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.2s;
+  cursor: pointer;
+
+  background-position: right 1rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+
+  &:hover {
+    border-color: #aaa;
+    outline: none;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #6c757d;
+    box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.25);
+    outline: none;
+  }
 }
 
 .filter-panel {
@@ -50,6 +95,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 12px;
 }
 
 .overlay {
