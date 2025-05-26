@@ -2,34 +2,68 @@ import React from 'react'
 import { memo } from 'react'
 import Image from 'next/image'
 
-const CourseContent = memo(function CourseContent({ course, artist, artistExperiences }) {
+const CourseContent = memo(function CourseContent({ course }) {
+  const {
+    description_intro,
+    description_content,
+    description_highlights,
+    description_notice,
+    video_url,
+    artist,
+    artistExperiences,
+    venue_name,
+    venue_main_image,
+    venue_image_1,
+    venue_image_2,
+  } = course
   return (
     <>
       {/* Course Introduction */}
       <section className="content-section mt-0" data-aos="fade-up">
         <h2 className="section-title">課程介紹</h2>
-        <p className="lead mb-4">{course.description}</p>
-        <ul className="feature-list">
-          {course.features?.map((feature, index) => (
-            <li key={index} data-aos="fade-up" data-aos-delay={index * 100}>
-              <i className="bi bi-check-circle-fill"></i>
-              <div>
-                <h5>{feature.title}</h5>
-                <p className="mb-0">{feature.description}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <div className="course-section-card">
+          {description_intro && (
+            <div className="course-section-block">
+              <div className="course-section-subtitle">課程簡介</div>
+              <p className="lead" style={{ fontStyle: 'italic' }}>{description_intro}</p>
+            </div>
+          )}
+          {description_content && (
+            <div className="course-section-block">
+              <div className="course-section-subtitle">課程內容</div>
+              <p>{description_content}</p>
+            </div>
+          )}
+          {description_highlights && (
+            <div className="course-section-block">
+              <div className="course-section-subtitle">學習重點</div>
+              <ul className="feature-list">
+                {description_highlights.split(/\r?\n|•/).filter(Boolean).map((item, idx) => (
+                  <li key={idx} data-aos="fade-up" data-aos-delay={idx * 100}
+                    style={{ listStyle: 'disc', marginLeft: 20 }}>
+                    <i className="bi bi-check-circle-fill" style={{ color: 'var(--primary-color)', marginRight: 8 }}></i>
+                    {item.trim()}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {description_notice && (
+            <div className="course-section-block">
+              <div className="course-section-subtitle">注意事項</div>
+              <div className="course-section-notice">{description_notice}</div>
+            </div>
+          )}
+        </div>
       </section>
 
       {/* Course Video */}
-      {console.log('video_url:', course.video_url)}
-      {course.video_url && (
+      {video_url && (
         <section className="content-section" data-aos="fade-up">
           <h2 className="section-title">創作影片</h2>
           <div className="ratio ratio-16x9">
             <iframe
-              src={course.video_url}
+              src={video_url}
               title="Course video"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -66,13 +100,13 @@ const CourseContent = memo(function CourseContent({ course, artist, artistExperi
       )}
 
       {/* Venue Information */}
-      {course.venue_name && (
+      {venue_name && (
         <section className="content-section" data-aos="fade-up">
           <h2 className="section-title">教室環境</h2>
           <div className="row g-4">
             <div className="col-md-8">
               <img 
-                src={course.venue_main_image || "/course-img/classroom/B101_2.jpg"} 
+                src={venue_main_image || "/course-img/classroom/B101_2.jpg"} 
                 alt="教室全景" 
                 className="img-fluid rounded"
               />
@@ -81,14 +115,14 @@ const CourseContent = memo(function CourseContent({ course, artist, artistExperi
               <div className="row g-4">
                 <div className="col-12">
                   <img 
-                    src={course.venue_image_1 || "/course-img/classroom/B101.jpg"} 
+                    src={venue_image_1 || "/course-img/classroom/B101.jpg"} 
                     alt="工作區" 
                     className="img-fluid rounded"
                   />
                 </div>
                 <div className="col-12">
                   <img 
-                    src={course.venue_image_2 || "/course-img/classroom/B101.jpg"} 
+                    src={venue_image_2 || "/course-img/classroom/B101.jpg"} 
                     alt="窯場" 
                     className="img-fluid rounded"
                   />

@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function CourseHero({ bannerImage, category, title }) {
+const CourseHero = ({ bannerImage, category, title }) => {
   return (
     <section 
       className="course-hero" 
@@ -18,4 +18,6 @@ export default function CourseHero({ bannerImage, category, title }) {
       </div>
     </section>
   )
-} 
+}
+
+export default CourseHero 

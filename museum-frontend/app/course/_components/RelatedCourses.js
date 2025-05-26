@@ -36,7 +36,7 @@ const RelatedCourses = memo(function RelatedCourses({ courses }) {
               >
                 <div className="course-image-wrapper">
                   <Image
-                    src={course.imageUrl || "/course-img/banner/banner-nom.png"}
+                    src={course.main_image || "/course-img/banner/banner-nom.png"}
                     alt={course.title}
                     width={400}
                     height={300}
