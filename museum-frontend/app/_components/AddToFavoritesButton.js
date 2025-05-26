@@ -17,11 +17,12 @@ const AddToFavoritesButton = ({
     setIsFavorite(initialIsFavorite || false)
   }, [initialIsFavorite])
 
-  const toggleFavorite = () => {
+  const toggleFavorite = async () => {
+    if (!onToggleFavorite) return
     const newState = !isFavorite
-    setIsFavorite(newState)
-    if (onToggleFavorite) {
-      onToggleFavorite(itemId, itemType, newState)
+    const success = await onToggleFavorite(itemId, itemType, newState)
+    if (success) {
+      setIsFavorite(newState)
     }
   }
 

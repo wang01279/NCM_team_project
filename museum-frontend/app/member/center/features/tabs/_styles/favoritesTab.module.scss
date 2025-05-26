@@ -1,0 +1,153 @@
+/* app/member/center/features/tabs/favorites/_favoritesTab.module.scss */
+@use '../../../../../_styles/foundation/palette' as *;
+
+:root {
+  --primary: #{$primary};
+  --secondary: #{$secondary};
+  --main-bg: #{$main-bg};
+  --sub-bg: #{$sub-bg};
+  --main-text: #{$main-text};
+  --sub-text: #{$sub-text};
+  --light-text: #{$light-text};
+  --dark: #{$dark};
+  --danger: #{$danger};
+  --warning: #{$warning};
+  --sidebar-hover: #{$sidebar-hover};
+  --sidebar-active: #{$sidebar-active};
+}
+
+.favoritesTabContainer {
+  min-height: calc(100vh - 40px);
+  padding: 0;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.backButton {
+  margin-bottom: 1rem;
+}
+
+.loadingText,
+.emptyText {
+  text-align: center;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.emptyText {
+  color: var(--sub-text);
+}
+
+.favoriteBlock {
+  display: flex;
+  color: var(--light-text);
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 38px 16px;
+  text-align: center;
+  min-height: 50vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  // 定義子元素的樣式
+  & > div:first-child {
+    h4 {
+      margin-bottom: 0;
+      font-weight: 800;
+    }
+
+    div {
+      // 收藏數量
+      font-size: 56px;
+      font-weight: bold;
+      margin: 16px 0;
+      color: var(--light-text);
+    }
+    p {
+      color: var(--light-text);
+      font-weight: 600;
+    }
+  }
+
+  & > div:last-child {
+    // 針對包含描述和按鈕的 div
+    p {
+      // 描述文字
+      font-size: 16px;
+      margin-bottom: 20px;
+      padding: 0 10px;
+      font-weight: 600;
+      color: var(--light-text);
+    }
+  }
+}
+@media (max-width: 768px) {
+  .favoriteBlock {
+    display: flex;
+    color: var(--main-text);
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 38px 16px;
+    text-align: center;
+    min-height: 50vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+    // 定義子元素的樣式
+    & > div:first-child {
+      h4 {
+        margin-bottom: 0;
+        font-weight: 800;
+      }
+
+      div {
+        // 收藏數量
+        font-size: 50px;
+        font-weight: bold;
+        margin: 8px 0;
+      }
+      p {
+        color: var(--main-text);
+      }
+    }
+
+    & > div:last-child {
+      // 針對包含描述和按鈕的 div
+      p {
+        // 描述文字
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        padding: 0 10px;
+        color: var(--main-text);
+      }
+    }
+  }
+}
+
+// 針對不同類型的 FavoriteBlock 背景色
+.exhibitionBlock {
+  background-color: var(--main-bg);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0),rgba(255, 255, 255, 0.5)), url('/image/bg2.webp');
+}
+
+.productBlock {
+  background-color: var(--primary);
+
+
+}
+
+.courseBlock {
+  background-color: var(--sub-text);
+
+}
+

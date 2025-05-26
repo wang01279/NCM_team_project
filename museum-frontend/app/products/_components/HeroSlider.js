@@ -157,7 +157,7 @@ export default function HeroSlider() {
             if (index === prev) className += ' exit'
 
             return (
-              <Link key={product.id} href={`/products/${product.id}`}>
+              <Link key={product.id} href={`/products/details/${product.id}`}>
                 <div className={className}>
                   <img
                     src={product.main_img}

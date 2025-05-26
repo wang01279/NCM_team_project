@@ -6,23 +6,17 @@ import '../_styles/components/productCard.scss'
 import AddToCartButton from '@/app/_components/AddToCartButton'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 
-// 格式化價格的函式，移除小數點並加入千分位
+// 金額格式化：移除小數點並加上千分位
 const formatPrice = (price) => {
-  if (price === null || price === undefined) {
-    return 'NT$0' // 或者你希望顯示的其他預設值
-  }
-  const formattedPrice = Math.round(price).toLocaleString('zh-TW', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  })
-  return `NT$${formattedPrice}`
+  if (price === null || price === undefined) return 'NT$0'
+  return `NT$${Math.round(price).toLocaleString('zh-TW')}`
 }
 
 export default function ProductCard({
   product,
   onAddToCart,
-  onAddToFavorites,
-  favoriteProducts,
+  onToggleFavorite,
+  isFavorite,
 }) {
   const {
     id,
@@ -36,11 +30,9 @@ export default function ProductCard({
   const hasDiscount = discount_rate && discount_rate > 0 && discount_rate < 10
   const discountPrice = hasDiscount
     ? Math.round(price * (discount_rate / 10))
-    : null
-
+    : price
   const status = stock === 0 ? '庫存不足' : '庫存充足'
   const isOutOfStock = stock === 0
-  const isCurrentlyFavorite = favoriteProducts?.includes(id)
   const displayDiscount = hasDiscount
     ? `${Math.round(discount_rate * 10)} 折`
     : ''
@@ -48,7 +40,7 @@ export default function ProductCard({
   return (
     <div className="col-12 col-sm-6 col-md-4 col-lg-3">
       <div className="product-card">
-        {/* 商品圖片區塊 佔 61.8% */}
+        {/* 商品圖片 */}
         <div className="product-img">
           <Image
             src={imageUrl}
@@ -70,7 +62,7 @@ export default function ProductCard({
           </div>
         </div>
 
-        {/* 商品資訊區塊 佔 38.2% */}
+        {/* 商品資訊 */}
         <div className="product-info">
           <div className="product-name">{name}</div>
 
@@ -100,13 +92,17 @@ export default function ProductCard({
               disabled={isOutOfStock}
             />
             <AddToFavoritesButton
-              productId={id}
-              onAddToFavorites={onAddToFavorites}
-              isFavorite={isCurrentlyFavorite}
+              itemId={id}
+              itemType="product"
+              isFavorite={isFavorite}
+              onToggleFavorite={(itemId, itemType, nextState) => {
+                onToggleFavorite?.(itemId, nextState)
+              }}
             />
           </div>
         </div>
-        {/* 狀態標籤 */}
+
+        {/* 標籤 */}
         {isOutOfStock && <span className="stock-badge">缺貨中</span>}
         {hasDiscount && <span className="stock-badge sale">特價中</span>}
       </div>

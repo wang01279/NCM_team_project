@@ -1,3 +1,20 @@
+@use '../foundation/palette' as *;
+
+:root {
+  --primary: #{$primary};
+  --secondary: #{$secondary};
+  --success: #{$success};
+  --danger: #{$danger};
+  --warning: #{$warning};
+  --info: #{$info};
+  --light: #{$light};
+  --dark: #{$dark};
+  --main-bg: #{$main-bg};
+  --sub-bg: #{$sub-bg};
+  --main-text: #{$main-text};
+  --sub-text: #{$sub-text};
+}
+
 .product-card {
   position: relative;
   width: 100%;
@@ -60,11 +77,11 @@
   &:hover {
     // background-color: #ca6238;
     color: #fff;
-    text-decoration: none; //確保 hover 時也沒底線
+    text-decoration: none;
   }
 
   &:focus {
-    outline: none; //移除藍框
+    outline: none;
     box-shadow: none;
     text-decoration: none;
   }
@@ -72,8 +89,8 @@
 
 // 商品資訊區（佔 40%）
 .product-info {
-  height: auto; //不要限制高度
-  min-height: 40%; //給個底限，避免文字少時太扁
+  height: auto;
+  min-height: 40%;
   padding: 15px;
   display: flex;
   flex-direction: column;
@@ -128,18 +145,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
   margin-bottom: 10px; //不貼底部
 
   .btn-primary {
     // background-color: #823b20;
     // color: white;
     border: none;
-    padding: 12px 30px; //改長
+    padding: 12px 40px; //改長
     border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
-    height: 48px;
+    height: 45px;
     min-width: 78px;
     display: flex;
     align-items: center;
@@ -152,7 +169,6 @@
       // background-color: #c04b00;
     }
 
-    //class="btn-primary disabled"
     &.disabled {
       background-color: #ccc;
       color: #666;
@@ -160,7 +176,6 @@
       opacity: 0.7;
     }
 
-    //如果是 button HTML 原生的 disabled 屬性
     &:disabled {
       background-color: #ccc;
       color: #666;
@@ -177,8 +192,8 @@
   }
 
   .btn-icon {
-    width: 48px;
-    height: 48px;
+    width: 45px;
+    height: 45px;
     font-size: 18px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -205,7 +220,7 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: #dc3545;
+  background-color: var(--danger);
   color: white;
   font-size: 12px;
   padding: 4px 16px;
@@ -214,7 +229,7 @@
   z-index: 10;
 
   &.sale {
-    background-color: #28a745;
+    background-color: var(--success);
   }
 }
 
@@ -224,7 +239,7 @@
   display: none;
 }
 
-// RWD
+
 @media (max-width: 991px) {
   .product-card {
     max-width: 300px;

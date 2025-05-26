@@ -40,9 +40,11 @@ export default function FavoriteCard({ item, type, onRemove }) {
           />
           <div className="card-body">
             <h6 className="card-title fw-bold">{item.title || item.name}</h6>
-            <h6>
-              {item.startDate.slice(0, 10)} ~ {item.endDate.slice(0, 10)}
-            </h6>
+            {item.startDate && item.endDate && (
+              <h6>
+                {item.startDate.slice(0, 10)} ~ {item.endDate.slice(0, 10)}
+              </h6>
+            )}
           </div>
         </a>
       </div>

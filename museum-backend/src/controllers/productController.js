@@ -12,9 +12,10 @@ import {
  * 前端：/api/products?page=1&category=2&sort=price_desc
  */
 export async function getProducts(req, res) {
+  // console.log('收到 query：', req.query);
   try {
     const productsData = await fetchProducts(req.query);
-    res.json(productsData); // 回傳 { products, total, page, totalPages }
+    res.json(productsData);
   } catch (err) {
     console.error("取得商品清單失敗:", err);
     res.status(500).json({ error: "伺服器錯誤，無法取得商品清單" });
