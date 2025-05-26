@@ -7,7 +7,7 @@
 // }
 
 .container {
-  margin-top: 30px;
+  margin-top: 80px;
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: 250px 1fr 200px;
@@ -31,14 +31,19 @@
   grid-area: low-content;
   position: relative;
   padding: 0;
-  height: 200px;
+  height: 150px;
 }
 
 .mainContent {
   grid-area: main-content;
   padding: 20px;
-  border: 1px solid #000;
+  // border: 1px solid #000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  background-color: rgba(255,253,250,0.3);
+  backdrop-filter: blur(12px) saturate(150%);
+  border-radius: 10px;
+  
 
   height: auto;
 }

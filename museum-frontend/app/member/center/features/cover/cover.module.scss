@@ -4,16 +4,46 @@
 .coverContainer {
   position: relative;
   width: 100%;
-  height: 100%;
-
-  background-color: blue;
+  height: 150px;
+  overflow: hidden;
+  
 }
 
 .coverImage {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: background-color 0.3s ease;
+  border-radius: 12px;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(120deg, #f8f1e3, #e3d5ca, #d5bdaf, #a3b18a, #588157, #3a5a40);
+  background-size: 200% 200%;
+  animation: gradientShift 6s ease infinite;
+}
+
+.textOverlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: bold;
+  text-shadow: 0 2px 8px #000;
+  letter-spacing: 2px;
+}
+
+.typewriter {
+  border-right: 2px solid #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: blink 0.7s steps(1) infinite;
+}
+
+@keyframes blink {
+  0%, 100% { border-color: transparent; }
+  50% { border-color: #fff; }
 }
 
 .coverEditBtn {
@@ -75,24 +105,16 @@
   &:hover {
     transform: scale(1.1);
   }
-} 
+}
 
 @keyframes gradientShift {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+  0% {
+    background-position: 0% 50%;
   }
-  
-  .coverImage {
-    width: 100%;
-    height: 200px;
-    border-radius: 12px;
-    background-size: 200% 200%;
-    transition: background 0.5s ease;
+  50% {
+    background-position: 100% 50%;
   }
+  100% {
+    background-position: 0% 50%;
+  }
+}

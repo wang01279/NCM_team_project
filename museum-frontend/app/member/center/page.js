@@ -22,6 +22,8 @@ import { useSearchParams } from 'next/navigation' // ✅ 加這行
 import Loader from '@/app/_components/load'
 
 
+
+
 export default function MemberCenter() {
   const router = useRouter()
   const { showToast } = useToast()
@@ -305,6 +307,7 @@ export default function MemberCenter() {
       <div className={styles.rightContent}>
         <RightContent />
       </div>
+     
     </>
   )
 }
