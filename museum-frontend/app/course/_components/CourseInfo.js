@@ -1,15 +1,7 @@
 import React from 'react'
 
-export default function CourseInfo({
-  category,
-  title,
-  studentCount,
-  duration,
-  weeklyHours,
-  maxStudents,
-  onFavorite,
-  courseId
-}) {
+const CourseInfo = ({ course, onFavorite }) => {
+  const { category, title, studentCount, duration, maxStudents, id } = course
   return (
     <div className="course-info-card" data-aos="fade-up">
       <div className="row align-items-center">
@@ -27,7 +19,7 @@ export default function CourseInfo({
               <button 
                 className="btn btn-outline" 
                 style={{ maxWidth: '200px' }}
-                onClick={() => onFavorite(courseId)}
+                onClick={() => onFavorite(id)}
               >
                 <i className="bi bi-heart"></i>
                 <span>收藏課程</span>
@@ -37,22 +29,19 @@ export default function CourseInfo({
           <div className="info-grid">
             <div className="info-item">
               <i className="bi bi-calendar3"></i>
-              <h5 className="pt-3">課程時長</h5>
+              <h5 className="pt-3">課程總時數</h5>
               <p className="mb-0">{duration}</p>
-            </div>
-            <div className="info-item">
-              <i className="bi bi-clock"></i>
-              <h5 className="pt-3">每週課時</h5>
-              <p className="mb-0">{weeklyHours}</p>
             </div>
             <div className="info-item">
               <i className="bi bi-person-workspace"></i>
               <h5 className="pt-3">班級人數</h5>
-              <p className="mb-0">限{maxStudents}人</p>
+              <p className="mb-0">限 {maxStudents} 人</p>
             </div>
           </div>
         </div>
       </div>
     </div>
   )
-} 
+}
+
+export default CourseInfo 
