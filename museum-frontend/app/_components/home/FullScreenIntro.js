@@ -359,7 +359,7 @@ function CameraFly({ duration = 8 }) {
   // 起始位置
   const start = new THREE.Vector3(5, 3, 5)
   // 終點位置
-  const end = new THREE.Vector3(10, 3, 0)
+  const end = new THREE.Vector3(10, 1, 0)
   // 用來追蹤動畫是否完成
   const ref = useRef({ done: false })
 

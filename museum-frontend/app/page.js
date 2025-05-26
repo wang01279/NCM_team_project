@@ -68,7 +68,7 @@ export default function AppPage() {
         }}
       >
         <div className="hero-card">
-          <h2 className="hero-card__title">國立陶瓷博物館</h2>
+          <h2 className="hero-card__title">國立故瓷博物館</h2>
           <p className="hero-card__desc">歡迎來到 3D 虛擬博物館</p>
         </div>
         <FullScreenIntro />
