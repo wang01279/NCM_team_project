@@ -1,0 +1,108 @@
+.gallery {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 5rem 0;
+  text-align: center;
+}
+.title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.subtitle {
+  color: #888;
+  font-size: 1.1rem;
+  margin-bottom: 2.5rem;
+}
+.carouselWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  position: relative;
+}
+.arrow {
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  color: #888;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  z-index: 2;
+  &:hover {
+    background: #eee;
+    color: #222;
+  }
+}
+.carousel {
+  display: flex;
+  gap: 32px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 8px 0 24px;
+  width: 100%;
+  scrollbar-width: none;
+}
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+.card {
+  flex: 0 0 auto;
+  width: 200px;
+  height: 320px;
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  background: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  &:hover {
+    transform: translateY(-8px) scale(1.04);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+  }
+  img {
+    width: 100%;
+    height: 70%;
+    object-fit: cover;
+    display: block;
+    transition: filter 0.2s;
+  }
+  .info {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 20px 16px 14px;
+    background: linear-gradient(to top, rgba(0,0,0,0.55) 70%, rgba(0,0,0,0.05) 100%);
+    color: #fff;
+    text-align: left;
+  }
+  .cardTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+  }
+  .cardSubtitle {
+    font-size: 0.95rem;
+    color: #eee;
+  }
+}
+@media (max-width: 700px) {
+  .carouselWrapper {
+    gap: 0.2rem;
+  }
+  .card {
+    width: 140px;
+    height: 220px;
+  }
+  .card img {
+    height: 65%;
+  }
+  .gallery {
+    padding: 16px 0 0;
+  }
+} 

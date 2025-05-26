@@ -1,121 +1,100 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from '@/app/_components/navbar'
-// button
-import Button from 'react-bootstrap/Button'
-// modal
-import Modal from 'react-bootstrap/Modal'
-// toast
-import { useToast } from '@/app/_components/ToastManager'
-
-// form
-import Form from 'react-bootstrap/Form'
-import { useForm } from 'react-hook-form'
-import FloatingField from '@/app/_components/FloatingField'
-// import PasswordField from '@/app/_components/PasswordField'
-import FormRow from '@/app/_components/FormRow'
-// import '@/app/_styles/formCustom'
-
+import FullScreenIntro from '@/app/_components/home/FullScreenIntro'
+import MarqueeGallery from '@/app/_components/home/MarqueeGallery'
+import MuseumVideo from '@/app/_components/home/MuseumVideo'
+import SeriesCalendar from '@/app/_components/home/SeriesCalendar'
+import SeriesGallery from '@/app/_components/home/SeriesGallery'
+import Footer from '@/app/_components/footer'
+import CardGallery from '@/app/_components/home/CardGallery'
 import '@/app/_styles/globals.scss'
 import '@/app/_styles/home.scss'
 
-export default function AppPage(props) {
-  const [show, setShow] = useState(false)
+export default function AppPage() {
+  const [activeSection, setActiveSection] = useState('home')
 
-  const handleClose = () => setShow(false)
-  const handleShow = () => setShow(true)
-
-  // toast
-  const { showToast } = useToast()
-  const variants = [
-    'primary',
-    'secondary',
-    'success',
-    'danger',
-    'warning',
-    'info',
-    'light',
-    'dark',
-  ]
-
-  // form
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm()
-  const onSubmit = (data) => console.log('🎉', data)
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+      setActiveSection(sectionId)
+    }
+  }
 
   return (
+    // <main className="min-h-screen">
     <>
-    <Navbar />
-    <div className="container">
-      <div className="grid-container">
-        <div className="box box1">
-          <div className="ticket-box" />
-          <hr className="box1-hr" />
-
-          <div className="box1-content">
-            <h1>
-              Today
-              <img src="./images/1_3.svg" alt="" />
-              <br />
-              opening hours
-            </h1>
-
-            <p>9:00 - 17:00</p>
-            <hr />
-
-            <button>
-              前往展覽
-              <i className="fa-solid fa-arrow-right" />
-            </button>
-          </div>
-        </div>
-
-        <div className="box box2">
-          {/* <video src="./images/box-bg3.gif" autoPlay muted loop /> */}
-          {/* <img src="./logo/logo-navbar-light-all.svg" alt="" /> */}
-
-          {/* <h1>歡迎光臨</h1>
-        <div>
-          <div className="logo"></div>
-          <h1>國立故瓷博物館</h1>
-        </div> */}
-        </div>
-
-        <div className="box box3">
-          <div className="box3-course">
-            <button className="box3-course-content">
-              <img src="./images/1_1.svg" alt="" />
-              <h1>精選課程</h1>
-            </button>
-          </div>
-        </div>
-
-        <div className="box box4">
-          <div className="box4-shop">
-            <div className="box4-shop-content">
-              <img src="./images/1_2.svg" alt="" />
-              <h1>故瓷商城</h1>
-              {/* <button>
-              前往購物
-              <i className="fa-solid fa-arrow-right" />
-            </button> */}
-            </div>
-          </div>
-        </div>
-
-        <div className="box box5">
-          <h1>你的命定瓷品是？</h1>
-          <button>
-            立即測驗
-            <i className="fa-solid fa-arrow-right" />
-          </button>
-        </div>
-        </div>
+      <Navbar sticky={true} />
+      
+      {/* 導航按鈕 */}
+      <div className="page-nav">
+        <button 
+          className={activeSection === 'home' ? 'active' : ''} 
+          onClick={() => scrollToSection('home')}
+        >
+          {/* 首頁 */}
+        </button>
+        <button 
+          className={activeSection === 'video' ? 'active' : ''} 
+          onClick={() => scrollToSection('video')}
+        >
+          {/* 影片導覽 */}
+        </button>
+        <button 
+          className={activeSection === 'exhibitions' ? 'active' : ''} 
+          onClick={() => scrollToSection('exhibitions')}
+        >
+          {/* 展覽資訊 */}
+        </button>
+        <button 
+          className={activeSection === 'brands' ? 'active' : ''} 
+          onClick={() => scrollToSection('brands')}
+        >
+          {/* 合作品牌 */}
+        </button>
       </div>
+
+      {/* 第一個區塊就是3D動畫 */}
+      <section
+        id="home"
+        style={{
+          height: '100vh',
+          width: '100%',
+          position: 'relative',
+          overflow: 'hidden',
+          // background: '#FDFBF7',
+        }}
+      >
+        <div className="hero-card">
+          <h2 className="hero-card__title">國立故瓷博物館</h2>
+          <p className="hero-card__desc">歡迎來到 3D 虛擬博物館</p>
+        </div>
+        <FullScreenIntro />
+        <div className="series-calendar">
+          <SeriesCalendar/>
+        </div>
+      </section>
+
+     
+
+      <section id="video" className="museum-video-section">
+        <MuseumVideo />
+      </section>
+
+      <section id="exhibitions" className="gallery-section">
+        <SeriesGallery />
+      </section>
+
+      <section id="brands" className="brand-section">
+       {/* 卡片瀑布流區塊 */}
+       <CardGallery />
+        <MarqueeGallery />
+      </section>
+
+      {/* <Footer /> */}
     </>
+    // </main>
   )
 }
