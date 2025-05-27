@@ -9,7 +9,7 @@ import { ToastProvider } from '@/app/_components/ToastManager'
 import { Inter } from 'next/font/google'
 import ChatSidebar from './_components/Chat/ChatSidebar'
 // import ClientCanvas from './_components/home/ClientCanvas'
-
+import CouponLink from './_components/CouponLink'
 
 
 
@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="zh-TW">
       <body className={inter.className}>
-
+        <CouponLink />
         {/* <ClientCanvas /> */}
 
         {/* <AuthProvider> */}

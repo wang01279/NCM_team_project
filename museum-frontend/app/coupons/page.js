@@ -5,6 +5,7 @@ import CouTab from './_components/cou-tab.js'
 // import DiceCouponGame from './game.js'
 import CouponRulesModal from './_components/couponRulesModal.js'
 import Navbar from '../_components/navbar.js'
+import Footer from '../_components/footer3.js'
 
 export default function CouponPage() {
   return (
@@ -14,7 +15,7 @@ export default function CouponPage() {
       <div className="container">
         <div
           className="d-flex justify-content-center align-items-center flex-column"
-          style={{ marginTop: '80px' }}
+          style={{ marginTop: '100px' }}
         >
           <h3 className="mb-0 pb-0 fw-bold" style={{ letterSpacing: '2px' }}>
             優惠券領取專區
@@ -27,6 +28,7 @@ export default function CouponPage() {
         {/* <DiceCouponGame /> */}
         <></>
       </div>
+      <Footer />
     </>
   )
 }

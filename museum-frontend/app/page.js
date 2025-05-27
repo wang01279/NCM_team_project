@@ -95,7 +95,7 @@ export default function AppPage() {
         <MarqueeGallery />
       </section>
 
-      <Footer/>
+      <Footer />
     </>
     // </main>
   )
