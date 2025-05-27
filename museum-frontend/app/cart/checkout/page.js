@@ -71,7 +71,7 @@ export default function CartPage() {
   }, [store711])
 
   const handleSubmit = async (e) => {
-    e.preventDefault() // 防止頁面重新整理
+    e.preventDefault()
 
     const result = OrderSchema.safeParse({ ...buyer, ...shipping, ...payment })
 
@@ -81,12 +81,20 @@ export default function CartPage() {
       return
     }
 
-    // ✅ 資料合法 → 發送
+    // ✅ 清洗 cartItems → 轉換 price 與 quantity 為數字
+    const cleanedItems = cartItems.map((item) => ({
+      ...item,
+      price: Number(item.price),
+      quantity: Number(item.quantity),
+    }))
 
+    // ✅ 組成送出資料
     const orderData = {
       ...result.data,
-      cartItems,
+      cartItems: cleanedItems,
     }
+    console.log('orderData:', orderData)
+
     const token = localStorage.getItem('token')
 
     try {
@@ -94,12 +102,11 @@ export default function CartPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`, // 記得寫在Header裡面
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(orderData),
       })
 
-      // ✅ 若不是 2xx，回傳 HTML，先取文字
       if (!response.ok) {
         const errorText = await response.text()
         console.error('伺服器錯誤：', errorText)
@@ -110,23 +117,23 @@ export default function CartPage() {
       const res = await response.json()
 
       if (res.success) {
-        // ✅ 若付款方式為 credit → 直接跳轉成功頁
+        // ✅ 信用卡付款：導向成功頁
         if (payment.paymentMethod === 'credit') {
           router.push('/cart/order-success')
+          return
         }
 
-        // ✅ 若付款方式為 ecpay → redirect 到金流
+        // ✅ 綠界付款：轉址到金流
         if (payment.paymentMethod === 'linepay') {
-          const itemsStr = cartItems
-            .map((item) => `${item.title}X${item.quantity}`)
+          const itemsStr = cleanedItems
+            .map((item) => `${item.title || item.name}X${item.quantity}`)
             .join(',')
 
-          const totalPrice = cartItems.reduce((acc, item) => {
-            return acc + item.price * item.quantity
-          }, 0)
-          // router.push(
-          //   `http://localhost:3005/api/ecpay-test-only?amount=${totalPrice}`
-          // )
+          const totalPrice = cleanedItems.reduce(
+            (acc, item) => acc + item.price * item.quantity,
+            0
+          )
+
           window.location.href = `http://localhost:3005/api/ecpay-test-only?amount=${totalPrice}&items=${encodeURIComponent(
             itemsStr
           )}`

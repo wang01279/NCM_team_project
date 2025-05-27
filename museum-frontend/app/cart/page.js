@@ -30,8 +30,19 @@ export default function CartPage() {
   //  儲存欲刪除商品的 id
   const [deleteTargetId, setDeleteTargetId] = useState(null)
   const { showToast } = useToast()
+  const [items, setItems] = useState([])
 
-  const [items, setItems] = useState()
+  const [productDiscount, setProductDiscount] = useState(0)
+  const [courseDiscount, setCourseDiscount] = useState(0)
+  const [selectedProductCoupon, setSelectedProductCoupon] = useState(null)
+  const [selectedCourseCoupon, setSelectedCourseCoupon] = useState(null)
+  const [availableProductCoupons, setAvailableProductCoupons] = useState([])
+  const [availableCourseCoupons, setAvailableCourseCoupons] = useState([])
+
+  const totalPrice = items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  )
 
   // 更新數量
   const updateQuantity = (id, delta) => {
@@ -76,6 +87,7 @@ export default function CartPage() {
     localStorage.setItem('cartItems', JSON.stringify(items))
   }, [items])
 
+  // 檢查是否登入，如果沒有 token，則顯示登入提示 Modal
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (!token) {
@@ -83,6 +95,42 @@ export default function CartPage() {
     }
     setIsLoading(false) // 不論有沒有 token 都停止 loading
   }, [])
+
+  // 取得會員優惠券
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+
+    fetch('http://localhost:3005/api/memberCoupons', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === 'success') {
+          const now = new Date()
+          const filtered = data.data.filter((c) => {
+            const notUsed = !c.is_used
+            const notExpired = !c.expired_at || new Date(c.expired_at) > now
+            const minSpendOk = totalPrice >= c.minSpend
+            return notUsed && notExpired && minSpendOk
+          })
+          // console.log('✅ 所有可用優惠券:', filtered)
+
+          // ✅ 依 category 分類
+          setAvailableProductCoupons(
+            filtered.filter((c) => c.category === '商品')
+          )
+
+          setAvailableCourseCoupons(
+            filtered.filter((c) => c.category === '課程')
+          )
+          console.log(
+            '✅ 商品優惠券:',
+            filtered.filter((c) => c.category === '商品')
+          )
+        }
+      })
+  }, [totalPrice])
 
   if (isLoading) return null
 
@@ -168,7 +216,41 @@ export default function CartPage() {
               />
 
               {/* 訂單摘要 */}
-              <OrderSummary items={items} />
+              <OrderSummary
+                items={items}
+                productCoupons={availableProductCoupons}
+                courseCoupons={availableCourseCoupons}
+                productDiscount={productDiscount}
+                courseDiscount={courseDiscount}
+                onProductCouponChange={(coupon) => {
+                  setSelectedProductCoupon(coupon)
+                  if (coupon) {
+                    const d =
+                      coupon.type === '百分比'
+                        ? Math.floor(
+                            (totalPrice * Number(coupon.discount)) / 100
+                          )
+                        : Number(coupon.discount)
+                    setProductDiscount(d)
+                  } else {
+                    setProductDiscount(0)
+                  }
+                }}
+                onCourseCouponChange={(coupon) => {
+                  setSelectedCourseCoupon(coupon)
+                  if (coupon) {
+                    const d =
+                      coupon.type === '百分比'
+                        ? Math.floor(
+                            (totalPrice * Number(coupon.discount)) / 100
+                          )
+                        : Number(coupon.discount)
+                    setCourseDiscount(d)
+                  } else {
+                    setCourseDiscount(0)
+                  }
+                }}
+              />
             </div>
 
             {/* 其他建議商品 */}

@@ -68,7 +68,7 @@
   
   .info-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
     margin: 2rem 0;
   
@@ -241,6 +241,12 @@
         transform: translateY(-2px);
       }
     }
+    
+    .btn-primary {
+      width: 100%;
+      padding: 1rem 2rem;
+
+    }
   
     .btn-outline {
       background: transparent;
@@ -257,8 +263,7 @@
   // 相關課程
   .related-courses {
     padding: 5rem 0;
-    background: var(--light-bg);
-  
+      
     .course-card {
       background: white;
       border-radius: 6px;
@@ -626,4 +631,44 @@
   .content-section .col-md-4 .row.g-4 > .col-12:not(:last-child) .img-fluid {
     margin-bottom: 16px;
   }
- 
+  
+  .course-section-subtitle {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1.15rem;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    margin-top: 2rem;
+    text-align: left;
+    position: relative;
+
+    &::after {
+      content: '';
+      display: block;
+      width: 36px;
+      height: 3px;
+      background: var(--primary-color);
+      border-radius: 2px;
+      margin-top: 0.3rem;
+    }
+  }
+
+  .course-section-block {
+    margin-bottom: 2.2rem;
+  }
+
+  .course-section-notice {
+    background: #fff4f4;
+    border-left: 4px solid #dc2626;
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    color: #b91c1c;
+    margin-top: 1rem;
+  }
+
+  .course-section-card {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 2rem;
+    font-family: 'Noto Serif TC', serif;
+  }

@@ -206,7 +206,8 @@ export default function ProductPage() {
       id: product.id,
       name: product.name_zh,
       image: product.main_img,
-      price: product.price,
+      price: Number(product.price),
+      type: 'product',
       quantity: 1,
     }
 
