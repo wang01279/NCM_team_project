@@ -35,6 +35,7 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 Icon*
+._.DS_Store
 
 # IDE 設定檔
 .vscode/
