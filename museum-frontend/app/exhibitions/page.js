@@ -9,6 +9,7 @@ import Carousel from './_components/carousel'
 import Menu from './_components/menu'
 import styles from '../exhibitions/_styles/ex-page.module.scss'
 import CouponLink from '@/app/_components/CouponLink.js'
+import Footer from '../_components/footer3'
 
 export default function ExhibitionPage() {
   const searchParams = useSearchParams()
@@ -25,7 +26,7 @@ export default function ExhibitionPage() {
   return (
     <>
       <Navbar />
-      
+
       <main className="container">
         <div className={styles.customMargin}>
           <div className="d-flex justify-content-center align-items-center flex-column fw-bold">
@@ -34,7 +35,7 @@ export default function ExhibitionPage() {
             </h3>
             <h6 className="mt-2 pt-0 m-0 fw-bold">Exhibition</h6>
           </div>
-<CouponLink />
+          <CouponLink />
           <Tabs />
         </div>
         <div>
@@ -58,6 +59,7 @@ export default function ExhibitionPage() {
           />
         </div>
       </main>
+      <Footer />
     </>
   )
 }

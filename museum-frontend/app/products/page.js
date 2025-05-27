@@ -13,6 +13,7 @@ import ProductCard from '../_components/ProductCard'
 import Footer from '../_components/footer3'
 import { useToast } from '@/app/_components/ToastManager'
 import './_styles/productPage.scss'
+import CouponLink from '../_components/CouponLink'
 
 export default function ProductPage() {
   const { showToast } = useToast()
@@ -177,6 +178,7 @@ export default function ProductPage() {
       <CategoryShowcase onCategoryClick={handleCategoryClick} />
       <CategoryMenu onCategoryClick={handleCategoryClick} />
       <ProductFilter filters={filters} setFilters={updateFilters} />
+      <CouponLink /> 
       <div className="container py-2">
         {selectedCategory.category && (
           <span className="badge bg-secondary me-2">
