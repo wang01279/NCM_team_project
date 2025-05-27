@@ -3,6 +3,7 @@
 import { useAuth } from '@/app/_hooks/useAuth'
 import { useState, useEffect } from 'react'
 import CouponTable from './_components/CouponTable'
+import './_style/memCoupons.module.scss'
 
 export default function CouponsTab() {
   const { token, isLoggedIn } = useAuth()
@@ -10,12 +11,6 @@ export default function CouponsTab() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('可使用')
   const [reload, setReload] = useState(false)
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      getCoupons()
-    }
-  }, [isLoggedIn, reload])
 
   const TABS = ['可使用', '已失效']
 
@@ -58,28 +53,30 @@ export default function CouponsTab() {
   if (loading) return <div>載入中...</div>
 
   return (
-    <div className="container px-0">
-      {/* Tabs */}
-      <ul className={`nav nav-tabs mb-3`}>
-        {TABS.map((tab) => (
-          <li className="nav-item" key={tab}>
-            <button
-              className={`btn-light nav-link ${activeTab === tab ? 'active' : ''}`}
-              style={{ borderRadius: '0px' }}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          </li>
-        ))}
-      </ul>
+    <>
+      <div className="container px-0">
+        {/* Tabs */}
+        <ul className={`nav nav-tabs mb-3`}>
+          {TABS.map((tab) => (
+            <li className="nav-item" key={tab}>
+              <button
+                className={`btn-primary customNav  ${activeTab === tab ? 'active' : ''}`}
+                style={{ borderRadius: '0px' }}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            </li>
+          ))}
+        </ul>
 
-      {/* Table */}
-      <CouponTable
-        coupons={filteredCoupons}
-        isExpiredMode={activeTab === '已失效'}
-        onActionSuccess={() => setReload((r) => !r)}
-      />
-    </div>
+        {/* Table */}
+        <CouponTable
+          coupons={filteredCoupons}
+          isExpiredMode={activeTab === '已失效'}
+          onActionSuccess={() => setReload((r) => !r)}
+        />
+      </div>
+    </>
   )
 }

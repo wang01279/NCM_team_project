@@ -1,24 +1,19 @@
-
-
-.couponTable {
+table.couponTable {
   border-radius: 6px;
   overflow: hidden;
-  min-width: 600px;
-  width: 100%;
-  table-layout: fixed; // 固定欄寬必備
 
   th {
-    background-color:#7B2D12;
-    color:#F4F1EA;
+    background-color: #7b2d12;
+    color: #f4f1ea !important;
     font-weight: bold;
     text-align: center;
     vertical-align: middle;
     padding: 12px;
-    border: 1px solid darken(#7B2D12, 10%);
+    border: 1px solid darken(#7b2d12, 10%);
   }
 
   td {
-    background-color: #F4F1EA;
+    background-color: #f4f1ea;
     text-align: center;
     vertical-align: middle;
     padding: 12px;
@@ -26,7 +21,7 @@
   }
 
   tbody tr:hover td {
-    background-color: #F2DFD7;
+    background-color: #f2dfd7;
   }
 
   thead {
@@ -38,22 +33,52 @@
   }
 }
 
-.expired {
-  filter: grayscale(100%);
+@media (max-width: 992px) {
+  // 平板
+  table.couponTable {
+    font-size: 0.9rem;
+    th,
+    td {
+      padding: 10px;
+    }
+  }
+@media (max-width: 768px) {
+  // 手機
+  table.couponTable {
+    font-size: 0.8rem;
+    th,
+    td {
+      padding: 8px;
+    }
 
-  td {
-    color: #78716C !important;
-  }
-  th {
-    color: #C7BFB5 !important;
-  }
+    thead {
+      display: none; // 如果資料很少也可考慮不顯示表頭
+    }
 
-  .text-danger {
-    color: #78716C !important; // 把紅色字也蓋掉
-  }
+    tbody td {
+      display: block;
+      width: 100%;
+      text-align: left;
+      position: relative;
+      padding-left: 50%;
+      box-sizing: border-box;
+    }
 
-  a {
-    color: #78716C;
-    pointer-events: none; // 禁止點擊（可選）
+    tbody td::before {
+      content: attr(data-label); // 對應欄位名稱
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: bold;
+      color: #3C3A36;
+    }
+
+    tr {
+      display: block;
+      margin-bottom: 1rem;
+      border: 1px solid #7B2D12;
+    }
   }
+}
 }

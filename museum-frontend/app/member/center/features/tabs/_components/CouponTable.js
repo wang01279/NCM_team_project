@@ -29,8 +29,6 @@ export default function CouponTable({
 
   if (!hasMounted) return null
 
-  const tableClass = `table table-bordered ${styles.couponTable} ${isExpiredMode ? styles.expired : ''}`
-
   const handleSort = (field) => {
     if (sortField === field) {
       setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))
@@ -105,7 +103,7 @@ export default function CouponTable({
         {icon} {typeName}優惠券
       </h5>
       <div className="table-responsive">
-        <table className={tableClass}>
+        <table className={`table table-bordered ${styles.couponTable}`}>
           <thead className="table-light text-center">
             <tr>
               <th>名稱</th>
@@ -146,30 +144,28 @@ export default function CouponTable({
             ) : (
               getSorted(data).map((c) => (
                 <tr key={c.record_id}>
-                  <td>
-                    <Link
-                      href={
-                        c.category === '商品'
-                          ? `/products/${c.target_id}`
-                          : `/courses/${c.target_id}`
-                      }
-                      className="text-decoration-none fw-bold"
-                    >
-                      {c.name}
-                    </Link>
-                  </td>
+                  <td data-label="名稱" className={
+                      isExpiredMode ? 'text-muted' : ' text-dark'
+                    }>{c.name}</td>
                   <td
+                    data-label="折扣"
                     className={
-                      isExpiredMode ? 'text-muted' : 'fw-bold text-danger'
+                      isExpiredMode ? 'text-muted' : ' text-dark'
                     }
                   >
                     {c.type === '現金'
                       ? `NT$ ${formatNumber(c.discount)}`
                       : `${c.discount}%`}
                   </td>
-                  <td>NT$ {formatNumber(c.minSpend)}</td>
-                  <td>{c.expired_at?.slice(0, 10)}</td>
-                  <td>{getDaysLeft(c.expired_at)}</td>
+                  <td data-label="最低消費" className={
+                      isExpiredMode ? 'text-muted' : ' text-dark'
+                    }>NT$ {formatNumber(c.minSpend)}</td>
+                  <td data-label="使用期限" className={
+                      isExpiredMode ? 'text-muted' : ' text-dark'
+                    }>{c.expired_at?.slice(0, 10)}</td>
+                  <td data-label="剩餘天數" className={
+                      isExpiredMode ? 'text-muted' : 'text-dark'
+                    }>{getDaysLeft(c.expired_at)}</td>
                 </tr>
               ))
             )}
