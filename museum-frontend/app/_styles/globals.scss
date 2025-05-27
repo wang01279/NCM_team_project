@@ -100,7 +100,7 @@ a {
   &:hover,
   &:focus {
     color: darken($primary, 10%);
-    text-decoration: underline;
+    // text-decoration: underline;
   }
 }
 // List styles

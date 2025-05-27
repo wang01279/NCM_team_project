@@ -11,6 +11,8 @@ import DeleteAccountModal from './_profile/DeleteAccountModal'
 
 import styles from './_style/profile.module.scss'
 
+import { FaKey, FaEdit, FaTrash } from 'react-icons/fa'
+
 export default function ProfileTab({ member, formData, onEdit, onCancel, onSubmit, onChange }) {
   const [showModal, setShowModal] = useState(false)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
@@ -251,16 +253,16 @@ export default function ProfileTab({ member, formData, onEdit, onCancel, onSubmi
                 variant="outline-primary"
                 onClick={() => setShowPasswordModal(true)}
               >
-                <i className="bi bi-key me-2"></i>修改密碼
+                <FaKey className="icon my-auto" />修改密碼
               </Button>
-              <Button variant="primary" onClick={handleShow}>
-                <i className="bi bi-pencil me-2"></i>編輯資料
+              <Button variant="btn btn-primary" onClick={handleShow}>
+                <FaEdit className="icon my-auto" />編輯資料
               </Button>
               <Button
                 variant="outline-danger"
                 onClick={() => setShowDeleteModal(true)}
               >
-                <i className="bi bi-trash me-2"></i>刪除帳號
+                <FaTrash className="icon my-auto" />刪除帳號
               </Button>
             </div>
           </div>

@@ -5,6 +5,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import '../_styles/navbar.scss'
 import AuthModal from '@/app/_components/Auth/AuthModal'
 import { useAuth } from '@/app/_hooks/useAuth'
+
+import CartDropdown from './CartDropdown/CartDropdown'
 // import { useAuth } from '@/app/_components/Auth/AuthProvider'
 
 import {
@@ -28,6 +30,15 @@ export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const { showToast } = useToast()
+
+  // 添加判断当前路径是否匹配的函数
+  const isActive = (path) => {
+    if (path === '/') {
+      return pathname === path
+    }
+    return pathname.startsWith(path)
+  }
+
   const {
     member,
     isLoggedIn,
@@ -45,6 +56,9 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isChatOpen, setIsChatOpen] = useState(false)
+
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const cartItems = [] // 這裡可接
 
   /* -------------------- Effects ---------------------- */
   // 1. 監聽捲動：縮小／還原 Header
@@ -169,13 +183,49 @@ export default function Navbar() {
           </button>
 
           {/* Desktop nav ----------------------------------------------------------------*/}
-          <div className="nav-menu d-none d-md-flex">
-            <a href="/exhibitions">展覽 Exhibition</a>
-            <a href="#">課程 Courses</a>
-            <a href="#">故瓷電商 Shop</a>
+          <div className="nav-menu desktop-menu">
+            <a
+              href="/exhibitions"
+              className={isActive('/exhibitions') ? 'active' : ''}
+            >
+              展覽
+            </a>
+            <a href="/courses" className={isActive('/courses') ? 'active' : ''}>
+              課程
+            </a>
+            <a
+              href="/products"
+              className={isActive('/products') ? 'active' : ''}
+            >
+              故瓷電商
+            </a>
 
             {/* Right cluster */}
             <div className="nav-right">
+              {/* 購物車 */}
+              {/* <a href="/cart" className="nav-icon">
+                <FaShoppingCart className="icon cart-icon" />
+                <span className="cart-count">0</span>
+              </a> */}
+
+              <a
+                href="#"
+                className="nav-icon"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setIsCartOpen((v) => !v)
+                }}
+              >
+                <FaShoppingCart className="icon cart-icon" />
+                <span className="cart-count">{cartItems.length}</span>
+              </a>
+              <CartDropdown
+                isOpen={isCartOpen}
+                onClose={() => setIsCartOpen(false)}
+                cartItems={cartItems}
+              />
+
+              {/* 個人檔案 */}
               {!isLoading &&
                 (isLoggedIn ? (
                   <div className="user-greeting">
@@ -183,8 +233,8 @@ export default function Navbar() {
                     <img
                       src={avatarSrc}
                       alt="avatar"
-                      width={40}
-                      height={40}
+                      width={20}
+                      height={20}
                       className="user-profile-avatar"
                       style={{ objectFit: 'cover', borderRadius: '50%' }}
                     />
@@ -209,7 +259,7 @@ export default function Navbar() {
                       </div>
 
                       <a
-                        href="#"
+                        href="/member/center?tab=profile"
                         className="user-dropdown-item"
                         onClick={handleNavigateToMemberCenter}
                       >
@@ -223,14 +273,23 @@ export default function Navbar() {
                         <span className="notification-dot">12</span>
                         <FaCommentDots className="icon" /> 我的訊息
                       </a>
-                      <a href="/member/center?tab=coupons" className="user-dropdown-item">
+                      <a
+                        href="/member/center?tab=coupons"
+                        className="user-dropdown-item"
+                      >
                         <FaTicketAlt className="icon" /> 我的優惠券
                       </a>
 
-                      <a href="/member/center?tab=orders" className="user-dropdown-item">
+                      <a
+                        href="/member/center?tab=orders"
+                        className="user-dropdown-item"
+                      >
                         <FaShoppingBag className="icon" /> 我的訂單
                       </a>
-                      <a href="/member/center?tab=favorites" className="user-dropdown-item">
+                      <a
+                        href="/member/center?tab=favorites"
+                        className="user-dropdown-item"
+                      >
                         <FaHeart className="icon" /> 我的收藏
                       </a>
 
@@ -246,14 +305,10 @@ export default function Navbar() {
                   </div>
                 ) : (
                   <button className="btn btn-primary" onClick={handleLogin}>
-                    <FaUserCircle className="icon" /> 登入
+                    {/* <FaUserCircle className="icon" /> 登入 */}
+                    Login
                   </button>
                 ))}
-
-              <a href="#" className="nav-icon">
-                <FaShoppingCart className="icon" />
-                <span className="cart-count">0</span>
-              </a>
             </div>
           </div>
         </nav>
@@ -261,9 +316,21 @@ export default function Navbar() {
         {/* Mobile nav (side‑drawer) ----------------------------------------------------- */}
         <aside className={`mobile-nav ${menuOpen ? 'active' : ''}`}>
           <nav className="nav-menu" onClick={closeMenu}>
-            <a href="/exhibition">展覽 Exhibition</a>
-            <a href="#">課程 Courses</a>
-            <a href="#">故瓷電商 Shop</a>
+            <a
+              href="/exhibitions"
+              className={isActive('/exhibitions') ? 'active' : ''}
+            >
+              展覽
+            </a>
+            <a href="/courses" className={isActive('/courses') ? 'active' : ''}>
+              課程
+            </a>
+            <a
+              href="/products"
+              className={isActive('/products') ? 'active' : ''}
+            >
+              故瓷電商
+            </a>
           </nav>
 
           {/* Profile & logout */}
@@ -271,12 +338,15 @@ export default function Navbar() {
             {!isLoading &&
               (isLoggedIn ? (
                 <>
-                  <div className="mobile-profile-header">
+                  <div
+                    className="mobile-profile-header"
+                    onClick={handleNavigateToMemberCenter}
+                  >
                     <img
                       src={member?.avatar || '/img/ncmLogo/logo-ncm.png'}
                       alt="avatar"
-                      width={50}
-                      height={50}
+                      width={60}
+                      height={60}
                       className="mobile-profile-avatar"
                       style={{ objectFit: 'cover', borderRadius: '50%' }}
                     />
@@ -319,10 +389,16 @@ export default function Navbar() {
       />
 
       {/* 聊天室側邊欄 */}
-      <ChatSidebar 
+      <ChatSidebar
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}
-        receiverId={member?.role === 'member' ? 93 : member?.role === 'staff' ? 92 : undefined}
+        receiverId={
+          member?.role === 'member'
+            ? 93
+            : member?.role === 'staff'
+              ? 92
+              : undefined
+        }
         isStaff={member?.role === 'staff'}
       />
     </>
