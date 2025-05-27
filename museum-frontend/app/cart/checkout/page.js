@@ -92,6 +92,7 @@ export default function CartPage() {
     const orderData = {
       ...result.data,
       cartItems: cleanedItems,
+      usedCouponCode: selectedCoupon?.uuid_code || null,
     }
     console.log('orderData:', orderData)
 

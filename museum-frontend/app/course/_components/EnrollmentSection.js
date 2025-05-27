@@ -1,17 +1,17 @@
 import React from 'react'
 
-export default function EnrollmentSection({ course, onEnroll }) {
-  const {
-    price,
-    original_price,
-    maxStudents,
-    materials_included,
-  } = course
+export default function EnrollmentSection({
+  course,
+  // onEnroll,
+  onAddToCart,
+  isEnrolled,
+}) {
+  const { price, original_price, maxStudents, materials_included } = course
   const formatPrice = (price) => {
     return new Intl.NumberFormat('zh-TW', {
       style: 'currency',
       currency: 'TWD',
-      minimumFractionDigits: 0
+      minimumFractionDigits: 0,
     }).format(price)
   }
 
@@ -20,9 +20,7 @@ export default function EnrollmentSection({ course, onEnroll }) {
       <div className="price-tag">
         {formatPrice(price)}
         {original_price && (
-          <span className="original-price">
-            {formatPrice(original_price)}
-          </span>
+          <span className="original-price">{formatPrice(original_price)}</span>
         )}
       </div>
       <ul className="enrollment-features list-unstyled">
@@ -35,15 +33,16 @@ export default function EnrollmentSection({ course, onEnroll }) {
           {materials_included ? '含材料與工具' : '不含材料'}
         </li>
       </ul>
-      <button 
+      <button
         className="btn btn-primary mb-3"
-        onClick={onEnroll}
+        onClick={onAddToCart}
+        disabled={isEnrolled}
       >
-        <i className="bi bi-cart-plus"></i> 立即報名
+        <i className="bi bi-cart-plus"></i> {isEnrolled ? '已報名' : '立即報名'}
       </button>
       <button className="btn btn-enroll btn-outline">
         <i className="bi bi-chat-text"></i> 諮詢課程
       </button>
     </div>
   )
-} 
+}

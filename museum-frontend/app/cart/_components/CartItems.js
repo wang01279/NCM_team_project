@@ -29,8 +29,8 @@ export default function CartItems({ items = [], updateQuantity, deleteItem }) {
             {courseItems.map((item) => (
               <CartItem
                 key={item.id}
-                imageSrc={item.imageSrc}
-                title={item.title}
+                image={item.image}
+                name={item.name}
                 price={item.price}
                 quantity={item.quantity}
                 subtotal={item.price * item.quantity}

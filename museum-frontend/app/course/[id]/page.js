@@ -1,17 +1,19 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState, useCallback } from 'react'
+import { useParams } from 'next/navigation'
 import axios from 'axios'
 // import Image from 'next/image'
 import { useToast } from '@/app/_components/ToastManager'
 import Head from 'next/head'
 import '@/app/_styles/globals.scss'
 import '@/app/_styles/courseDetail.scss'
-import CourseInfo from '@/app/_components/CourseInfo'
-import CourseContent from '@/app/_components/CourseContent'
-import EnrollmentSection from '@/app/_components/EnrollmentSection'
-import RelatedCourses from '@/app/_components/RelatedCourses'
+import CourseInfo from '@/app/course/_components/CourseInfo'
+import CourseContent from '@/app/course/_components/CourseContent'
+import EnrollmentSection from '@/app/course/_components/EnrollmentSection'
+import RelatedCourses from '@/app/course/_components/RelatedCourses'
+import Navbar from '@/app/_components/navbar'
+import Image from 'next/image'
 
 // API functions
 const fetchCourse = async (id) => {
@@ -44,56 +46,64 @@ const fetchRelatedCourses = async (courseId, categoryId) => {
 
 export default function CourseDetailPage() {
   const params = useParams()
-  const router = useRouter()
   const id = params.id
-  const [state, setState] = useState({
-    course: null,
-    artist: null,
-    artistExperiences: [],
-    relatedCourses: [],
-    loading: true,
-    error: null,
-  })
-  const toast = useToast()
+  const [course, setCourse] = useState(null)
+  const [relatedCourses, setRelatedCourses] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [isEnrolled, setIsEnrolled] = useState(false)
 
-  // Fetch course and related data
+  const toast = useToast()
+  const { showToast } = useToast()
+
   const fetchCourseData = useCallback(async () => {
     if (!id) return
-
+    setLoading(true)
+    setError(null)
     try {
-      setState((prev) => ({ ...prev, loading: true, error: null }))
       const courseData = await fetchCourse(id)
-      const artistData = await fetchArtist(courseData.artist_id)
-      const experiencesData = await fetchArtistExperiences(courseData.artist_id)
-
-      // 嘗試獲取相關課程
-      let relatedCoursesData = []
-      try {
-        relatedCoursesData = await fetchRelatedCourses(
-          id,
-          courseData.categories[0]?.id
-        )
-      } catch (err) {
-        console.error('Failed to fetch related courses:', err)
-        // 相關課程加載失敗不影響主要功能
+      let artist = null
+      let artistExperiences = []
+      if (courseData.artist_id) {
+        artist = await fetchArtist(courseData.artist_id)
+        artistExperiences = await fetchArtistExperiences(courseData.artist_id)
       }
-
-      setState((prev) => ({
-        ...prev,
-        course: courseData,
-        artist: artistData,
-        artistExperiences: experiencesData,
-        relatedCourses: relatedCoursesData,
-        loading: false,
-      }))
+      // 計算課程總時數
+      let totalHours = ''
+      if (courseData.start_time && courseData.end_time) {
+        const start = new Date(courseData.start_time)
+        const end = new Date(courseData.end_time)
+        const diffMs = end - start
+        if (!isNaN(diffMs) && diffMs > 0) {
+          const hours = Math.round((diffMs / (1000 * 60 * 60)) * 100) / 100
+          totalHours = `${hours} 小時`
+        }
+      }
+      // 統一 course 物件
+      const unifiedCourse = {
+        ...courseData,
+        duration: totalHours || '—',
+        maxStudents: courseData.max_students || '20',
+        artist,
+        artistExperiences,
+      }
+      setCourse(unifiedCourse)
+      // 相關課程
+      let relCourses = []
+      if (courseData.categories && courseData.categories[0]?.id) {
+        try {
+          relCourses = await fetchRelatedCourses(
+            id,
+            courseData.categories[0].id
+          )
+        } catch {}
+      }
+      setRelatedCourses(relCourses)
+      setLoading(false)
     } catch (err) {
       console.error('Failed to fetch data:', err)
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-        error: '無法載入課程資訊',
-      }))
-      // 使用正確的 toast 方法
+      setError('無法載入課程資訊')
+      setLoading(false)
       if (toast && typeof toast.showToast === 'function') {
         toast.showToast('error', '無法載入課程資訊')
       }
@@ -104,39 +114,26 @@ export default function CourseDetailPage() {
     fetchCourseData()
   }, [fetchCourseData])
 
-  // Event handlers
+  useEffect(() => {
+    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || []
+    const alreadyInCart = cartItems.some(
+      (item) => item.id === course?.id && item.type === 'course'
+    )
+    setIsEnrolled(alreadyInCart)
+  }, [course])
+
   const handleFavorite = useCallback((courseId) => {
     console.log(`收藏課程 ${courseId}`)
     // TODO: Implement favorite logic
   }, [])
 
-  const handleEnroll = useCallback(() => {
-    if (!state.course) return
-    console.log('報名課程:', state.course.id)
-    // TODO: Implement enrollment logic
-  }, [state.course])
+  // const handleEnroll = useCallback(() => {
+  //   if (!course) return
+  //   console.log('報名課程:', course.id)
+  //   // TODO: Implement enrollment logic
+  // }, [course])
 
-  // Computed data
-  const courseData = useMemo(() => {
-    if (!state.course) return null
-
-    return {
-      ...state.course,
-      price: state.course.price || '2,800',
-      duration: `${state.course.duration_value || 12}${state.course.duration_unit === 'week' ? '週' : '天'}課程`,
-      weeklyHours: `${state.course.hours_per_session || 2}小時`,
-      maxStudents: state.course.max_students || '20',
-      sessionsPerWeek: state.course.sessions_per_week || 2,
-      materialsIncluded: state.course.materials_included
-        ? '含材料與工具'
-        : '不含材料',
-      artist: state.artist,
-      artistExperiences: state.artistExperiences,
-    }
-  }, [state.course, state.artist, state.artistExperiences])
-
-  // Loading & error states
-  if (state.loading) {
+  if (loading) {
     return (
       <div className="container py-5 text-center">
         <div className="spinner-border text-primary" role="status">
@@ -147,11 +144,11 @@ export default function CourseDetailPage() {
     )
   }
 
-  if (state.error) {
+  if (error) {
     return (
       <div className="container py-5 text-center">
         <div className="alert alert-danger" role="alert">
-          {state.error}
+          {error}
         </div>
         <button className="btn btn-primary mt-3" onClick={fetchCourseData}>
           重試
@@ -160,7 +157,7 @@ export default function CourseDetailPage() {
     )
   }
 
-  if (!courseData) {
+  if (!course) {
     return (
       <div className="container py-5 text-center">
         <div className="alert alert-warning" role="alert">
@@ -169,25 +166,65 @@ export default function CourseDetailPage() {
       </div>
     )
   }
+  const handleAddToCart = () => {
+    if (!course || isEnrolled) return
+
+    const cartItem = {
+      id: course.id,
+      name: course.title,
+      image: course.images?.find((img) => img.is_main == 0)?.image_path,
+      price: Number(course.price),
+      type: 'course',
+      quantity: 1,
+    }
+
+    const existing = JSON.parse(localStorage.getItem('cartItems')) || []
+    const index = existing.findIndex(
+      (item) => item.id === cartItem.id && item.type === 'course'
+    )
+
+    if (index > -1) {
+      existing[index].quantity += 1
+    } else {
+      existing.push(cartItem)
+    }
+
+    localStorage.setItem('cartItems', JSON.stringify(existing))
+    setIsEnrolled(true) // ⬅️ 更新狀態
+    showToast('success', '已成功報名課程', 3000)
+  }
 
   return (
     <>
+      <Navbar />
       <Head>
-        <title>{courseData.title} | 國立故瓷博物館</title>
-        <meta name="description" content={courseData.description || ''} />
+        <title>{course.title} | 國立故瓷博物館</title>
+        <meta name="description" content={course.description || ''} />
       </Head>
 
-      {console.log('images:', courseData.images)}
+      {console.log('images:', course.images)}
       {/* Gallery Section */}
       <section className="course-gallery container py-4">
         <div className="row g-3">
-          {Array.isArray(courseData.images) &&
-            courseData.images.slice(0, 3).map((img, idx) => (
+          {Array.isArray(course.images) &&
+            course.images.slice(0, 3).map((img, idx) => (
               <div className="col-md-4" key={img.image_path}>
                 <div className="gallery-img-wrapper">
-                  <img
+                  {/* <img
                     src={img.image_path}
                     alt={`課程圖片${idx + 1}`}
+                    className="img-fluid rounded"
+                    style={{
+                      objectFit: 'cover',
+                      width: '100%',
+                      height: '260px',
+                    }}
+                  /> */}
+                  <Image
+                    src={img.image_path}
+                    alt={`課程圖片${idx + 1}`}
+                    width={100}
+                    height={260}
                     className="img-fluid rounded"
                     style={{
                       objectFit: 'cover',
@@ -202,35 +239,25 @@ export default function CourseDetailPage() {
       </section>
 
       <div className="container px-3 px-md-4">
-        <CourseInfo
-          category={courseData.category || '陶藝課程'}
-          title={courseData.title}
-          rating={courseData.rating}
-          reviewCount={courseData.reviewCount}
-          studentCount={courseData.studentCount}
-          duration={courseData.duration}
-          weeklyHours={courseData.weeklyHours}
-          maxStudents={courseData.maxStudents}
-          onFavorite={handleFavorite}
-          courseId={courseData.id}
-        />
+        <CourseInfo course={course} onFavorite={handleFavorite} />
 
         <div className="row mt-5">
           <div className="col-lg-8">
-            <CourseContent
-              course={courseData}
-              artist={courseData.artist}
-              artistExperiences={courseData.artistExperiences}
-            />
+            <CourseContent course={course} />
           </div>
           <div className="col-lg-4">
-            <EnrollmentSection course={courseData} onEnroll={handleEnroll} />
+            <EnrollmentSection
+              course={course}
+              // onEnroll={handleEnroll}
+              onAddToCart={handleAddToCart}
+              isEnrolled={isEnrolled}
+            />
           </div>
         </div>
       </div>
 
       {/* 推薦課程板塊 */}
-      <RelatedCourses courses={state.relatedCourses} />
+      <RelatedCourses courses={relatedCourses} />
     </>
   )
 }
@@ -248,4 +275,3 @@ export default function CourseDetailPage() {
 //     </section>
 //   )
 // }
-
