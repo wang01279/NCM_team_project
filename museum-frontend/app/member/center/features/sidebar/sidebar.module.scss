@@ -169,6 +169,7 @@ $active-scale: 1.3;
   &:hover {
     background-color: rgba(247, 127, 8, 0.5);
     transform: translateY(-2px) scale($hover-scale);
+    text-decoration: none;
 
     
 
