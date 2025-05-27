@@ -6,6 +6,7 @@ import { initializeSocket } from "./services/socketService.js";
 import memberRoutes from "./routes/memberRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import exhibitionsRoutes from "./routes/exhibitions/index.js";
+import exhibitionsUploadsRoutes from "./routes/exhibitionUploads/index.js"
 import couponsRoutes from "./routes/coupons/index.js";
 import couponsClaimRoutes from "./routes/couponsClaim/index.js";
 import memberCouponRoutes from "./routes/memberCoupons.js";
@@ -138,6 +139,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/artists", artistRoutes);
 app.use("/api/exhibitions", exhibitionsRoutes);
+app.use("/api/exhibitionUploads", exhibitionsUploadsRoutes);
 app.use("/api/coupons", couponsRoutes);
 app.use("/api/couponsClaim", couponsClaimRoutes);
 app.use("/api/memberCoupons", memberCouponRoutes);
