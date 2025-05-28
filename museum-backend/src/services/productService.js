@@ -47,7 +47,7 @@ export async function fetchProducts({
   const offset = (page - 1) * limit;
   const params = [];
 
-  // ✅ 修正重點：把字串轉陣列
+  //重點：把字串轉陣列
   if (typeof material === "string") {
     material = material.split(",").filter(Boolean);
   }
@@ -58,11 +58,11 @@ export async function fetchProducts({
     functions = functions.split(",").filter(Boolean);
   }
 
-  // ✅ 價格字串轉數字
+  //價格字串轉數字
   const parsedMinPrice = Number(price_min);
   const parsedMaxPrice = Number(price_max);
 
-  // ✅ 查名稱對應的 ID 陣列
+  //查名稱對應的 ID 陣列
   if (material && Array.isArray(material) && material.length > 0) {
     const [rows] = await db.query(
       `SELECT id FROM product_materials WHERE name IN (${material
@@ -93,7 +93,7 @@ export async function fetchProducts({
     functions = rows.map((r) => r.id);
   }
 
-  // ✅ 商品查詢條件組合
+  //商品查詢條件組合
   let baseQuery = `FROM products WHERE deleted_at IS NULL`;
 
   if (search) {
@@ -112,7 +112,7 @@ export async function fetchProducts({
     params.push(subcategory);
   }
 
-  // ✅ 價格篩選 (考慮折扣)
+  //價格篩選 (考慮折扣)
   if (!isNaN(parsedMinPrice)) {
     baseQuery += ` AND IF(discount_rate IS NOT NULL, price * (1 - discount_rate), price) >= ?`;
     params.push(parsedMinPrice);
@@ -137,12 +137,12 @@ export async function fetchProducts({
     params.push(...functions);
   }
 
-  // ✅ 查總筆數
+  //查總筆數
   const countQuery = `SELECT COUNT(*) AS total ${baseQuery}`;
   const [countResult] = await db.query(countQuery, params);
   const total = countResult[0].total;
 
-  // ✅ 排序 + 分頁
+  //排序 + 分頁
   let orderClause = "";
 
   switch (sort) {
@@ -242,4 +242,90 @@ export async function fetchProductCategoryId(id) {
     [id]
   );
   return rows[0]?.category_id || null;
+}
+/**
+ * 新增評論
+ * @param {object} reviewData - 包含 product_id, member_id, rating, comment
+ */
+export async function addReview(reviewData) {
+  const { product_id, member_id, rating, comment } = reviewData;
+  try {
+    // *** 解決問題 3：後端檢查是否已評論過 ***
+    const [existingReviews] = await db.query(
+      "SELECT review_id FROM reviews WHERE product_id = ? AND member_id = ?",
+      [product_id, member_id]
+    );
+
+    if (existingReviews.length > 0) {
+      throw new Error("您已評論過此商品，請編輯您的評論。"); // 拋出特定錯誤訊息
+    }
+
+    const [result] = await db.query(
+      `INSERT INTO reviews (product_id, member_id, rating, comment) VALUES (?, ?, ?, ?)`,
+      [product_id, member_id, rating, comment]
+    );
+    return { id: result.insertId, ...reviewData };
+  } catch (error) {
+    console.error("新增評論失敗:", error);
+    // 重新拋出錯誤，讓 controller 處理
+    throw error; // 這裡很重要，讓上層知道是什麼錯誤
+  }
+}
+/**
+ * 更新評論
+ * @param {number} reviewId - 要更新的評論 ID
+ * @param {object} reviewData - 包含 rating, comment (可能也包含 member_id 進行安全檢查)
+ * @param {number} memberIdFromAuth - 從 JWT 或 Session 中獲取的會員 ID (用於安全檢查)
+ */
+export async function updateReview(reviewId, reviewData, memberIdFromAuth) {
+  const { rating, comment } = reviewData;
+  try {
+    // *** 解決問題 2：後端安全檢查：只能編輯自己的評論 ***
+    const [result] = await db.query(
+      `UPDATE reviews SET rating = ?, comment = ? WHERE review_id = ? AND member_id = ?`,
+      [rating, comment, reviewId, memberIdFromAuth] // 確保 member_id 匹配
+    );
+
+    if (result.affectedRows === 0) {
+      // 如果沒有更新任何行，可能是評論不存在或不是該用戶的評論
+      const [checkReview] = await db.query('SELECT review_id FROM reviews WHERE review_id = ?', [reviewId]);
+      if (checkReview.length === 0) {
+        throw new Error('評論不存在。');
+      } else {
+        throw new Error('您無權編輯此評論。');
+      }
+    }
+    return { message: '評論更新成功', affectedRows: result.affectedRows };
+  } catch (error) {
+    console.error('更新評論失敗:', error);
+    throw error;
+  }
+}
+
+/**
+ * 根據 product_id 取得所有評論
+ * @param {number} productId
+ */
+export async function fetchReviewsByProductId(productId) {
+  try {
+    const [reviews] = await db.query(
+      `SELECT
+         r.review_id AS id,
+         r.product_id,
+         r.member_id,
+         r.rating,
+         r.comment,
+         r.created_at,
+         mp.name AS reviewer_name -- 從 member_profiles 表獲取 name
+       FROM reviews r
+       LEFT JOIN member_profiles mp ON r.member_id = mp.member_id -- 關聯 member_profiles
+       WHERE r.product_id = ?
+       ORDER BY r.created_at DESC`,
+      [productId]
+    );
+    return reviews;
+  } catch (error) {
+    console.error("從資料庫取得評論失敗:", error); // 這裡會打印出真正的錯誤訊息
+    throw new Error("無法取得評論"); // 向上拋出自定義的錯誤訊息
+  }
 }

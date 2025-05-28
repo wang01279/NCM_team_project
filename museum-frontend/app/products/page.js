@@ -234,12 +234,12 @@ export default function ProductPage() {
       <ProductFilter filters={filters} setFilters={updateFilters} />
       <div className="container py-2">
         {selectedCategory.category && (
-          <span className="badge bg-secondary me-2">
+          <span className="badge bg-secondary me-2 p-2">
             主分類：{categoryNameMap[selectedCategory.category] || '未識別'}
           </span>
         )}
         {selectedCategory.subcategory && (
-          <span className="badge bg-secondary">
+          <span className="badge bg-secondary p-2">
             子分類：
             {subcategoryNameMap[selectedCategory.subcategory] || '未識別'}
           </span>

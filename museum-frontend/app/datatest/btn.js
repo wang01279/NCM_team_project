@@ -1,4 +1,3 @@
-// components/Btn.js
 'use client'
 
 import React, { useState } from 'react'
@@ -11,11 +10,11 @@ const CartSVG = () => (
   <svg viewBox="0 0 36 26">
     <path
       d={FA_SHOPPING_CART_PATH_D}
-      transform="scale(0.06) translate(10, 5)" // 這些值請根據實際情況微調
-      fill="none" // 確保是輪廓
-      stroke="currentColor" // 顏色由 SCSS 控制
-      strokeWidth="1" // 嘗試較小的線寬
-      vectorEffect="non-scaling-stroke" // <<<<<<< 修正這裡: vector-effect -> vectorEffect
+      transform="scale(0.06) translate(10, 5)"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1"
+      vectorEffect="non-scaling-stroke"
     />
 
     <polyline points="15 13.5 17 15.5 22 10.5" />

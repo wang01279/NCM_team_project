@@ -172,7 +172,7 @@ export default function Navbar() {
           <div className="nav-menu d-none d-md-flex">
             <a href="/exhibitions">展覽 Exhibition</a>
             <a href="#">課程 Courses</a>
-            <a href="#">故瓷電商 Shop</a>
+            <a href="/products">故瓷電商 Shop</a>
 
             {/* Right cluster */}
             <div className="nav-right">

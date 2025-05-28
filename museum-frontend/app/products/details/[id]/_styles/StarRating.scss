@@ -1,22 +1,22 @@
-.starContainer {
+.star-container {
   display: flex;
   gap: 4px;
 }
 
-.starBtn {
+.star-btn {
   background: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
 }
 
-.on {
+.star-on { 
   color: var(--fill-color, gold);
   font-size: 2rem;
   transition: color 0.2s ease;
 }
 
-.off {
+.star-off {
   color: var(--empty-color, gray);
   font-size: 2rem;
   transition: color 0.2s ease;

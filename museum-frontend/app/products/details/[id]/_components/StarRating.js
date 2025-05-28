@@ -1,7 +1,9 @@
+// app/products/details/[id]/_components/StarRating.js (新檔名)
+
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import styles from './star-rating.module.css'
+import '../_styles/StarRating.scss' // <--- 更改為普通的 SCSS 檔案路徑，移除 .module
 
 export default function StarRating({
   value = 0,
@@ -20,7 +22,9 @@ export default function StarRating({
   }, [value])
 
   return (
-    <div className={styles.starContainer}>
+    <div className="star-container">
+      {' '}
+      {/* <--- 注意這裡：直接使用類名，不再是 styles.starContainer */}
       {Array(max)
         .fill(1)
         .map((_, i) => {
@@ -29,7 +33,8 @@ export default function StarRating({
           return (
             <button
               key={i}
-              className={styles.starBtn}
+              type="button" // <--- 關鍵修改：添加 type="button"
+              className="star-btn" // <--- 注意這裡：直接使用類名
               onClick={() => {
                 if (!readOnly) {
                   setRating(score)
@@ -45,7 +50,7 @@ export default function StarRating({
             >
               <span
                 className={
-                  score <= (hoverRating || rating) ? styles.on : styles.off
+                  score <= (hoverRating || rating) ? 'star-on' : 'star-off' // <--- 注意這裡：直接使用類名
                 }
                 style={{
                   '--fill-color': fillColor,

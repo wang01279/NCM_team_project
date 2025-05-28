@@ -43,7 +43,10 @@ export default function ProductDetail({
   }
 
   const handleQuantityIncrement = () => {
-    setQuantity(quantity + 1)
+    // 確保不會超過庫存量
+    if (product.stock > 0 && quantity < product.stock) {
+      setQuantity(quantity + 1)
+    }
   }
 
   const handleQuantityDecrement = () => {
@@ -131,7 +134,7 @@ export default function ProductDetail({
                 <button
                   className="qty-btn"
                   onClick={handleQuantityDecrement}
-                  disabled={isOutOfStock}
+                  disabled={isOutOfStock || quantity <= 1} // 當庫存為0或數量為1時禁用減號
                 >
                   -
                 </button>
@@ -144,7 +147,7 @@ export default function ProductDetail({
                 <button
                   className="qty-btn"
                   onClick={handleQuantityIncrement}
-                  disabled={isOutOfStock}
+                  disabled={isOutOfStock || quantity >= product.stock} // 當庫存為0或數量達到庫存上限時禁用加號
                 >
                   +
                 </button>
@@ -152,6 +155,7 @@ export default function ProductDetail({
               <button
                 className="add-to-cart btn btn-primary d-flex"
                 onClick={() => onAddToCart(quantity)}
+                disabled={isOutOfStock} // 當庫存為0時禁用
               >
                 加入購物車
               </button>
@@ -168,7 +172,7 @@ export default function ProductDetail({
               <button
                 className="qty-btn"
                 onClick={handleQuantityDecrement}
-                disabled={isOutOfStock}
+                disabled={isOutOfStock || quantity <= 1} // 當庫存為0或數量為1時禁用減號
               >
                 -
               </button>
@@ -181,7 +185,7 @@ export default function ProductDetail({
               <button
                 className="qty-btn"
                 onClick={handleQuantityIncrement}
-                disabled={isOutOfStock}
+                disabled={isOutOfStock || quantity >= product.stock} // 當庫存為0或數量達到庫存上限時禁用加號
               >
                 +
               </button>
@@ -189,6 +193,7 @@ export default function ProductDetail({
             <button
               onClick={() => onAddToCart(quantity)}
               className="add-to-cart btn btn-primary d-flex justify-content-center align-items-center flex-grow-1"
+              disabled={isOutOfStock} // 當庫存為0時禁用
             >
               加入購物車
             </button>
