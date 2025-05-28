@@ -2,6 +2,9 @@
 'use client'
 
 import React, { useState } from 'react'
+
+import '@/app/_styles/vendors/_bootstrap-override.scss'
+import '@/app/_styles/globals.scss'
 import { Button } from 'react-bootstrap'
 import { useToast } from '@/app/_components/ToastManager'
 import InfoRow from './_profile/InfoRow'
@@ -25,6 +28,7 @@ export default function ProfileTab({ member, formData, onEdit, onCancel, onSubmi
     newPassword: '',
     confirmPassword: '',
   })
+
   const [deletePassword, setDeletePassword] = useState('')
   const { showToast } = useToast()
 
@@ -217,7 +221,9 @@ export default function ProfileTab({ member, formData, onEdit, onCancel, onSubmi
               className={styles['profile-avatar']}
             />
             <div className={styles['profile-name']}>{member?.name}</div>
-            <div className={styles['profile-role']}>一般會員</div>
+            <div className={styles['profile-role']}>
+              {member?.role === 'admin' ? '管理員' : '一般會員'}
+            </div>
           </div>
           <div className={styles['profile-info-col']}>
             <div className={styles['profile-info']}>
@@ -255,7 +261,7 @@ export default function ProfileTab({ member, formData, onEdit, onCancel, onSubmi
               >
                 <FaKey className="icon my-auto" />修改密碼
               </Button>
-              <Button variant="btn btn-primary" onClick={handleShow}>
+              <Button variant="primary" onClick={handleShow}>
                 <FaEdit className="icon my-auto" />編輯資料
               </Button>
               <Button

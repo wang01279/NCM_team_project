@@ -130,3 +130,35 @@
     color: darken($primary, 15%);
   }
 } 
+
+
+// outline
+.btn-outline-primary {
+  border-color: $primary;
+  color: $primary;
+}
+
+.btn-outline-danger {
+  border-color: $danger;
+  color: $danger;
+}
+
+.btn-outline-secondary {
+  border-color: $secondary;
+  color: $secondary;
+}
+
+.btn-outline-success {
+  border-color: $success;
+  color: $success;
+}
+
+.btn-outline-info {
+  border-color: $info;
+  color: $info;
+}
+
+.btn-outline-light {
+  border-color: $light;
+  color: $light;
+}

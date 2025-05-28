@@ -8,6 +8,7 @@ import { FaEnvelope, FaLock } from 'react-icons/fa'
 import { useToast } from '@/app/_components/ToastManager'
 import GoogleLoginButton from './GoogleLoginButton'
 import { useAuth } from '@/app/_hooks/useAuth'
+import { jwtDecode } from 'jwt-decode'
 
 export default function LoginForm({
   // formData,
@@ -138,8 +139,6 @@ export default function LoginForm({
     }
   }
 
-
-
   // Firebase Google Popup 登入成功後的 callback
   const handleGoogleLoginSuccess = async (idToken) => {
     setLoading(true)
@@ -160,7 +159,18 @@ export default function LoginForm({
       // 使用 useAuth.login 統一管理 state & localStorage
       login(data.user, data.accessToken)
       showToast('success', 'Google 登入成功 🎉')
-      router.push('/member/center')
+
+      // 解碼 token 獲取角色
+      const decoded = jwtDecode(data.accessToken)
+      const role = decoded.role
+
+      // 根據角色導向不同頁面
+      let redirectPath = '/member/center'
+      if (role === 'admin') {
+        redirectPath = '/admin/dashboard'
+      }
+
+      router.push(redirectPath)
     } catch (err) {
       console.error('後端驗證錯誤：', err)
       // showToast('error', err.message)

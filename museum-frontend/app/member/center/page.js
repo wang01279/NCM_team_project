@@ -1,6 +1,9 @@
 // museum-frontend/app/member/center/page.jsx
 'use client'
 
+// import '@/app/_styles/globals.scss';
+// import '@/app/_styles/vendors/_bootstrap-override.scss';
+
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/app/_components/ToastManager'
