@@ -3,6 +3,9 @@
 @use 'foundation/mixins' as *;
 @use 'foundation/typography' as *;
 
+// 導入所有 bootstrap 樣式
+@use 'bootstrap/scss/bootstrap' as bootstrap;
+
 // Vendors
 @use 'vendors/bootstrap-override';
 
@@ -10,8 +13,7 @@
 @use 'components/buttons';
 @use 'components/alerts';
 
-// 導入所有 bootstrap 樣式
-@use 'bootstrap/scss/bootstrap' as bootstrap;
+
 
 // google Noto Serif TC 字體
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&display=swap');
@@ -152,3 +154,335 @@ ul, ol {
 
 
 
+
+// ----------------------------------------------------------------------------
+// 全域覆寫：讓所有 .btn-*, .btn-outline-* 套用你的設計色票
+// ----------------------------------------------------------------------------
+
+// PRIMARY
+.btn-primary {
+  --bs-btn-bg:               #{$primary} !important;
+  --bs-btn-border-color:     #{$primary} !important;
+  --bs-btn-color:            #fff !important;
+  --bs-btn-hover-bg:         #{darken($primary, 15%)} !important;
+  --bs-btn-hover-border-color: #{darken($primary, 15%)} !important;
+  --bs-btn-hover-color:      #fff !important;
+  --bs-btn-active-bg:        #{darken($primary, 15%)} !important;
+  --bs-btn-active-border-color: #{darken($primary, 15%)} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+.btn-secondary {
+  --bs-btn-bg:               #{$secondary} !important;
+  --bs-btn-border-color:     #{$secondary} !important;
+  --bs-btn-color:            #fff !important;
+  --bs-btn-hover-bg:         #{darken($secondary, 15%)} !important;
+  --bs-btn-hover-border-color: #{darken($secondary, 15%)} !important;
+  --bs-btn-hover-color:      #fff !important;
+  --bs-btn-active-bg:        #{darken($secondary, 15%)} !important;
+  --bs-btn-active-border-color: #{darken($secondary, 15%)} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+.btn-success {
+  --bs-btn-bg:               #{$success} !important;
+  --bs-btn-border-color:     #{$success} !important;
+  --bs-btn-color:            #fff !important;
+  --bs-btn-hover-bg:         #{darken($success, 15%)} !important;
+  --bs-btn-hover-border-color: #{darken($success, 15%)} !important;
+  --bs-btn-hover-color:      #fff !important;
+  --bs-btn-active-bg:        #{darken($success, 15%)} !important;
+  --bs-btn-active-border-color: #{darken($success, 15%)} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+.btn-danger {
+  --bs-btn-bg:               #{$danger} !important;
+  --bs-btn-border-color:     #{$danger} !important;
+  --bs-btn-color:            #fff !important;
+  --bs-btn-hover-bg:         #{darken($danger, 15%)} !important;
+  --bs-btn-hover-border-color: #{darken($danger, 15%)} !important;
+  --bs-btn-hover-color:      #fff !important;
+  --bs-btn-active-bg:        #{darken($danger, 15%)} !important;
+  --bs-btn-active-border-color: #{darken($danger, 15%)} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+.btn-warning {
+  --bs-btn-bg:               #{$warning} !important;
+  --bs-btn-border-color:     #{$warning} !important;
+  --bs-btn-color:            #fff !important;
+  --bs-btn-hover-bg:         #{darken($warning, 15%)} !important;
+  --bs-btn-hover-border-color: #{darken($warning, 15%)} !important;
+  --bs-btn-hover-color:      #fff !important;
+  --bs-btn-active-bg:        #{darken($warning, 15%)} !important;
+  --bs-btn-active-border-color: #{darken($warning, 15%)} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+.btn-info {
+  --bs-btn-bg:               #{$info} !important;
+  --bs-btn-border-color:     #{$info} !important;
+  --bs-btn-color:            #fff !important;
+  --bs-btn-hover-bg:         #{darken($info, 15%)} !important;
+  --bs-btn-hover-border-color: #{darken($info, 15%)} !important;
+  --bs-btn-hover-color:      #fff !important;
+  --bs-btn-active-bg:        #{darken($info, 15%)} !important;
+  --bs-btn-active-border-color: #{darken($info, 15%)} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+.btn-light {
+  --bs-btn-bg:               #{$light} !important;
+  --bs-btn-border-color:     #{$light} !important;
+  --bs-btn-color:            #{$main-text} !important;
+  --bs-btn-hover-bg:         #{darken($light, 15%)} !important;
+  --bs-btn-hover-border-color: #{darken($light, 15%)} !important;
+  --bs-btn-hover-color:      #{$main-text} !important;
+  --bs-btn-active-bg:        #{darken($light, 15%)} !important;
+  --bs-btn-active-border-color: #{darken($light, 15%)} !important;
+  --bs-btn-active-color:     #{$main-text} !important;
+}
+
+.btn-dark {
+  --bs-btn-bg:               #{$dark} !important;
+  --bs-btn-border-color:     #{$dark} !important;
+  --bs-btn-color:            #fff !important;
+  --bs-btn-hover-bg:         #{darken($dark, 15%)} !important;
+  --bs-btn-hover-border-color: #{darken($dark, 15%)} !important;
+  --bs-btn-hover-color:      #fff !important;
+  --bs-btn-active-bg:        #{darken($dark, 15%)} !important;
+  --bs-btn-active-border-color: #{darken($dark, 15%)} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+// ----------------------------------------------------------------------------
+// Outline Buttons
+// ----------------------------------------------------------------------------
+.btn-outline-primary {
+  --bs-btn-border-color:     #{$primary} !important;
+  --bs-btn-color:            #{$primary} !important;
+  --bs-btn-hover-bg:         rgba($primary, 0.1) !important;
+  --bs-btn-hover-border-color: #{$primary} !important;
+  --bs-btn-hover-color:      #{$primary} !important;
+  --bs-btn-active-bg:        #{$primary} !important;
+  --bs-btn-active-border-color: #{$primary} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+.btn-outline-secondary {
+  --bs-btn-border-color:     #{$secondary} !important;
+  --bs-btn-color:            #{$secondary} !important;
+  --bs-btn-hover-bg:         rgba($secondary, 0.1) !important;
+  --bs-btn-hover-border-color: #{$secondary} !important;
+  --bs-btn-hover-color:      #{$secondary} !important;
+  --bs-btn-active-bg:        #{$secondary} !important;
+  --bs-btn-active-border-color: #{$secondary} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+.btn-outline-success {
+  --bs-btn-border-color:     #{$success} !important;
+  --bs-btn-color:            #{$success} !important;
+  --bs-btn-hover-bg:         rgba($success, 0.1) !important;
+  --bs-btn-hover-border-color: #{$success} !important;
+  --bs-btn-hover-color:      #{$success} !important;
+  --bs-btn-active-bg:        #{$success} !important;
+  --bs-btn-active-border-color: #{$success} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+.btn-outline-danger {
+  --bs-btn-border-color:     #{$danger} !important;
+  --bs-btn-color:            #{$danger} !important;
+  --bs-btn-hover-bg:         rgba($danger, 0.1) !important;
+  --bs-btn-hover-border-color: #{$danger} !important;
+  --bs-btn-hover-color:      #{$danger} !important;
+  --bs-btn-active-bg:        #{$danger} !important;
+  --bs-btn-active-border-color: #{$danger} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+.btn-outline-warning {
+  --bs-btn-border-color:     #{$warning} !important;
+  --bs-btn-color:            #{$warning} !important;
+  --bs-btn-hover-bg:         rgba($warning, 0.1) !important;
+  --bs-btn-hover-border-color: #{$warning} !important;
+  --bs-btn-hover-color:      #{$warning} !important;
+  --bs-btn-active-bg:        #{$warning} !important;
+  --bs-btn-active-border-color: #{$warning} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+.btn-outline-info {
+  --bs-btn-border-color:     #{$info} !important;
+  --bs-btn-color:            #{$info} !important;
+  --bs-btn-hover-bg:         rgba($info, 0.1) !important;
+  --bs-btn-hover-border-color: #{$info} !important;
+  --bs-btn-hover-color:      #{$info} !important;
+  --bs-btn-active-bg:        #{$info} !important;
+  --bs-btn-active-border-color: #{$info} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+.btn-outline-light {
+  --bs-btn-border-color:     #{$light} !important;
+  --bs-btn-color:            #{$light} !important;
+  --bs-btn-hover-bg:         rgba($light, 0.1) !important;
+  --bs-btn-hover-border-color: #{$light} !important;
+  --bs-btn-hover-color:      #{$light} !important;
+  --bs-btn-active-bg:        #{$light} !important;
+  --bs-btn-active-border-color: #{$light} !important;
+  --bs-btn-active-color:     #{$main-text} !important;
+}
+
+.btn-outline-dark {
+  --bs-btn-border-color:     #{$dark} !important;
+  --bs-btn-color:            #{$dark} !important;
+  --bs-btn-hover-bg:         rgba($dark, 0.1) !important;
+  --bs-btn-hover-border-color: #{$dark} !important;
+  --bs-btn-hover-color:      #{$dark} !important;
+  --bs-btn-active-bg:        #{$dark} !important;
+  --bs-btn-active-border-color: #{$dark} !important;
+  --bs-btn-active-color:     #fff !important;
+}
+
+// ----------------------------------------------------------------------------
+// Link Buttons
+// ----------------------------------------------------------------------------
+.btn-link {
+  --bs-btn-color:            #{$primary} !important;
+  --bs-btn-hover-color:      #{darken($primary, 10%)} !important;
+  --bs-btn-active-color:     #{darken($primary, 10%)} !important;
+}
+
+
+// ----------------------------------------------------------------------------
+// Form Controls
+// ----------------------------------------------------------------------------
+.form-control {
+  --bs-form-control-bg: #{$light} !important;
+  --bs-form-control-color: #{$main-text} !important;
+  --bs-form-control-placeholder-color: #{$sub-text} !important;
+  --bs-form-control-border-color: #{$light} !important;
+  --bs-form-control-focus-bg: #{$light} !important;
+}
+
+.form-control:focus {
+  --bs-form-control-bg: #{$light} !important;
+  --bs-form-control-color: #{$main-text} !important;
+  --bs-form-control-placeholder-color: #{$sub-text} !important;
+  --bs-form-control-border-color: #{$light} !important;
+  --bs-form-control-focus-bg: #{$light} !important;
+}
+
+.form-control:focus-visible {
+  outline: none;
+  --bs-form-control-bg: #{$light} !important;
+  --bs-form-control-color: #{$main-text} !important;
+  --bs-form-control-placeholder-color: #{$sub-text} !important;
+  --bs-form-control-border-color: #{$light} !important;
+  --bs-form-control-focus-bg: #{$light} !important;
+}
+
+.form-select {
+  --bs-form-select-bg: #{$light} !important;
+  --bs-form-select-color: #{$main-text} !important;
+  --bs-form-select-placeholder-color: #{$sub-text} !important;
+  --bs-form-select-border-color: #{$light} !important;
+  --bs-form-select-focus-bg: #{$light} !important;
+}
+
+
+.form-check-input {
+  --bs-form-check-input-bg: #{$light} !important;
+  --bs-form-check-input-border-color: #{$light} !important;
+  --bs-form-check-input-focus-bg: #{$light} !important;
+}
+
+.form-check-label {
+  --bs-form-check-label-color: #{$main-text} !important;
+}
+
+.form-check-input:checked {
+  --bs-form-check-input-bg: #{$primary} !important;
+}
+
+.form-check-input:focus {
+  --bs-form-check-input-bg: #{$light} !important;
+}
+
+.form-check-input:focus-visible {
+  --bs-form-check-input-bg: #{$light} !important;
+}
+
+
+
+
+
+// ---------- Modal
+$modal-border-radius:           18px;
+$modal-content-bg:              rgba(255, 253, 250, 0.7);
+$modal-box-shadow:              0 8px 32px rgba(123,45,18,0.18), 0 2px 8px rgba(0,0,0,0.1);
+$modal-border-color:            #dcc692;
+$modal-backdrop-bg:             rgba(123,45,18,0.25);
+
+
+//modal
+.modal-content {
+  border-radius: $modal-border-radius !important;
+  background: $modal-content-bg !important;
+  backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: $modal-box-shadow !important;
+  border: 2px solid $modal-border-color !important;
+
+  // text-align: center !important;
+}
+
+.modal-header, .modal-footer {
+  background: rgba(248,235,216,0.9) !important;
+}
+
+.modal-header {
+  border-bottom: 1.5px solid $modal-border-color !important;
+  color: $primary !important;
+  border-top-left-radius: $modal-border-radius !important;
+  border-top-right-radius: $modal-border-radius !important;
+
+  // text-align: center !important;
+}
+
+.modal-footer {
+  border-top: 1.5px solid $modal-border-color !important;
+  border-bottom-left-radius: $modal-border-radius !important;
+  border-bottom-right-radius: $modal-border-radius !important;
+}
+
+.modal-title {
+  color: $primary !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+// Glassmorphism Backdrop
+// .modal-backdrop.show {
+//   background-color: rgba(255, 253, 250, 0.15) !important;
+//   backdrop-filter: blur(8px) !important;
+// }
+
+
+@keyframes backdrop-glass-in {
+  from {
+    background-color: rgba(255, 253, 250, 0);
+    backdrop-filter: blur(0px);
+  }
+  to {
+    background-color: rgba(98, 97, 96, 0.8);
+    backdrop-filter: blur(20px);
+  }
+}
+
+
+.modal-backdrop.show {
+  animation: backdrop-glass-in 0.4s ease-out forwards !important;
+}

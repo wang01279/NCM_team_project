@@ -68,14 +68,9 @@ export default function Sidebar({
           </label>
         </div>
         <h4>{member.name || '小磁怪'}</h4>
-        {/* <span>{member.email || '小磁怪@gmail.com'}</span> */}
-        {/* <p>
-          {member.role === '管理員' ? '客服人員' : '一般會員'} <FaCrown />
-        </p> */}
+
         <p>
-          {member.role === 'admin' || member.role === '管理員'
-            ? '客服人員'
-            : '一般會員'}{' '}
+          {member.role === 'admin' ? '管理員' : '一般會員'}
           <FaCrown />
         </p>
       </div>

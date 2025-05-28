@@ -1,6 +1,7 @@
 
-
+import './_styles/vendors/_bootstrap-override.scss'
 import './_styles/globals.scss'
+
 import './_styles/formCustom.scss'
 // 導入
 // import Navbar from './_components/navbar'

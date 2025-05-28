@@ -31,8 +31,8 @@ export default function ProfileInfo({ member }) {
           member?.gender === 'M' ? '男' : member?.gender === 'F' ? '女' : '其他'
         }
       />
-      <InfoRow label="電話" value={member?.phone} />
-      <InfoRow label="地址" value={member?.address} />
+      <InfoRow label="電話" value={member?.phone || '未設定'} />
+      <InfoRow label="地址" value={member?.address || '未設定'} />
       <InfoRow
         label="生日"
         value={

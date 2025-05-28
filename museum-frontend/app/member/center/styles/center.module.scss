@@ -59,6 +59,7 @@
 }
 
 @include media-breakpoint-down(md) {
+
   .container {
     padding: 10px;
     grid-template-columns: 1fr;

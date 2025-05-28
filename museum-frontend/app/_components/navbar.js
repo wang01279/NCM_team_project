@@ -25,6 +25,7 @@ import Image from 'next/image'
 import { useToast } from './ToastManager'
 import { io } from 'socket.io-client'
 import ChatSidebar from './Chat/ChatSidebar'
+import { jwtDecode } from 'jwt-decode'
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -122,10 +123,20 @@ export default function Navbar() {
       // 3. 呼叫 login 更新全局狀態
       login(user, token)
 
-      // 4. UI 處理：關 Modal、Toast、轉頁
+      // 4. 解碼 token 獲取角色
+      const decoded = jwtDecode(token)
+      const role = decoded.role
+
+      // 5. 根據角色導向不同頁面
+      let redirectPath = '/member/center'
+      if (role === 'admin') {
+        redirectPath = '/admin/dashboard'
+      }
+
+      // 6. UI 處理：關 Modal、Toast、轉頁
       setIsLoginModalOpen(false)
       showToast('success', '登入成功 🎉')
-      router.push('/member/center')
+      router.push(redirectPath)
     } catch (err) {
       console.error('登入錯誤：', err)
       showToast('danger', `登入失敗：${err.message || '未知錯誤'}`)
@@ -208,6 +219,9 @@ export default function Navbar() {
                 <span className="cart-count">0</span>
               </a> */}
 
+              {/* 購物車 */}
+              {/* 登入後才顯示購物車 */}
+              {isLoggedIn && (
               <a
                 href="#"
                 className="nav-icon"
@@ -217,8 +231,9 @@ export default function Navbar() {
                 }}
               >
                 <FaShoppingCart className="icon cart-icon" />
-                <span className="cart-count">{cartItems.length}</span>
-              </a>
+                    <span className="cart-count">{cartItems.length}</span>
+                </a>
+              )}
               <CartDropdown
                 isOpen={isCartOpen}
                 onClose={() => setIsCartOpen(false)}
@@ -306,7 +321,7 @@ export default function Navbar() {
                 ) : (
                   <button className="btn btn-primary" onClick={handleLogin}>
                     {/* <FaUserCircle className="icon" /> 登入 */}
-                    Login
+                    登入
                   </button>
                 ))}
             </div>
@@ -397,9 +412,11 @@ export default function Navbar() {
             ? 93
             : member?.role === 'staff'
               ? 92
-              : undefined
+              : member?.role === 'admin'
+                ? 92
+                : undefined
         }
-        isStaff={member?.role === 'staff'}
+        isStaff={member?.role === 'staff' || member?.role === 'admin'}
       />
     </>
   )

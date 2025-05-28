@@ -1,5 +1,8 @@
 @use '@/app/_styles/foundation/palette' as *;
-@use '@/app/_styles/foundation/_mixins' as *;
+// @use '@/app/_styles/foundation/_mixins' as *;
+// @use '@/app/_styles/components/_buttons' as *;
+// @use '@/app/_styles/vendors/_bootstrap-override' as *;
+
 
 
 .profile-card {
@@ -13,6 +16,11 @@
 
     width: 100%;
     margin: 0 auto;
+
+    @media (max-width: 768px) {
+      padding: 1rem 1rem;
+      
+    }
   }
   
   .profile-title-row {
@@ -20,6 +28,10 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 1rem;
+    }
   }
   
   .profile-title {
@@ -27,6 +39,10 @@
     font-weight: 700;
     color: $primary;
     letter-spacing: 2px;
+
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
   }
   
   .profile-btns > button {
@@ -34,10 +50,18 @@
     border-radius: 8px !important;
     box-shadow: 0 2px 8px #0001;
     font-weight: 500;
+
+    @media (max-width: 768px) {
+      margin-left: 0.2rem;
+    }
   }
   
   .profile-info {
     margin-top: 0.5rem;
+
+    @media (max-width: 768px) {
+      margin-top: 0.2rem;
+    }
   }
   
   .profile-avatar {
@@ -59,6 +83,11 @@
     border-bottom: 1px solid #eee;
     font-size: 1.1rem;
     letter-spacing: 1px;
+
+    @media (max-width: 768px) {
+      padding: 0.2rem 0;
+      font-size: 1rem;
+    }
   }
   
   .profile-label {
@@ -66,6 +95,11 @@
     min-width: 80px;
     text-align: right;
     margin-right: 1.5rem;
+
+    @media (max-width: 768px) {
+      min-width: 60px;
+      margin-right: 0.5rem;
+    }
   }
   
   .profile-value {
@@ -139,3 +173,4 @@
     margin-top: 1.2rem;
   }
 }
+

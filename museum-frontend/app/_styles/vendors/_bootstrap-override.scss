@@ -1,3 +1,4 @@
+@use 'bootstrap/scss/bootstrap' as bootstrap;
 @use '../foundation/palette' as palette;
 @use '../foundation/mixins' as *;
 
@@ -7,129 +8,138 @@
 /* --- 再寫你的 .btn 客製化 (權重相同，但順序在後) --- */
 //@use './components/buttons';   // ← 這裡放你的長段 .btn-* 規則
 
+Form Controls
+.form-control {
+  background-color: rgba(palette.$light, 0.8);
+  border: 1px solid rgba(palette.$dark, 0.1);
+  border-radius: palette.$border-radius;
+  color: palette.$main-text;
+  transition: all 0.3s ease;
 
-// Form Controls
-// .form-control {
-//   background-color: rgba(palette.$light, 0.8);
-//   border: 1px solid rgba(palette.$dark, 0.1);
-//   border-radius: palette.$border-radius;
-//   color: palette.$main-text;
-//   transition: all 0.3s ease;
+  &:focus {
+    background-color: palette.$light;
+    border-color: palette.$primary;
+    box-shadow: 0 0 0 0.2rem rgba(palette.$primary, 0.25);
+    color: palette.$main-text;
+  }
 
-//   &:focus {
-//     background-color: palette.$light;
-//     border-color: palette.$primary;
-//     box-shadow: 0 0 0 0.2rem rgba(palette.$primary, 0.25);
-//     color: palette.$main-text;
-//   }
+  &:focus-visible {
+    outline: none;
+    background-color: palette.$light;
+    border-color: palette.$primary;
+    box-shadow: 0 0 0 0.2rem rgba(palette.$primary, 0.25);
+    color: palette.$main-text;
+  }
 
-//   &::placeholder {
-//     color: palette.$sub-text;
-//   }
+  &::placeholder {
+    color: palette.$sub-text;
+  }
 
-//   &:disabled {
-//     background-color: rgba(palette.$light, 0.5);
-//     cursor: not-allowed;
-//   }
-// }
+  &:disabled {
+    background-color: rgba(palette.$light, 0.5);
+    cursor: not-allowed;
+  }
 
-// .form-label {
-//   color: palette.$main-text;
-//   font-weight: 500;
-//   margin-bottom: 0.5rem;
-// }
 
-// .form-text {
-//   color: palette.$sub-text;
-//   font-size: 0.875rem;
-//   margin-top: 0.5rem;
-// }
+}
 
-// .form-select {
-//   background-color: rgba(palette.$light, 0.8);
-//   border: 1px solid rgba(palette.$dark, 0.1);
-//   border-radius: palette.$border-radius;
-//   color: palette.$main-text;
-//   transition: all 0.3s ease;
+.form-label {
+  color: palette.$main-text;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
 
-//   &:focus {
-//     background-color: palette.$light;
-//     border-color: palette.$primary;
-//     box-shadow: 0 0 0 0.2rem rgba(palette.$primary, 0.25);
-//     color: palette.$main-text;
-//   }
+.form-text {
+  color: palette.$sub-text;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
 
-//   &:disabled {
-//     background-color: rgba(palette.$light, 0.5);
-//     cursor: not-allowed;
-//   }
-// }
+.form-select {
+  background-color: rgba(palette.$light, 0.8);
+  border: 1px solid rgba(palette.$dark, 0.1);
+  border-radius: palette.$border-radius;
+  color: palette.$main-text;
+  transition: all 0.3s ease;
 
-// .form-check {
-//   .form-check-input {
-//     &:checked {
-//       background-color: palette.$primary;
-//       border-color: palette.$primary;
-//     }
+  &:focus {
+    background-color: palette.$light;
+    border-color: palette.$primary;
+    box-shadow: 0 0 0 0.2rem rgba(palette.$primary, 0.25);
+    color: palette.$main-text;
+  }
 
-//     &:focus {
-//       border-color: palette.$primary;
-//       box-shadow: 0 0 0 0.2rem rgba(palette.$primary, 0.25);
-//     }
-//   }
+  &:disabled {
+    background-color: rgba(palette.$light, 0.5);
+    cursor: not-allowed;
+  }
+}
 
-//   .form-check-label {
-//     color: palette.$main-text;
-//   }
-// }
+.form-check {
+  .form-check-input {
+    &:checked {
+      background-color: palette.$primary;
+      border-color: palette.$primary;
+    }
 
-// // Form validation
-// .was-validated {
-//   .form-control {
-//     &:valid {
-//       border-color: palette.$success;
-//       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%234E3629' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
-//     }
+    &:focus {
+      border-color: palette.$primary;
+      box-shadow: 0 0 0 0.2rem rgba(palette.$primary, 0.25);
+    }
+  }
 
-//     &:invalid {
-//       border-color: palette.$danger;
-//       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23DC2626'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23DC2626' stroke='none'/%3e%3c/svg%3e");
-//     }
-//   }
+  .form-check-label {
+    color: palette.$main-text;
+  }
+}
 
-//   .form-select {
-//     &:valid {
-//       border-color: palette.$success;
-//     }
+// Form validation
+.was-validated {
+  .form-control {
+    &:valid {
+      border-color: palette.$success;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%234E3629' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    }
 
-//     &:invalid {
-//       border-color: palette.$danger;
-//     }
-//   }
-// }
+    &:invalid {
+      border-color: palette.$danger;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23DC2626'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23DC2626' stroke='none'/%3e%3c/svg%3e");
+    }
+  }
 
-// // Floating Labels
-// .form-floating {
-//   > label {
-//     color: palette.$sub-text;
-//   }
-  
-//   > .form-control:focus ~ label,
-//   > .form-control:not(:placeholder-shown) ~ label {
-//     color: palette.$primary;
-//     transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-//   }
+  .form-select {
+    &:valid {
+      border-color: palette.$success;
+    }
 
-//   > .form-control {
-//     background-color: rgba(palette.$light, 0.8);
-//     border: 1px solid rgba(palette.$dark, 0.1);
-    
-//     &:focus {
-//       background-color: palette.$light;
-//       border-color: palette.$primary;
-//     }
-//   }
-// }
+    &:invalid {
+      border-color: palette.$danger;
+    }
+  }
+}
+
+// Floating Labels
+.form-floating {
+  > label {
+    color: palette.$sub-text;
+  }
+
+  > .form-control:focus ~ label,
+  > .form-control:not(:placeholder-shown) ~ label {
+    color: palette.$primary;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+  }
+
+  > .form-control {
+    background-color: rgba(palette.$light, 0.8);
+    border: 1px solid rgba(palette.$dark, 0.1);
+
+    &:focus {
+      background-color: palette.$light;
+      border-color: palette.$primary;
+    }
+  }
+}
 
 // Buttons
 .btn {
@@ -139,7 +149,7 @@
     inset 0 0 6px rgba(255, 255, 255, 0.2),
     0 4px 10px rgba(0, 0, 0, 0.15),
     0 0 8px rgba(255, 255, 255, 0.05);
-  
+
   &:hover {
     transform: scale(1.02);
     box-shadow:
@@ -159,15 +169,13 @@
   &:focus {
     outline: none;
     box-shadow: none;
-    
   }
 
-  
   &-primary {
     background: rgba(palette.$primary, 0.6);
     border-color: palette.$primary;
     color: #fff;
-    
+
     &:hover {
       background: rgba(palette.$primary, 0.8);
       border-color: darken(palette.$primary, 5%);
@@ -175,7 +183,7 @@
 
     &.btn-primary:active,     // ← 增 1 個 .btn
     &.btn-primary.active,
-    .show > &.btn-primary.dropdown-toggle  {
+    .show > &.btn-primary.dropdown-toggle {
       background: rgba(palette.$primary, 0.9);
       border-color: darken(palette.$primary, 10%);
     }
@@ -185,7 +193,7 @@
     background: rgba(palette.$secondary, 0.6);
     border-color: palette.$secondary;
     color: #fff;
-    
+
     &:hover {
       background: rgba(palette.$secondary, 0.8);
       border-color: darken(palette.$secondary, 5%);
@@ -193,7 +201,7 @@
 
     &.btn-secondary:active,     // ← 增 1 個 .btn
     &.btn-secondary.active,
-    .show > &.btn-secondary.dropdown-toggle  {
+    .show > &.btn-secondary.dropdown-toggle {
       background: rgba(palette.$secondary, 0.9);
       border-color: darken(palette.$secondary, 10%);
     }
@@ -203,7 +211,7 @@
     background: rgba(palette.$danger, 0.6);
     border-color: palette.$danger;
     color: #fff;
-    
+
     &:hover {
       background: rgba(palette.$danger, 0.8);
       border-color: darken(palette.$danger, 5%);
@@ -211,7 +219,7 @@
 
     &.btn-danger:active,     // ← 增 1 個 .btn
     &.btn-danger.active,
-    .show > &.btn-danger.dropdown-toggle  {
+    .show > &.btn-danger.dropdown-toggle {
       background: rgba(palette.$danger, 0.9);
       border-color: darken(palette.$danger, 10%);
     }
@@ -221,7 +229,7 @@
     background: rgba(palette.$success, 0.6);
     border-color: palette.$success;
     color: #fff;
-    
+
     &:hover {
       background: rgba(palette.$success, 0.8);
       border-color: darken(palette.$success, 5%);
@@ -229,7 +237,7 @@
 
     &.btn-success:active,     // ← 增 1 個 .btn
     &.btn-success.active,
-    .show > &.btn-success.dropdown-toggle  {
+    .show > &.btn-success.dropdown-toggle {
       background: rgba(palette.$success, 0.9);
       border-color: darken(palette.$success, 10%);
     }
@@ -239,7 +247,7 @@
     background: rgba(palette.$warning, 0.6);
     border-color: palette.$warning;
     color: #fff;
-    
+
     &:hover {
       background: rgba(palette.$warning, 0.8);
       border-color: darken(palette.$warning, 5%);
@@ -247,7 +255,7 @@
 
     &.btn-warning:active,     // ← 增 1 個 .btn
     &.btn-warning.active,
-    .show > &.btn-warning.dropdown-toggle  {
+    .show > &.btn-warning.dropdown-toggle {
       background: rgba(palette.$warning, 0.9);
       border-color: darken(palette.$warning, 10%);
     }
@@ -257,7 +265,7 @@
     background: rgba(palette.$info, 0.6);
     border-color: palette.$info;
     color: #fff;
-    
+
     &:hover {
       background: rgba(palette.$info, 0.8);
       border-color: darken(palette.$info, 5%);
@@ -265,7 +273,7 @@
 
     &.btn-info:active,     // ← 增 1 個 .btn
     &.btn-info.active,
-    .show > &.btn-info.dropdown-toggle  {
+    .show > &.btn-info.dropdown-toggle {
       background: rgba(palette.$info, 0.9);
       border-color: darken(palette.$info, 10%);
     }
@@ -275,7 +283,7 @@
     background: rgba(palette.$light, 0.4);
     border-color: palette.$light;
     color: palette.$main-text;
-    
+
     &:hover {
       background: rgba(palette.$light, 0.6);
       border-color: darken(palette.$light, 5%);
@@ -283,7 +291,7 @@
 
     &.btn-light:active,     // ← 增 1 個 .btn
     &.btn-light.active,
-    .show > &.btn-light.dropdown-toggle  {
+    .show > &.btn-light.dropdown-toggle {
       background: rgba(palette.$light, 0.9);
       border-color: darken(palette.$light, 10%);
     }
@@ -293,7 +301,7 @@
     background: rgba(palette.$dark, 0.6);
     border-color: palette.$dark;
     color: #fff;
-    
+
     &:hover {
       background: rgba(palette.$dark, 0.8);
       border-color: darken(palette.$dark, 5%);
@@ -301,7 +309,7 @@
 
     &.btn-dark:active,     // ← 增 1 個 .btn
     &.btn-dark.active,
-    .show > &.btn-dark.dropdown-toggle  {
+    .show > &.btn-dark.dropdown-toggle {
       background: rgba(palette.$dark, 0.9);
       border-color: darken(palette.$dark, 10%);
     }
@@ -326,8 +334,142 @@
 
     &.btn-link:active,     // ← 增 1 個 .btn
     &.btn-link.active,
-    .show > &.btn-link.dropdown-toggle  {
+    .show > &.btn-link.dropdown-toggle {
       box-shadow: 0 0 2px rgba(palette.$secondary, 0.3);
+    }
+  }
+
+  // ----------------------------------------------------------------------------
+  // Outline 按鈕
+  // ----------------------------------------------------------------------------
+  &-outline-primary {
+    @include transition(all);
+    backdrop-filter: blur(4px);
+    background: transparent;
+    color: palette.$primary;
+    border: 1px solid palette.$primary;
+    box-shadow:
+      inset 0 0 6px rgba(255, 255, 255, 0.2),
+      0 4px 10px rgba(0, 0, 0, 0.15),
+      0 0 8px rgba(255, 255, 255, 0.05);
+
+    &:hover {
+      background: rgba(palette.$primary, 0.1);
+      color: #fff;
+      border-color: palette.$primary;
+      box-shadow:
+        inset 0 0 8px rgba(255, 255, 255, 0.4),
+        0 6px 12px rgba(0, 0, 0, 0.2),
+        0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    &:active {
+      background: rgba(palette.$primary, 0.2);
+      color: #fff;
+      border-color: darken(palette.$primary, 10%);
+      transform: scale(0.98);
+      box-shadow:
+        inset 0 0 4px rgba(255, 255, 255, 0.2),
+        0 2px 6px rgba(0, 0, 0, 0.15),
+        0 0 6px rgba(255, 255, 255, 0.05);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+
+  &-outline-secondary {
+    @extend .btn-outline-primary;
+    color: palette.$secondary;
+    border-color: palette.$secondary;
+
+    &:hover {
+      background: rgba(palette.$secondary, 0.1);
+    }
+    &:active {
+      background: rgba(palette.$secondary, 0.2);
+    }
+  }
+
+  &-outline-danger {
+    @extend .btn-outline-primary;
+    color: palette.$danger;
+    border-color: palette.$danger;
+
+    &:hover {
+      background: rgba(palette.$danger, 0.1);
+    }
+    &:active {
+      background: rgba(palette.$danger, 0.2);
+    }
+  }
+
+  &-outline-success {
+    @extend .btn-outline-primary;
+    color: palette.$success;
+    border-color: palette.$success;
+
+    &:hover {
+      background: rgba(palette.$success, 0.1);
+    }
+    &:active {
+      background: rgba(palette.$success, 0.2);
+    }
+  }
+
+  &-outline-warning {
+    @extend .btn-outline-primary;
+    color: palette.$warning;
+    border-color: palette.$warning;
+
+    &:hover {
+      background: rgba(palette.$warning, 0.1);
+    }
+    &:active {
+      background: rgba(palette.$warning, 0.2);
+    }
+  }
+
+  &-outline-info {
+    @extend .btn-outline-primary;
+    color: palette.$info;
+    border-color: palette.$info;
+
+    &:hover {
+      background: rgba(palette.$info, 0.1);
+    }
+    &:active {
+      background: rgba(palette.$info, 0.2);
+    }
+  }
+
+  &-outline-light {
+    @extend .btn-outline-primary;
+    color: palette.$light;
+    border-color: palette.$light;
+
+    &:hover {
+      background: rgba(palette.$light, 0.1);
+      color: palette.$main-text;
+    }
+    &:active {
+      background: rgba(palette.$light, 0.2);
+      color: palette.$main-text;
+    }
+  }
+
+  &-outline-dark {
+    @extend .btn-outline-primary;
+    color: palette.$dark;
+    border-color: palette.$dark;
+
+    &:hover {
+      background: rgba(palette.$dark, 0.1);
+    }
+    &:active {
+      background: rgba(palette.$dark, 0.2);
     }
   }
 }
@@ -339,12 +481,12 @@
     @include box-shadow(2);
     background-color: palette.$main-bg;
   }
-  
+
   &-header {
     border-bottom: 1px solid rgba(palette.$dark, 0.1);
     background-color: palette.$light;
   }
-  
+
   &-footer {
     border-top: 1px solid rgba(palette.$dark, 0.1);
     background-color: palette.$light;
@@ -355,14 +497,16 @@
 .alert {
   border-radius: palette.$border-radius;
   border: none;
-  
+
   &-primary {
     background-color: rgba(palette.$primary, 0.1);
     color: darken(palette.$primary, 10%);
   }
-  
+
   &-danger {
     background-color: rgba(palette.$danger, 0.1);
     color: darken(palette.$danger, 10%);
   }
-} 
+}
+
+
