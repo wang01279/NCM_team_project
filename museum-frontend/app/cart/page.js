@@ -34,15 +34,21 @@ export default function CartPage() {
 
   const [productDiscount, setProductDiscount] = useState(0)
   const [courseDiscount, setCourseDiscount] = useState(0)
+
+  const productSubtotal = items
+    .filter((item) => item.type === 'product')
+    .reduce((sum, item) => sum + item.price * item.quantity, 0)
+
+  const courseSubtotal = items
+    .filter((item) => item.type === 'course')
+    .reduce((sum, item) => sum + item.price * item.quantity, 0)
+
+  const totalPrice = productSubtotal + courseSubtotal
+
   const [selectedProductCoupon, setSelectedProductCoupon] = useState(null)
   const [selectedCourseCoupon, setSelectedCourseCoupon] = useState(null)
   const [availableProductCoupons, setAvailableProductCoupons] = useState([])
   const [availableCourseCoupons, setAvailableCourseCoupons] = useState([])
-
-  const totalPrice = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  )
 
   // 更新數量
   const updateQuantity = (id, delta) => {
@@ -111,7 +117,9 @@ export default function CartPage() {
           const filtered = data.data.filter((c) => {
             const notUsed = !c.is_used
             const notExpired = !c.expired_at || new Date(c.expired_at) > now
-            const minSpendOk = totalPrice >= c.minSpend
+            const minSpendOk =
+              (c.category === '商品' && productSubtotal >= c.minSpend) ||
+              (c.category === '課程' && courseSubtotal >= c.minSpend)
             return notUsed && notExpired && minSpendOk
           })
           // console.log('✅ 所有可用優惠券:', filtered)
@@ -124,10 +132,10 @@ export default function CartPage() {
           setAvailableCourseCoupons(
             filtered.filter((c) => c.category === '課程')
           )
-          console.log(
-            '✅ 商品優惠券:',
-            filtered.filter((c) => c.category === '商品')
-          )
+          // console.log(
+          //   '✅ 商品優惠券:',
+          //   filtered.filter((c) => c.category === '商品')
+          // )
         }
       })
   }, [totalPrice])
@@ -228,7 +236,7 @@ export default function CartPage() {
                     const d =
                       coupon.type === '百分比'
                         ? Math.floor(
-                            (totalPrice * Number(coupon.discount)) / 100
+                            (productSubtotal * Number(coupon.discount)) / 100
                           )
                         : Number(coupon.discount)
                     setProductDiscount(d)
@@ -242,7 +250,7 @@ export default function CartPage() {
                     const d =
                       coupon.type === '百分比'
                         ? Math.floor(
-                            (totalPrice * Number(coupon.discount)) / 100
+                            (courseSubtotal * Number(coupon.discount)) / 100
                           )
                         : Number(coupon.discount)
                     setCourseDiscount(d)

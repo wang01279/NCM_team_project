@@ -36,8 +36,11 @@ export default function OrderSummary2({ cartItems }) {
             <Accordion.Item eventKey="0">
               <Accordion.Header>查看商品詳情</Accordion.Header>
               <Accordion.Body>
-                {cartItems.map((item) => (
-                  <div className="d-flex justify-content-between" key={item.id}>
+                {cartItems.map((item, index) => (
+                  <div
+                    className="d-flex justify-content-between"
+                    key={`${item.id}-${index}`}
+                  >
                     <div className="me-3">
                       {item.name}*{item.quantity}
                     </div>

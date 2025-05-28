@@ -5,7 +5,7 @@ import { Collapse } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { CiShoppingTag } from 'react-icons/ci'
 // import { HiOutlineChevronDown } from 'react-icons/hi'
-import './_style/memOrders.scss'
+import './_style/memOrders.module.scss'
 
 export default function OrdersTab() {
   const [orders, setOrders] = useState([])
