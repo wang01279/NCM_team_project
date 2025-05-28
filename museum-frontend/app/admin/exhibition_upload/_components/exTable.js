@@ -1,4 +1,5 @@
 import React from 'react'
+import styles from './style.module.scss'
 
 export default function ExTable({ exhibitions = [] }) {
   const getStatus = (startDate, endDate) => {
@@ -16,7 +17,7 @@ export default function ExTable({ exhibitions = [] }) {
   }
 
   return (
-    <table className="table table-bordered">
+    <table className= {`table ${styles.couponTable} table-bordered table-hover`}>
       <thead>
         <tr>
           <th>圖片</th>

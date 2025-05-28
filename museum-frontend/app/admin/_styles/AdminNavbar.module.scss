@@ -1,0 +1,38 @@
+.hoverGrow:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+/* 圖示包裝優化 */
+.iconWrapper {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color:  #F5E3C3;
+    margin-right: 0.8rem !important;
+    transition: all 0.3s ease;
+}
+
+.customNavlink {
+    font-size: 1rem;
+    color: #F5E3C3;
+    transition: all 0.3s ease;
+}
+
+.customNavlink:hover .iconWrapper {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: rotate(5deg);
+}
+
+.customNavlink.active .iconWrapper {
+    background-color: #F5E3C3;
+    transform: scale(1.1);
+}
+
+.customNavlink.active .iconWrapper {
+    color: #9A3412;
+}
