@@ -10,9 +10,9 @@ export default function CartItems({ items = [], updateQuantity, deleteItem }) {
         <div className="card-body">
           <div className="pb-2 fs-4">商品列表</div>
           <div className="container mb-4">
-            {productItems.map((item) => (
+            {productItems.map((item, index) => (
               <CartItem
-                key={item.id}
+                key={`product-${item.id}-${index}`}
                 image={item.image}
                 name={item.name}
                 price={item.price}
@@ -26,9 +26,9 @@ export default function CartItems({ items = [], updateQuantity, deleteItem }) {
 
           <div className="pb-2 fs-4">課程列表</div>
           <div className="container">
-            {courseItems.map((item) => (
+            {courseItems.map((item, index) => (
               <CartItem
-                key={item.id}
+                key={`course-${item.id}-${index}`}
                 image={item.image}
                 name={item.name}
                 price={item.price}
