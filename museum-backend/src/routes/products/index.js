@@ -13,17 +13,25 @@ import {
 import { authenticateToken } from "../../middleware/auth.js";
 const router = express.Router();
 
-router.get("/recommend/:id", getRecommendedProducts); //推薦8筆
+//僅限本路由轉接：將 req.user → req.member，避免動到共用 middleware
+const injectMemberFromUser = (req, res, next) => {
+  if (req.user) {
+    req.member = req.user;
+  }
+  next();
+};
+
+router.get("/recommend/:id", getRecommendedProducts); // 推薦8筆
 router.get("/latest", getLatestProducts); // 最新商品
 router.get("/categories", getCategories); // 取得分類
-router.get("/:id", getProductById); //id
-router.get("/", getProducts); //商店
+router.get("/:id", getProductById); // 單一商品
+router.get("/", getProducts); // 商店清單
 
-// 提交評論的 POST 路由 - 需要認證
-router.post("/reviews", authenticateToken, postReview);
-// 更新評論的 PUT 路由 - 需要認證，且路徑包含 reviewId
-router.put("/reviews/:reviewId", authenticateToken, putReview);
-// 取得特定商品評論的 GET 路由
+//提交評論、更新評論時加上轉接 req.member
+router.post("/reviews", authenticateToken, injectMemberFromUser, postReview);
+router.put("/reviews/:reviewId", authenticateToken, injectMemberFromUser, putReview);
+
+//查評論不需登入
 router.get("/reviews/product/:productId", getReviewsByProductId);
 
 export default router;

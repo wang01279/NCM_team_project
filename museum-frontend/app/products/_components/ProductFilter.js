@@ -160,7 +160,6 @@ export default function ProductFilter({ filters, setFilters }) {
             {Math.max(filters.minPrice, filters.maxPrice)}
           </div>
         </div>
-        
 
         {['material', 'origin', 'function'].map((type) => (
           <div className="mb-4" key={type}>

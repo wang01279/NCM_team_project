@@ -58,18 +58,25 @@ export default function IdPage() {
 
   // 新增：重新獲取評論的函數
   const fetchReviews = async () => {
+    if (!id || isNaN(Number(id))) {
+      console.warn('商品 ID 無效，略過 fetchReviews:', id)
+      return
+    }
+
     try {
-      // 根據方案一，修改評論 API 的 URL，加入 /products 前綴
       const response = await fetch(
         `http://localhost:3005/api/products/reviews/product/${id}`
       )
       if (!response.ok) {
-        throw new Error('無法獲取評論資料')
+        const error = await response.json()
+        throw new Error(
+          `無法獲取評論資料：${error.error || response.statusText}`
+        )
       }
       const data = await response.json()
       setReviews(data)
     } catch (error) {
-      console.error('獲取評論錯誤:', error)
+      console.error('獲取評論錯誤:', error.message)
     }
   }
 

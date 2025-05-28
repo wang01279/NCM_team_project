@@ -247,57 +247,57 @@ export async function fetchProductCategoryId(id) {
  * 新增評論
  * @param {object} reviewData - 包含 product_id, member_id, rating, comment
  */
-export async function addReview(reviewData) {
-  const { product_id, member_id, rating, comment } = reviewData;
+export async function addReview({ product_id, member_id, rating, comment }) {
   try {
-    // *** 解決問題 3：後端檢查是否已評論過 ***
     const [existingReviews] = await db.query(
-      "SELECT review_id FROM reviews WHERE product_id = ? AND member_id = ?",
+      "SELECT id FROM reviews WHERE product_id = ? AND member_id = ?",
       [product_id, member_id]
     );
 
     if (existingReviews.length > 0) {
-      throw new Error("您已評論過此商品，請編輯您的評論。"); // 拋出特定錯誤訊息
+      throw new Error("您已評論過此商品，請編輯您的評論。");
     }
 
     const [result] = await db.query(
       `INSERT INTO reviews (product_id, member_id, rating, comment) VALUES (?, ?, ?, ?)`,
       [product_id, member_id, rating, comment]
     );
-    return { id: result.insertId, ...reviewData };
+
+    return { id: result.insertId, product_id, member_id, rating, comment };
   } catch (error) {
-    console.error("新增評論失敗:", error);
-    // 重新拋出錯誤，讓 controller 處理
-    throw error; // 這裡很重要，讓上層知道是什麼錯誤
+    console.error("新增評論失敗:", error.message);
+    throw error;
   }
 }
+
 /**
  * 更新評論
  * @param {number} reviewId - 要更新的評論 ID
  * @param {object} reviewData - 包含 rating, comment (可能也包含 member_id 進行安全檢查)
  * @param {number} memberIdFromAuth - 從 JWT 或 Session 中獲取的會員 ID (用於安全檢查)
  */
-export async function updateReview(reviewId, reviewData, memberIdFromAuth) {
-  const { rating, comment } = reviewData;
+export async function updateReview(
+  reviewId,
+  { rating, comment },
+  memberIdFromAuth
+) {
   try {
-    // *** 解決問題 2：後端安全檢查：只能編輯自己的評論 ***
     const [result] = await db.query(
-      `UPDATE reviews SET rating = ?, comment = ? WHERE review_id = ? AND member_id = ?`,
-      [rating, comment, reviewId, memberIdFromAuth] // 確保 member_id 匹配
+      `UPDATE reviews SET rating = ?, comment = ? WHERE id = ? AND member_id = ?`,
+      [rating, comment, reviewId, memberIdFromAuth]
     );
 
     if (result.affectedRows === 0) {
-      // 如果沒有更新任何行，可能是評論不存在或不是該用戶的評論
-      const [checkReview] = await db.query('SELECT review_id FROM reviews WHERE review_id = ?', [reviewId]);
-      if (checkReview.length === 0) {
-        throw new Error('評論不存在。');
-      } else {
-        throw new Error('您無權編輯此評論。');
-      }
+      const [check] = await db.query(`SELECT id FROM reviews WHERE id = ?`, [
+        reviewId,
+      ]);
+      if (check.length === 0) throw new Error("評論不存在。");
+      throw new Error("您無權編輯此評論。");
     }
-    return { message: '評論更新成功', affectedRows: result.affectedRows };
+
+    return { message: "評論更新成功", affectedRows: result.affectedRows };
   } catch (error) {
-    console.error('更新評論失敗:', error);
+    console.error("更新評論失敗:", error.message);
     throw error;
   }
 }
@@ -310,22 +310,23 @@ export async function fetchReviewsByProductId(productId) {
   try {
     const [reviews] = await db.query(
       `SELECT
-         r.review_id AS id,
-         r.product_id,
-         r.member_id,
-         r.rating,
-         r.comment,
-         r.created_at,
-         mp.name AS reviewer_name -- 從 member_profiles 表獲取 name
-       FROM reviews r
-       LEFT JOIN member_profiles mp ON r.member_id = mp.member_id -- 關聯 member_profiles
-       WHERE r.product_id = ?
-       ORDER BY r.created_at DESC`,
+     r.id AS id,
+     r.product_id,
+     r.member_id,
+     r.rating,
+     r.comment,
+     r.created_at,
+     mp.name AS reviewer_name,
+     mp.avatar AS reviewer_avatar
+   FROM reviews r
+   LEFT JOIN member_profiles mp ON r.member_id = mp.member_id
+   WHERE r.product_id = ?
+   ORDER BY r.created_at DESC`,
       [productId]
     );
     return reviews;
   } catch (error) {
-    console.error("從資料庫取得評論失敗:", error); // 這裡會打印出真正的錯誤訊息
-    throw new Error("無法取得評論"); // 向上拋出自定義的錯誤訊息
+    console.error("從資料庫取得評論失敗:", error.message);
+    throw new Error("無法取得評論");
   }
 }

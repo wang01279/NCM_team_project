@@ -104,11 +104,9 @@ export async function getRecommendedProducts(req, res) {
  */
 export async function postReview(req, res) {
   const { product_id, rating, comment } = req.body;
-  // 重要：member_id 應該從認證中間件中獲取，而不是直接從 req.body
-  // 假設你的認證中間件會將會員資訊存在 req.member 中
-  const member_id_from_auth = req.member ? req.member.id : null; // 從認證中間件獲取會員ID
+  const member_id_from_auth = req.user?.id || null; // 從認證中間件獲取會員ID
 
-  // 1. 後端資料驗證 (結合你現有的驗證)
+  // 後端資料驗證 (結合你現有的驗證)
   // 確保 product_id, rating, comment 存在
   if (!product_id || !rating || comment === undefined || comment === null) {
     return res
@@ -118,8 +116,6 @@ export async function postReview(req, res) {
 
   // 確保 member_id_from_auth 存在且是有效數字
   if (!member_id_from_auth || isNaN(Number(member_id_from_auth))) {
-    // 如果 member_id_from_auth 不存在或不是有效數字，表示用戶未登入或認證失敗
-    // 這裡返回 401 Unauthorized，讓前端引導用戶登入
     return res.status(401).json({ error: "請先登入會員才能提交評論。" });
   }
 
@@ -136,16 +132,15 @@ export async function postReview(req, res) {
   try {
     const newReview = await addReview({
       product_id: product_id,
-      member_id: member_id_from_auth, // 使用從認證獲取的ID
+      member_id: member_id_from_auth, 
       rating: rating,
       comment: comment,
     });
     res.status(201).json({ message: "評論新增成功", review: newReview });
   } catch (error) {
     console.error("新增評論錯誤:", error);
-    // 處理 product_service.js 中拋出的「已評論過」錯誤
     if (error.message.includes("已評論過")) {
-      return res.status(409).json({ error: error.message }); // 409 Conflict 表示資源衝突
+      return res.status(409).json({ error: error.message });
     }
     res.status(500).json({ error: "伺服器錯誤，無法新增評論" });
   }
@@ -158,7 +153,7 @@ export async function putReview(req, res) {
   const { reviewId } = req.params; // 從 URL 參數獲取評論 ID
   const { rating, comment } = req.body;
   // 重要：member_id 應該從認證中間件中獲取
-  const member_id_from_auth = req.member ? req.member.id : null;
+  const member_id_from_auth = req.user?.id || null;
 
   // 驗證輸入資料
   if (!rating || comment === undefined || comment === null) {

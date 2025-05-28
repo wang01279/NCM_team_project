@@ -5,7 +5,6 @@ import ReviewItem from './ReviewItem'
 import StarRating from './StarRating'
 import ReviewForm from './ReviewForm' // 引入 ReviewForm
 import '../_styles/ProductTabs.scss'
-
 import { useAuth } from '@/app/_hooks/useAuth' // 確保路徑正確
 
 export default function ProductTabs({
@@ -129,7 +128,7 @@ export default function ProductTabs({
 
           {/* 商品評價內容區塊 */}
           <div
-            className={`tab-content reviews ${activeTab === 'reviews' ? 'active' : ''}`}
+            className={`tab-content p-1 reviews ${activeTab === 'reviews' ? 'active' : ''}`}
           >
             <h4 className="fw-bold">商品評價 ({reviews.length})</h4>
             <div className="average-rating-summary mb-4">
@@ -137,7 +136,6 @@ export default function ProductTabs({
               <StarRating value={Number(averageRating)} readOnly={true} />{' '}
             </div>
 
-            {/* *** 根據登入狀態和是否已評論來顯示按鈕或提示 *** */}
             {isLoggedIn ? ( // 如果已登入
               hasReviewed ? ( // 並且已評論過
                 <button
@@ -166,15 +164,15 @@ export default function ProductTabs({
             {showReviewForm && isLoggedIn && (
               <ReviewForm
                 product_id={product.id}
-                member_id={memberId}
-                // 如果有 editingReview，則傳遞其 id、rating、comment
-                review_id={editingReview?.id}
-                initialRating={editingReview?.rating}
-                initialComment={editingReview?.comment}
+                existingReview={editingReview} //直接傳整個物件
                 onReviewSubmitted={() => {
-                  setShowReviewForm(false) // 提交後隱藏表單
-                  setEditingReview(null) // 清除編輯狀態
-                  onReviewSubmitted() // 觸發 page.js 重新載入評論
+                  setShowReviewForm(false)
+                  setEditingReview(null)
+                  onReviewSubmitted()
+                }}
+                onCancelEdit={() => {
+                  setShowReviewForm(false)
+                  setEditingReview(null)
                 }}
               />
             )}
@@ -184,7 +182,8 @@ export default function ProductTabs({
                 {reviews.map((review) => (
                   <ReviewItem
                     key={review.id}
-                    reviewerName={review.reviewer_name || '匿名使用者'}
+                    reviewerName={review.reviewer_name}
+                    reviewerAvatar={review.reviewer_avatar}
                     rating={review.rating}
                     comment={review.comment}
                     reviewDate={review.created_at}

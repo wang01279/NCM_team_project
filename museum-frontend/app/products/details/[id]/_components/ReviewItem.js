@@ -1,58 +1,56 @@
 'use client'
 
 import React from 'react'
-import Image from 'next/image'
 import StarRating from './StarRating'
 
 import '../_styles/ReviewItem.scss'
 
 export default function ReviewItem({
   reviewerName,
+  reviewerAvatar,
   rating,
   comment,
   reviewDate,
-  images = [], // 預設為空陣列，以防沒有圖片
+  images = [],
 }) {
-  // 格式化日期顯示
   const formattedDate = new Date(reviewDate).toLocaleDateString('zh-TW', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   })
 
-  // 匿名化使用者名稱，例如：顯示姓氏和部分名字，或只顯示第一個字和星號
-  const displayReviewerName = reviewerName
-    ? reviewerName.charAt(0) + '**' // 例如：王**
-    : '匿名使用者'
+  const displayReviewerName = reviewerName || '匿名使用者'
+
+  const avatarSrc =
+    !reviewerAvatar ||
+    reviewerAvatar.trim() === '' ||
+    reviewerAvatar === '/uploads/default-avatar.png'
+      ? '/img/ncmLogo/default-avatar.png'
+      : reviewerAvatar.startsWith('http')
+        ? reviewerAvatar
+        : `http://localhost:3005${reviewerAvatar}`
 
   return (
-    <div className="review-item">
-      {' '}
+    <div className="review-item mt-3">
+      {/* 左邊頭像名字，右邊日期 */}
       <div className="review-header">
-        {' '}
-        <span className="reviewer-name">{displayReviewerName}</span>{' '}
-        <span className="review-date">{formattedDate}</span>{' '}
+        <div className="left">
+          <img
+            src={avatarSrc}
+            alt="使用者頭像"
+            width={36}
+            height={36}
+            className="review-avatar"
+          />
+          <span className="reviewer-name ps-2">{displayReviewerName}</span>
+        </div>
+        <span className="review-date">{formattedDate}</span>
       </div>
+
       <div className="review-rating">
-        {' '}
         <StarRating value={rating} readOnly={true} icon={<>&#9733;</>} />
       </div>
-      <p className="review-comment">{comment}</p>{' '}
-      {images.length > 0 && (
-        <div className="review-images">
-          {' '}
-          {images.map((imgSrc, index) => (
-            <Image
-              key={index}
-              src={imgSrc}
-              alt={`評價圖片 ${index + 1}`}
-              width={100}
-              height={100}
-              className="review-image"
-            />
-          ))}
-        </div>
-      )}
+      <p className="review-comment">{comment}</p>
     </div>
   )
 }

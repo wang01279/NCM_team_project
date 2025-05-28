@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import useFavorites from '@/app/_hooks/useFavorites'
 import Navbar from '../_components/navbar'
@@ -110,9 +110,9 @@ export default function ProductPage() {
       query.set('material', filters.material.join(','))
     if (filters.origin.length > 0) query.set('origin', filters.origin.join(','))
     if (filters.function.length > 0)
-      query.set('function', filters.function.join(','))
+      query.set('functions', filters.function.join(','))
 
-    // ✅ 改這裡：參數名稱由 minPrice 改為 price_min
+    //參數名稱由 minPrice 改為 price_min
     if (filters.minPrice !== 0) {
       query.set('price_min', filters.minPrice)
     }

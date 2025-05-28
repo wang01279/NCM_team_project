@@ -1,90 +1,119 @@
-// app/products/details/_styles/ReviewForm.scss
-
 .review-form-container {
-  background-color: #f9f9f9; // 輕微的背景色，讓表單區塊更明顯
-  border: 1px solid #e0e0e0; // 細邊框
-  border-radius: 8px; // 圓角
-  padding: 30px; // 內部邊距
-  margin-top: 30px; // 與上方評論列表隔開，增加視覺空間
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 30px;
+  margin-top: 30px;
 
   h4 {
-    font-size: 1.6em; // 標題字體大小
-    color: #333; // 標題顏色
-    margin-bottom: 25px; // 標題下方間距
-    text-align: center; // 標題置中
-    position: relative; // 為偽元素定位
+    font-size: 1.6em;
+    color: #333;
+    margin-bottom: 25px;
+    text-align: center;
+    position: relative;
+
     &::after {
       content: '';
       display: block;
-      width: 60px; // 下劃線寬度
-      height: 3px; // 下劃線高度
-      background-color: #e09300; // 下劃線顏色，可以搭配你的主題色
-      margin: 15px auto 0; // 下劃線上下間距和置中
-      border-radius: 2px; // 下劃線圓角
+      width: 150px;
+      height: 3px;
+      background-color: #e09300;
+      margin: 15px auto 0;
+      border-radius: 2px;
     }
   }
 
   .form-group {
-    margin-bottom: 20px; // 表單組件之間的間距
+    margin-bottom: 15px;
+
     label {
-      display: block; // 標籤佔滿一行
-      font-weight: bold; // 標籤字體加粗
-      color: #555; // 標籤顏色
-      margin-bottom: 10px; // 標籤下方間距
-      font-size: 1.1em; // 標籤字體大小
+      display: block;
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 10px;
+      font-size: 1.1em;
     }
 
     .form-control {
-      width: 100%; // 輸入框寬度
-      padding: 12px 15px; // 輸入框內邊距
-      border: 1px solid #ddd; // 輸入框邊框
-      border-radius: 6px; // 輸入框圓角
-      font-size: 1em; // 輸入框字體大小
-      transition: border-color 0.3s ease, box-shadow 0.3s ease; // 平滑過渡效果
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1em;
+      transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+
       &:focus {
-        border-color: #a0a0a0; // 聚焦時邊框顏色
-        box-shadow: 0 0 0 0.25rem rgba(128, 128, 128, 0.25); // 聚焦時陰影
-        outline: none; // 移除瀏覽器預設的聚焦外框
+        border-color: #a0a0a0;
+        box-shadow: 0 0 0 0.25rem rgba(128, 128, 128, 0.25);
+        outline: none;
       }
     }
 
     textarea {
-      resize: vertical; // 允許垂直調整大小，不允許水平
-      min-height: 100px; // 文本框最小高度
+      resize: vertical;
+      min-height: 100px;
     }
 
-    // StarRating 元件的樣式調整
     .star-rating-container {
-      margin-top: 5px; // 星星評分上方間距
+      margin-top: 5px;
+
       .star-btn {
-        .on, .off {
-          font-size: 1.8em; // 讓表單裡的星星大一點，方便點擊
+        .on,
+        .off {
+          font-size: 1.8em;
         }
       }
     }
   }
 
-  .btn-primary {
-    display: block; // 讓按鈕佔滿一行
-    width: 100%; // 按鈕寬度
-    padding: 12px 20px; // 按鈕內邊距
-    background-color: #e09300; // 按鈕背景色 (你的主題色)
-    color: white; // 按鈕文字顏色
-    border: none; // 移除邊框
-    border-radius: 6px; // 按鈕圓角
-    font-size: 1.2em; // 按鈕字體大小
-    font-weight: bold; // 按鈕字體加粗
-    cursor: pointer; // 滑鼠懸停時顯示手型
-    transition: background-color 0.3s ease, transform 0.1s ease; // 平滑過渡效果
+  // ✅ 按鈕區塊：提交 + 取消
+  .d-flex {
+    gap: 12px;
 
-    &:hover:not(:disabled) {
-      background-color: #cc8400; // 按鈕懸停時的背景色
-      transform: translateY(-2px); // 輕微上浮效果
+    .btn {
+      padding: 12px 20px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border-radius: 6px;
+      min-width: 120px;
     }
 
-    &:disabled {
-      background-color: #cccccc; // 禁用時的背景色
-      cursor: not-allowed; // 禁用時滑鼠顯示禁止符號
+    .btn-primary {
+      flex: 1; // ✅ 提交佔滿剩下空間
+      background-color: #e09300;
+      color: white;
+      border: none;
+      transition:
+        background-color 0.3s ease,
+        transform 0.1s ease;
+
+      &:hover:not(:disabled) {
+        background-color: #cc8400;
+        transform: translateY(-2px);
+      }
+
+      &:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+    }
+
+    .btn-secondary {
+      background-color: #cccccc;
+      color: #333;
+      border: none;
+      transition: background-color 0.3s ease;
+
+      &:hover:not(:disabled) {
+        background-color: #aaaaaa;
+      }
+
+      &:disabled {
+        background-color: #e0e0e0;
+        cursor: not-allowed;
+      }
     }
   }
 }
