@@ -1,0 +1,39 @@
+table.couponTable {
+  border-radius: 6px;
+  overflow: hidden;
+
+  th {
+    background-color: #7b2d12 ;
+    color: #f4f1ea;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    padding: 12px;
+    border: 1px solid darken(#7b2d12, 10%);
+  }
+
+  td {
+    background-color: #f4f1ea;
+    text-align: center;
+    vertical-align: middle;
+    padding: 12px;
+    border: 1px solid #ddd;
+    
+  }
+
+  tbody tr:hover td {
+    background-color: #f2dfd7;
+    color: #7b2d12;
+    font-weight: 600;
+  }
+
+  thead {
+    border-radius: 6px;
+  }
+
+  tr {
+    transition: background-color 0.2s ease;
+  }
+}
+
+

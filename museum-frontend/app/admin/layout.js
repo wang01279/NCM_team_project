@@ -1,13 +1,14 @@
 'use client'
 
-import Sidebar from './sidebar/Sidebar.jsx'
 import AdminNavbar from './_components/AdminNavbar'
+import AdminSidebar from './_components/AdminSidebar.js'
+
 
 export default function AdminLayout({ children }) {
   return (
     <div className="d-flex">
       {/* 左側 Aside */}
-      {/* <Sidebar /> */}
+      <AdminSidebar />
 
       {/* 主內容區塊 */}
       <div className="flex-grow-1">
@@ -15,7 +16,7 @@ export default function AdminLayout({ children }) {
         <AdminNavbar name="測試管理員" />
 
         {/* Page 內容 */}
-        <main className="p-4">{children}</main>
+        <main className="px-4">{children}</main>
 
         {/* Footer */}
         <footer className="text-center py-3 text-muted small">

@@ -24,46 +24,66 @@ const router = express.Router()
 router.get('/', async (req, res) => {
   try {
     const state = req.query.state // 'current', 'past', 'future'
+    const page = parseInt(req.query.page) || 1
+    const perPage = parseInt(req.query.perPage) || 6
     const now = new Date()
 
     const [rows] = await db.query('SELECT * FROM exhibitions')
 
     const formatDate = (d) => d.toISOString().split('T')[0]
 
-    const filtered = rows
-      .map((row) => {
-        const start = new Date(row.startDate)
-        const end = new Date(row.endDate)
+    // 加入展覽狀態
+    const mapped = rows.map((row) => {
+      const start = new Date(row.startDate)
+      const end = new Date(row.endDate)
 
-        const status =
-          now >= start && now <= end
-            ? '展覽中'
-            : now > end
-            ? '已結束'
-            : '未開始'
+      const status =
+        now >= start && now <= end
+          ? '展覽中'
+          : now > end
+          ? '已結束'
+          : '未開始'
 
-        return {
-          ...row,
-          startDate: formatDate(start),
-          endDate: formatDate(end),
-          status,
-          introShort: row.intro?.slice(0, 30),
-        }
-      })
-      .filter((row) => {
-        if (!state) return true
-        if (state === 'current') return row.status === '展覽中'
-        if (state === 'past') return row.status === '已結束'
-        if (state === 'future') return row.status === '未開始'
-        return true
-      })
+      return {
+        ...row,
+        startDate: formatDate(start),
+        endDate: formatDate(end),
+        status,
+        introShort: row.intro?.slice(0, 30),
+      }
+    })
 
-    res.json(filtered)
+    // 狀態過濾
+    const filtered = mapped.filter((row) => {
+      if (!state) return true
+      if (state === 'current') return row.status === '展覽中'
+      if (state === 'past') return row.status === '已結束'
+      if (state === 'future') return row.status === '未開始'
+      return true
+    })
+
+    // ✅ 根據 id 做排序（DESC）
+    const sorted = filtered.sort((a, b) => b.id - a.id)
+
+    // 分頁
+    const total = sorted.length
+    const totalPages = Math.ceil(total / perPage)
+    const startIndex = (page - 1) * perPage
+    const paginated = sorted.slice(startIndex, startIndex + perPage)
+
+    res.json({
+      items: paginated,
+      total,
+      totalPages,
+      currentPage: page,
+    })
   } catch (error) {
     console.error('❌ 錯誤:', error)
     res.status(500).json({ message: '伺服器錯誤' })
   }
 })
+
+
 
 // ✅ 展覽新增 POST：支援圖片 + 資料表欄位
 router.post('/', async (req, res) => {
