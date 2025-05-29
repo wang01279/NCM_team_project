@@ -5,7 +5,7 @@ export default function MuseumVideo() {
     <section className="museum-video-section full-vh">
       <h2 className="museum-video-section__title">博物館內部導覽</h2>
       <p className="museum-video-section__desc">
-        透過 360° 街景，帶你線上探索博物館的每個角落。
+        透過 360° VR 導覽，帶你線上探索博物館的每個角落。
       </p>
       <div className="museum-video-card">
         <iframe
