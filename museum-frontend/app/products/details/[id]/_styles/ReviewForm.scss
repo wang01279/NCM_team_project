@@ -68,7 +68,7 @@
     }
   }
 
-  // ✅ 按鈕區塊：提交 + 取消
+  //按鈕區塊：提交 + 取消
   .d-flex {
     gap: 12px;
 
@@ -81,8 +81,8 @@
     }
 
     .btn-primary {
-      flex: 1; // ✅ 提交佔滿剩下空間
-      background-color: #e09300;
+      flex: 1; //提交佔滿剩下空間
+      // background-color: #e09300;
       color: white;
       border: none;
       transition:
@@ -90,7 +90,7 @@
         transform 0.1s ease;
 
       &:hover:not(:disabled) {
-        background-color: #cc8400;
+        // background-color: #cc8400;
         transform: translateY(-2px);
       }
 

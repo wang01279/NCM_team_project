@@ -138,8 +138,14 @@ export default function ProductPage() {
 
   const renderPaginationButtons = () => {
     const buttons = []
-    const totalNumbers = 5
-    const half = Math.floor(totalNumbers / 2)
+    const totalMobileNumbers = 3 // 手機版顯示的頁碼按鈕數量
+    const totalDesktopNumbers = 5 // 桌面版顯示的頁碼按鈕數量
+    // 假設 768px 為手機版斷點，但考慮到首次渲染時 window.innerWidth 可能為 0
+    // 更好的方式是使用 useEffect 來設定 isMobile 狀態，或者直接在 CSS 中處理響應式
+    // 在這裡，我們只用它來決定數字範圍，但主要視覺控制在 CSS 中
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+    const numbersToShow = isMobile ? totalMobileNumbers : totalDesktopNumbers
+    const half = Math.floor(numbersToShow / 2)
 
     const goToFirst = () => goToPage(1)
     const goToLast = () => goToPage(totalPages)
@@ -148,31 +154,44 @@ export default function ProductPage() {
 
     // 計算要顯示的頁碼範圍
     let start = Math.max(1, currentPage - half)
-    let end = Math.min(totalPages, start + totalNumbers - 1)
+    let end = Math.min(totalPages, start + numbersToShow - 1)
 
-    if (end - start < totalNumbers - 1) {
-      start = Math.max(1, end - totalNumbers + 1)
+    // 如果計算出的頁碼範圍不足 numbersToShow 個，調整 start 讓它補滿
+    if (end - start + 1 < numbersToShow) {
+      start = Math.max(1, end - numbersToShow + 1)
     }
+    // 確保 end 不會超出 totalPages
+    end = Math.min(totalPages, start + numbersToShow - 1)
 
     // 首頁與上一頁
     buttons.push(
-      <button key="first" onClick={goToFirst} disabled={currentPage === 1}>
+      <button
+        key="first"
+        onClick={goToFirst}
+        disabled={currentPage === 1}
+        className="pagination-button"
+      >
         首頁
       </button>
     )
     buttons.push(
-      <button key="prev" onClick={goPrev} disabled={currentPage === 1}>
+      <button
+        key="prev"
+        onClick={goPrev}
+        disabled={currentPage === 1}
+        className="pagination-button"
+      >
         <FaArrowLeft />
       </button>
     )
 
-    // 頁碼按鈕
+    // 頁碼按鈕 (不再有省略符號邏輯)
     for (let i = start; i <= end; i++) {
       buttons.push(
         <button
           key={`page-${i}`}
           onClick={() => goToPage(i)}
-          className={currentPage === i ? 'active' : ''}
+          className={`pagination-button ${currentPage === i ? 'active' : ''}`}
         >
           {i}
         </button>
@@ -181,7 +200,12 @@ export default function ProductPage() {
 
     // 下一頁與末頁
     buttons.push(
-      <button key="next" onClick={goNext} disabled={currentPage === totalPages}>
+      <button
+        key="next"
+        onClick={goNext}
+        disabled={currentPage === totalPages}
+        className="pagination-button"
+      >
         <FaArrowRight />
       </button>
     )
@@ -190,6 +214,7 @@ export default function ProductPage() {
         key="last"
         onClick={goToLast}
         disabled={currentPage === totalPages}
+        className="pagination-button"
       >
         末頁
       </button>

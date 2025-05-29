@@ -1,12 +1,39 @@
 import React from 'react'
 import ProductCard from '@/app/_components/ProductCard'
 import '../_styles/YouMightLike.scss'
+import { useToast } from '@/app/_components/ToastManager'
 
 export default function YouMightLike({
   products,
   favoriteProductIds = [],
   onToggleFavorite,
 }) {
+  const { showToast } = useToast()
+  const handleAddToCart = (productId) => {
+    const product = products.find((p) => p.id === productId)
+    if (!product) return
+
+    const cartItem = {
+      id: product.id,
+      name: product.name_zh,
+      image: product.main_img,
+      price: Number(product.price),
+      type: 'product',
+      quantity: 1,
+    }
+
+    const existing = JSON.parse(localStorage.getItem('cartItems')) || []
+    const index = existing.findIndex((item) => item.id === cartItem.id)
+
+    if (index > -1) {
+      existing[index].quantity += 1
+    } else {
+      existing.push(cartItem)
+    }
+
+    localStorage.setItem('cartItems', JSON.stringify(existing))
+    showToast('success', '已加入購物車', 3000)
+  }
   return (
     <div className="others-section">
       <div className="text-center fw-bold my-4">
@@ -23,6 +50,7 @@ export default function YouMightLike({
                 product={product}
                 isFavorite={favoriteProductIds.includes(product.id)}
                 onToggleFavorite={onToggleFavorite}
+                onAddToCart={handleAddToCart}
               />
             ))}
         {products && products.length === 0 && <p>暫無相關商品推薦。</p>}

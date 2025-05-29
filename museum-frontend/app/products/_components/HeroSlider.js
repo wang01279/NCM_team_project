@@ -89,12 +89,11 @@ export default function HeroSlider() {
   return (
     <section className="hero-section py-5">
       <div className="slider-container container">
-        <div className="slider-title">
+        {/* <div className="slider-title">
           <h1 className="text-center fw-bold">新品上市</h1>
           <h4 className="text-center">New Arrivals</h4>
-        </div>
-
-        {isMobile && (
+        </div> */}
+        {/* {isMobile && (
           <div className="mobile-arrows d-flex justify-content-center gap-4 my-3">
             <button className="btn-arrow btn-primary" onClick={handlePrev}>
               <FaArrowLeft />
@@ -103,7 +102,7 @@ export default function HeroSlider() {
               <FaArrowRight />
             </button>
           </div>
-        )}
+        )} */}
 
         <div className="slider">
           {bgImages.map((bg, index) => (

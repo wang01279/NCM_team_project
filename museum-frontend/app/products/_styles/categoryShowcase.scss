@@ -30,6 +30,9 @@
   background: currentColor;
   transition: width 0.5s ease;
 }
+.animate-slidein h1{
+  font-size: 32px;
+}
 
 /* 電腦 hover 效果 */
 @media (hover: hover) and (pointer: fine) {
