@@ -256,6 +256,16 @@ ul, ol {
   --bs-btn-active-color:     #fff !important;
 }
 
+.btn-close{
+  --bs-btn-close-color: #{$primary} !important;
+  --bs-btn-close-hover-color: #{$primary} !important;
+  --bs-btn-close-active-color: #{$primary} !important;
+  --bs-btn-close-focus-color: #{$primary} !important;
+  --bs-btn-close-focus-shadow: 0 0 0 0.25rem rgba($primary, 0.25) !important;
+  --bs-btn-close-opacity: 0.5 !important;
+  --bs-btn-close-hover-opacity: 1 !important;
+}
+
 // ----------------------------------------------------------------------------
 // Outline Buttons
 // ----------------------------------------------------------------------------
@@ -473,12 +483,12 @@ $modal-backdrop-bg:             rgba(123,45,18,0.25);
 
 @keyframes backdrop-glass-in {
   from {
-    background-color: rgba(255, 253, 250, 0);
+    background-color: rgba(255, 253, 250, .3);
     backdrop-filter: blur(0px);
   }
   to {
     background-color: rgba(98, 97, 96, 0.8);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(10px);
   }
 }
 
