@@ -106,7 +106,7 @@ const CourseContent = memo(function CourseContent({ course }) {
           <div className="row g-4">
             <div className="col-md-8">
               <img 
-                src={venue_main_image || "/course-img/classroom/B101_2.jpg"} 
+                src={venue_main_image || "/default-course.jpg"} 
                 alt="教室全景" 
                 className="img-fluid rounded"
               />
@@ -115,14 +115,14 @@ const CourseContent = memo(function CourseContent({ course }) {
               <div className="row g-4">
                 <div className="col-12">
                   <img 
-                    src={venue_image_1 || "/course-img/classroom/B101.jpg"} 
+                    src={venue_image_1 || "/default-course.jpg"} 
                     alt="工作區" 
                     className="img-fluid rounded"
                   />
                 </div>
                 <div className="col-12">
                   <img 
-                    src={venue_image_2 || "/course-img/classroom/B101.jpg"} 
+                    src={venue_image_2 || "/default-course.jpg"} 
                     alt="窯場" 
                     className="img-fluid rounded"
                   />

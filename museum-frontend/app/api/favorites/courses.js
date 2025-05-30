@@ -5,7 +5,7 @@ const BASE = 'http://localhost:3005/api/favorites/courses'
 
 export async function getCourseFavorites(memberId) {
   const res = await axios.get(`${BASE}/${memberId}`)
-  return res.data.data
+  return res
 }
 
 export async function addCourseFavorite(memberId, courseId) {
