@@ -188,6 +188,16 @@ export default function FavoritesTab() {
               </tbody>
             </table>
           </div>
+        ) : type === 'course' ? (
+          <div>
+            {data.map((item) => (
+              <FavoriteCourseRowCard
+                key={item.id}
+                course={item}
+                onRemove={handleRemove}
+              />
+            ))}
+          </div>
         ) : (
           <div className="row g-3">
             {data.map((item) => (

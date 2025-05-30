@@ -1,4 +1,4 @@
-import { fetchCourseById, fetchRelatedCourses } from '../services/courseService.js';
+import { fetchCourseById, fetchRelatedCourses, fetchCourses } from '../services/courseService.js';
 
 export async function getCourseById(req, res) {
   try {
@@ -14,6 +14,15 @@ export async function getRelatedCourses(req, res) {
   try {
     const { courseId, category } = req.query;
     const courses = await fetchRelatedCourses(courseId, category);
+    res.json(courses);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function getCourses(req, res) {
+  try {
+    const courses = await fetchCourses();
     res.json(courses);
   } catch (err) {
     res.status(500).json({ error: err.message });

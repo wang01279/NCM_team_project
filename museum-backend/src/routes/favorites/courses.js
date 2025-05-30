@@ -40,8 +40,16 @@ router.delete('/', async (req, res) => {
 router.get('/:memberId', async (req, res) => {
   const { memberId } = req.params
   try {
-    const sql = `SELECT * FROM course_favorites WHERE member_id = ?`
+    const sql = `
+      SELECT c.id, c.title, c.venue_id, v.name AS venue_name, c.description_intro, ci.image_path AS main_image, c.start_time
+      FROM course_favorites f
+      JOIN courses c ON f.course_id = c.id
+      LEFT JOIN venues v ON c.venue_id = v.id
+      LEFT JOIN course_images ci ON ci.course_id = c.id AND ci.is_main = 1
+      WHERE f.member_id = ?
+    `
     const [rows] = await db.query(sql, [memberId])
+    console.log('查詢到的課程收藏 rows:', rows)
     successResponse(res, rows)
   } catch (err) {
     errorResponse(res, '查詢收藏失敗', err)

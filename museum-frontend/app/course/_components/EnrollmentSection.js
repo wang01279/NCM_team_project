@@ -38,7 +38,7 @@ export default function EnrollmentSection({
         onClick={onAddToCart}
         disabled={isEnrolled}
       >
-        <i className="bi bi-cart-plus"></i> {isEnrolled ? '已報名' : '立即報名'}
+        <i className="bi bi-cart-plus"></i> {isEnrolled ? '已加入購物車' : '立即報名'}
       </button>
       <button className="btn btn-enroll btn-outline">
         <i className="bi bi-chat-text"></i> 諮詢課程

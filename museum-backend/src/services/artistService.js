@@ -9,3 +9,8 @@ export async function fetchArtistExperiences(artistId) {
   const [rows] = await db.query('SELECT experience FROM artist_experiences WHERE artist_id = ? ORDER BY sort_order ASC', [artistId]);
   return rows.map(row => row.experience);
 }
+
+export async function fetchAllArtists() {
+  const [rows] = await db.query('SELECT id, name, avatar FROM artists');
+  return rows;
+}
