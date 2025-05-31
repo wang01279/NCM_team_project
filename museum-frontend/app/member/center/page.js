@@ -4,7 +4,7 @@
 // import '@/app/_styles/globals.scss';
 // import '@/app/_styles/vendors/_bootstrap-override.scss';
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/app/_components/ToastManager'
 import { useAuth } from '@/app/_hooks/useAuth'
@@ -23,6 +23,9 @@ import FavoritesTab from './features/tabs/FavoritesTab'
 
 import { useSearchParams } from 'next/navigation' // ✅ 加這行
 import Loader from '@/app/_components/load'
+import EditProfileModal from './features/tabs/_profile/EditProfileModal'
+import PasswordChangeModal from './features/tabs/_profile/PasswordChangeModal'
+import DeleteAccountModal from './features/tabs/_profile/DeleteAccountModal'
 
 
 
@@ -49,6 +52,25 @@ export default function MemberCenter() {
     address: '',
     birthday: '',
   })
+
+  // 新增三個 modal 狀態
+  const [showModal, setShowModal] = useState(false)
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+
+  // 新增 couponFilter 狀態
+  const [couponFilter, setCouponFilter] = useState('available') // 'available' or 'expired'
+  // 新增 favoriteType 狀態
+  const [favoriteType, setFavoriteType] = useState('menu') // 'menu' | 'exhibition' | 'product' | 'course'
+
+  // 新增 passwordData 狀態
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  })
+
+  const sidebarRef = useRef()
 
   useEffect(() => {
     const tabFromUrl = searchParams.get('tab')
@@ -243,6 +265,35 @@ export default function MemberCenter() {
     }
   }
 
+  // 密碼欄位 onChange
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target
+    setPasswordData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+  }
+
+  // 密碼送出
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault()
+    // ...你原本的密碼送出邏輯，可複製自 ProfileTab.js...
+  }
+
+  // modal 關閉時自動清除 activeDropdownItem
+  const handleCloseEditModal = () => {
+    setShowModal(false)
+    if (sidebarRef.current) sidebarRef.current.setActiveDropdownItem('')
+  }
+  const handleClosePasswordModal = () => {
+    setShowPasswordModal(false)
+    if (sidebarRef.current) sidebarRef.current.setActiveDropdownItem('')
+  }
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false)
+    if (sidebarRef.current) sidebarRef.current.setActiveDropdownItem('')
+  }
+
   // 渲染主內容
   const renderMainContent = () => {
     switch (activeTab) {
@@ -256,15 +307,15 @@ export default function MemberCenter() {
             onCancel={handleCancel}
             onSubmit={handleSubmit}
             onChange={handleChange}
-            onAvatarUpload={handleAvatarUpload} // 新增這行
+            onAvatarUpload={handleAvatarUpload}
           />
         )
       case 'orders':
         return <OrdersTab />
       case 'coupons':
-        return <CouponsTab />
+        return <CouponsTab filter={couponFilter} />
       case 'favorites':
-        return <FavoritesTab />
+        return <FavoritesTab type={favoriteType} setType={setFavoriteType} />
       default:
         return <div>找不到此頁面</div>
     }
@@ -300,17 +351,43 @@ export default function MemberCenter() {
       </div>
       <div className={styles.leftSidebar}>
         <LeftSidebar
+          ref={sidebarRef}
           setActiveTab={setActiveTab}
           activeTab={activeTab}
           member={member || {}}
-        // onAvatarUpload={handleAvatarUpload}
+          onEditProfileModal={() => setShowModal(true)}
+          onShowPasswordModal={() => setShowPasswordModal(true)}
+          onShowDeleteModal={() => setShowDeleteModal(true)}
+          couponFilter={couponFilter}
+          setCouponFilter={setCouponFilter}
+          favoriteFilter={favoriteType}
+          setFavoriteFilter={setFavoriteType}
         />
       </div>
       <main className={styles.mainContent}>{renderMainContent()}</main>
       <div className={styles.rightContent}>
         <RightContent />
       </div>
-     
+      {/* Modal 控制區 */}
+      <EditProfileModal
+        show={showModal}
+        onHide={handleCloseEditModal}
+        member={member}
+        formData={formData}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+      />
+      <PasswordChangeModal
+        show={showPasswordModal}
+        onHide={handleClosePasswordModal}
+        passwordData={passwordData}
+        onChange={handlePasswordChange}
+        onSubmit={handlePasswordSubmit}
+      />
+      <DeleteAccountModal
+        show={showDeleteModal}
+        onHide={handleCloseDeleteModal}
+      />
     </>
   )
 }

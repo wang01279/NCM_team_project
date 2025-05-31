@@ -14,29 +14,27 @@ $active-scale: 1.3;
   margin-top: 100px;
   padding: 20px;
 
-
   // border: 1px solid #000;
   // background-color: #3c3a36;
   // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   // border-radius: 10px;
 
-   /* 用 rgba(#3c3a36) 當半透明背景 */
-   background: rgba(60, 58, 54, 0.8);  // α＝0.4 可再微調
+  /* 用 rgba(#3c3a36) 當半透明背景 */
+  //background: rgba(60, 58, 54, 0.8);  // α＝0.4 可再微調
+  background: #d7cec3;
 
-   /* 模糊與飽和度提升，營造玻璃感 */
-   backdrop-filter: blur(10px) saturate(150%);
-   -webkit-backdrop-filter: blur(10px) saturate(150%);
- 
-   /* 半透明邊框，加強輪廓 */
-   border: 1px solid rgba(255, 255, 255, 0.15);
- 
-   /* 柔和陰影，浮起來的感覺 */
-   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
- 
-   border-radius: 10px;
+  /* 模糊與飽和度提升，營造玻璃感 */
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
 
+  /* 半透明邊框，加強輪廓 */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  /* 柔和陰影，浮起來的感覺 */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+
+  border-radius: 10px;
 }
-
 
 .userInfo {
   position: relative;
@@ -44,15 +42,62 @@ $active-scale: 1.3;
   text-align: center;
   z-index: 2;
 
+  // .roundedCircle {
+  //   width: 120px;
+  //   height: 120px;
+  //   border-radius: 50%;
+  //   border: 2px solid $secondary;
+  //   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  //   position: relative;
+  //   z-index: 1;
+  //   object-fit: cover;
+  // }
+
   .roundedCircle {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
-    // border: 2px solid $primary;
+    border: 2px solid $primary;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
     z-index: 1;
     object-fit: cover;
+  
+    &::after {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: -12px;
+      right: -12px;
+      bottom: -12px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba($secondary, 0.4) 0%,
+        rgba($secondary, 0.1) 40%,
+        transparent 80%
+      );
+      z-index: -1;
+  
+      /* 动画设置 */
+      animation: pulse-aura 3s ease-in-out infinite;
+    }
+  }
+  
+  /* 脉冲动画：scale + 透明度变化 */
+  @keyframes pulse-aura {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.15);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   h4 {
@@ -60,7 +105,7 @@ $active-scale: 1.3;
     z-index: 1;
     position: relative;
 
-    color: $light-text;
+    color: $primary;
   }
 
   p {
@@ -74,7 +119,7 @@ $active-scale: 1.3;
     position: relative;
     z-index: 1;
 
-    color: $light-text;
+    color: $main-text;
 
     &.vip {
       background-color: $vip-color;
@@ -87,6 +132,136 @@ $active-scale: 1.3;
       color: $light-text;
       border: none;
     }
+
+    &.admin {
+      background: #fffbe6;
+      color: #d4af37;
+      border: 1px solid #d4af37;
+      font-weight: bold;
+    }
+
+    &.staff {
+      background: #e6f7f1;
+      color: #3a5a40;
+      border: 1px solid #3a5a40;
+      font-weight: bold;
+    }
+
+    &.user {
+      background: #f8e6e6;
+      color: #842929;
+      border: 1px solid #842929;
+      font-weight: bold;
+    }
+  }
+
+  /* _style/Tags.module.scss */
+
+  .tag {
+    position: relative;
+  overflow: visible;
+
+    // 玻璃感
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(12px) saturate(140%);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+
+    // 立體泡泡感
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.05),
+      inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+
+    // 內距與字體
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    position: relative;
+    z-index: 1;
+
+    color: $main-text;
+
+    // 小浮動動畫
+    &.bubble {
+      animation: bubble-float 5s ease-in-out infinite;
+    }
+
+    // 滑鼠互動：輕微「跳動＋光澤」效果
+    &:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.7);
+    }
+
+    /* 不同角色的顏色覆蓋 */
+    &.admin {
+      @extend .tag;
+      background: rgba(255, 251, 230, 0.4);
+      border-color: #EA580C;
+      color: #EA580C;
+    }
+    &.staff {
+      @extend .tag;
+      background: rgba(230, 247, 241, 0.4);
+      border-color: #3a5a40;
+      color: #3a5a40;
+    }
+    &.user {
+      @extend .tag;
+      background: rgba(248, 230, 230, 0.4);
+      border-color: #842929;
+      color: #842929;
+    }
+
+    &.sparkle {
+      &::before, &::after {
+        content: '';
+        position: absolute;
+        width: 6px; height: 6px;
+        background: rgba(255,255,255,0.8);
+        border-radius: 50%;
+        filter: blur(1px);
+        opacity: 0;
+        animation: sparkle 3s ease-in-out infinite;
+      }
+      &::before {
+        top: 20%; left: 15%;
+        animation-delay: 0s;
+      }
+      &::after {
+        top: 70%; left: 80%;
+        animation-delay: 1.5s;
+      }
+    }
+  }
+  
+  @keyframes sparkle {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+
+
+  }
+
+  // 浮動關鍵影格
+  @keyframes bubble-float {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-1px) scale(1.05);
+    }
   }
 }
 
@@ -96,12 +271,24 @@ $active-scale: 1.3;
 }
 
 @keyframes microShake {
-  0% { transform: translateY(0) rotate(0deg); }
-  20% { transform: translateY(-1px) rotate(-2deg); }
-  40% { transform: translateY(1px) rotate(2deg); }
-  60% { transform: translateY(-1px) rotate(-1deg); }
-  80% { transform: translateY(1px) rotate(1deg); }
-  100% { transform: translateY(0) rotate(0deg); }
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  20% {
+    transform: translateY(-1px) rotate(-2deg);
+  }
+  40% {
+    transform: translateY(1px) rotate(2deg);
+  }
+  60% {
+    transform: translateY(-1px) rotate(-1deg);
+  }
+  80% {
+    transform: translateY(1px) rotate(1deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
 }
 
 .decorationIcon {
@@ -123,7 +310,7 @@ $active-scale: 1.3;
   z-index: 2;
 
   .hrLine {
-    border-top: 2px dashed $light-text;
+    border-top: 2px dashed $primary;
     margin: 10px 0;
   }
 }
@@ -132,11 +319,11 @@ $active-scale: 1.3;
   display: flex;
   align-items: center;
   // justify-content: center;
-  margin:  auto 0;
+  margin: auto 0;
   gap: 10px;
   color: $regular-color;
   text-decoration: none;
-  padding: 2rem 1rem;
+  padding: 1rem 1rem;
   border-radius: 4px;
   transition:
     all 0.3s ease,
@@ -156,7 +343,7 @@ $active-scale: 1.3;
   }
 
   .label {
-    color: $light-text;
+    color: $primary;
     display: block;
     transition: color 0.3s ease;
   }
@@ -171,21 +358,57 @@ $active-scale: 1.3;
     transform: translateY(-2px) scale($hover-scale);
     text-decoration: none;
 
-    
+    .label {
+      color: #f8ebd8;
+    }
 
     .iconSize {
       transform: scale(1.2) rotate(3deg);
+
+      color: #f8ebd8;
     }
   }
 
   &.active {
     background-color: $primary;
     color: $light-text;
+    .label {
+      color: $light-text;
+    }
 
     // padding: 10px;
 
     .iconSize {
       transform: scale($active-scale);
+    }
+  }
+
+  &.dropdownOpen {
+    border-radius: 12px 12px 0 0;
+    // 可加強展開時的背景或陰影
+  }
+
+  .dropdownMenu {
+    position: static;
+    background: none;
+    box-shadow: none;
+    min-width: 0;
+    margin: 0;
+    padding: 0.2rem 0 0 0;
+    border-radius: 0 0 8px 8px;
+    display: block;
+  }
+  .dropdownItem {
+    padding: 0.5rem 1rem;
+    color: $primary;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 6px;
+    background: transparent;
+    transition: background 0.2s, color 0.2s;
+    &:hover {
+      background: #f8ebd800;
+      color: $secondary;
     }
   }
 }
@@ -210,8 +433,6 @@ $active-scale: 1.3;
     padding: 0.5rem;
     text-align: center;
 
-    
-
     .label {
       display: none;
     }
@@ -220,7 +441,13 @@ $active-scale: 1.3;
       display: block;
       margin: auto 0;
       font-size: 1rem;
-      color: $light-text;
+      color: $primary;
+    }
+
+    &.active {
+      .subLabel {
+        color: $light-text !important;
+      }
     }
 
     .iconSize {
@@ -266,7 +493,6 @@ $active-scale: 1.3;
 //   to { -webkit-offset-distance: 100%; }
 // }
 
-
 .marquee {
   position: absolute;
   inset: 0;
@@ -277,4 +503,74 @@ $active-scale: 1.3;
 .nav {
   position: relative;
   z-index: 1;
+}
+
+.dropdownMenu {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px #0002;
+  min-width: 140px;
+  z-index: 10;
+  padding: 0.5rem 0;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+}
+.dropdownItem {
+  padding: 0.5rem 1rem;
+  color: $primary;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s;
+  border-radius: 6px;
+  &:hover {
+    background: #f8ebd8;
+    color: $secondary;
+  }
+}
+
+.inlineMenu {
+  display: block;
+  background: #ffffff02;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 2px 12px #0001;
+  margin: 0 0 1rem 0;
+  padding: 0.5rem 0;
+  transform-origin: top;
+}
+.inlineItem + .inlineItem {
+  margin-top: 0.2rem;
+}
+
+.inlineItem {
+  padding: 0.5rem 1.5rem;
+  color: $primary;
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 6px;
+  background: transparent;
+  transition: background 0.2s, color 0.2s;
+  text-align: left;
+  &:hover {
+    background: #f8ebd8;
+    color: $secondary;
+  }
+}
+
+.inlineItem.activeDropdown {
+  background: #f8ebd8;
+  color: $secondary;
+  font-weight: bold;
+}
+
+@media (max-width: 900px) {
+  .inlineMenu {
+    display: none !important;
+  }
+  .dropdownArrow {
+    display: none !important;
+  }
 }

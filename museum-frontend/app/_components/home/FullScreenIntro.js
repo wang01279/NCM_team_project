@@ -1,39 +1,51 @@
 // app/_components/home/FullScreenIntro.js
 'use client'
 
-import { useRef, Suspense } from 'react'
+import { useRef, Suspense, useEffect, useState, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { OrbitControls, useGLTF, Html } from '@react-three/drei'
-import Loading from '@/app/_components/load'
+import LoadMini from '@/app/_components/LoadMini'
+import { setGltfCache, getGltfCache, getCameraFlyPlayed, setCameraFlyPlayed } from './gltfCache'
+
 // 預載模型，一進來就開始下載並快取
 useGLTF.preload('/models/simu-museum/simu-museum.gltf')
 
 function MuseumModel() {
-  const { scene } = useGLTF('/models/simu-museum/simu-museum.gltf')
-  const box = new THREE.Box3().setFromObject(scene)
-  const size = box.getSize(new THREE.Vector3())
-  const center = box.getCenter(new THREE.Vector3())
-  const scale = 18 / Math.max(size.x, size.y, size.z)
-  scene.scale.set(scale, scale, scale)
-  scene.position.set(-center.x * scale, -center.y * scale, -center.z * scale)
+  const { scene: loadedScene } = useGLTF('/models/simu-museum/simu-museum.gltf')
+
+  // 只在 loadedScene 變動時處理
+  const scene = useMemo(() => {
+    let base = getGltfCache()
+    if (!base) {
+      setGltfCache(loadedScene)
+      base = loadedScene
+    }
+    // 每次都 clone 一份新物件
+    const cloned = base.clone(true)
+    // 做縮放與居中（只動 clone，不動 base）
+    const box = new THREE.Box3().setFromObject(cloned)
+    const size = box.getSize(new THREE.Vector3())
+    const center = box.getCenter(new THREE.Vector3())
+    const scale = 18 / Math.max(size.x, size.y, size.z)
+    cloned.scale.set(scale, scale, scale)
+    cloned.position.set(-center.x * scale, -center.y * scale, -center.z * scale)
+    return cloned
+  }, [loadedScene])
+
+  if (!scene) return null
   return <primitive object={scene} />
 }
 
-function CameraFly({ duration = 8 }) {
+function CameraFly({ duration = 8, onComplete }) {
   const { camera } = useThree()
-  // 起始位置
   const start = new THREE.Vector3(5, 3, 5)
-  // 終點位置
   const end = new THREE.Vector3(10, 1, 0)
-  // 用來追蹤動畫是否完成
   const ref = useRef({ done: false })
 
   useFrame(({ clock }) => {
     if (ref.current.done) return
-    // 計算動畫進度
     const t = Math.min(clock.getElapsedTime() / duration, 1)
-    // 計算貝塞爾曲線上的點
     const p0 = start
     const p1 = new THREE.Vector3(-5, 4, 15)
     const p2 = new THREE.Vector3(5, 4, 8)
@@ -48,6 +60,7 @@ function CameraFly({ duration = 8 }) {
     camera.lookAt(0, 0, 0)
     if (t === 1 && !ref.current.done) {
       ref.current.done = true
+      if (onComplete) onComplete()
     }
   })
   return null
@@ -55,6 +68,14 @@ function CameraFly({ duration = 8 }) {
 
 export default function FullScreenIntro() {
   const controlsRef = useRef()
+  const [showCameraFly, setShowCameraFly] = useState(!getCameraFlyPlayed())
+
+  useEffect(() => {
+    if (showCameraFly) {
+      setCameraFlyPlayed()
+    }
+  }, [showCameraFly])
+
   return (
     <div
       style={{
@@ -82,29 +103,32 @@ export default function FullScreenIntro() {
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                width: '100%',
-                height: '100%',
+                width: '100vw',
+                height: '100vh',
+                background: '#FDFBF7',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                zIndex: 999999,
-                pointerEvents: 'none'
+                zIndex: 9999,
               }}
             >
-              <div style={{
-                position: 'relative',
-                zIndex: 999999,
-                pointerEvents: 'auto'
+              <LoadMini />
+              {/* <span style={{
+                marginLeft: 32,
+                fontSize: 24,
+                color: '#3a2c13',
+                fontWeight: 700,
+                letterSpacing: '0.1em'
               }}>
-                <Loading />
-              </div>
+                正在為您準備精彩的博物館之旅...
+              </span> */}
             </Html>
-
-            
           }
         >
           <MuseumModel />
-          <CameraFly duration={6} />
+          {showCameraFly ? (
+            <CameraFly duration={6} onComplete={() => setShowCameraFly(false)} />
+          ) : null}
         </Suspense>
 
         <OrbitControls
