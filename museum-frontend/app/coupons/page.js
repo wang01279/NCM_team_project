@@ -50,13 +50,15 @@ export default function CouponPage() {
 
         {/* ✅ 傳入 token 和 memberId */}
         <CouTab token={token} memberId={memberId} />
-
-        <div className={styles.gameSection}>
-          <div ref={gameRef} className={`mt-4 ${styles.scrollAnchor}`} ></div>
-          <h2>每日挑戰</h2>
-          <GameBoard token={token} memberId={memberId} />
-        </div>
       </div>
+      {/* // ✅ 改成這樣（ref 直接設在遊戲區塊根容器上） */}
+      <section
+        ref={gameRef}
+        className={`d-flex flex-column align-items-center justify-content-center ${styles.gameSection}`}
+      >
+        
+        <GameBoard token={token} memberId={memberId} scrollToGame={scrollToGame}/>
+      </section>
 
       <Footer />
     </>
