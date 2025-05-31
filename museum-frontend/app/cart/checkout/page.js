@@ -17,11 +17,13 @@ import Shipping from '../_components/Shipping'
 import BuyerInfo from '../_components/BuyerInfo'
 import Payment from '../_components/Payment'
 import OrderSummary2 from '../_components/OrderSummary2'
+import Loader from '../../_components/load'
 
 import './checkout.scss'
 
 export default function CheckoutPage() {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
   const { cartItems, clearCart } = useCart()
 
   const { store711, openWindow } = useShip711StoreOpener(`${apiUrl}/cart/711`, {
@@ -78,6 +80,7 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
 
     const result = OrderSchema.safeParse({
       ...buyer,
@@ -149,14 +152,17 @@ export default function CheckoutPage() {
       } else {
         alert(`訂單建立失敗：${res.message}`)
       }
+      setIsLoading(false)
     } catch (err) {
       console.error('fetch 錯誤:', err)
       alert('網路錯誤，請稍後再試')
+      setIsLoading(false)
     }
   }
 
   return (
     <>
+      {isLoading && <Loader />}
       <Navbar />
 
       <div className="container mt-5 mb-5">

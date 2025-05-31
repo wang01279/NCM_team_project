@@ -14,7 +14,7 @@ export default function BuyerInfo({ value, onChange }) {
 
   return (
     <div className="col-md-12">
-      <div className="card p-3">
+      <div className="buyer-card">
         <FloatingLabel
           controlId="name"
           label={
@@ -23,7 +23,7 @@ export default function BuyerInfo({ value, onChange }) {
               姓名
             </>
           }
-          className="mb-3"
+          className="mb-2"
         >
           <Form.Control
             type="text"
@@ -43,7 +43,7 @@ export default function BuyerInfo({ value, onChange }) {
               電話
             </>
           }
-          className="mb-3"
+          className="mb-2"
         >
           <Form.Control
             type="text"
@@ -63,7 +63,7 @@ export default function BuyerInfo({ value, onChange }) {
               信箱
             </>
           }
-          className="mb-3"
+          className="mb-2"
         >
           <Form.Control
             type="email"

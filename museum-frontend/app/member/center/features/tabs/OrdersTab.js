@@ -1,26 +1,21 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Collapse } from 'react-bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import { CiShoppingTag } from 'react-icons/ci'
-// import { HiOutlineChevronDown } from 'react-icons/hi'
-import './_style/memOrders.module.scss'
+import styles from './_style/memOrders.module.scss'
 
 export default function OrdersTab() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
-  const [openOrderId, setOpenOrderId] = useState(null)
+  const [filterStatus, setFilterStatus] = useState('處理中') // 狀態切換
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem('token')
         const member = JSON.parse(localStorage.getItem('member') || '{}')
-        const memberId = member.id
-
         const res = await fetch(
-          `http://localhost:3005/api/orders/${memberId}`,
+          `http://localhost:3005/api/orders/${member.id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -38,132 +33,98 @@ export default function OrdersTab() {
     fetchOrders()
   }, [])
 
+  // 假狀態分類邏輯：id 為奇數 => 處理中；偶數 => 已完成
+  const filteredOrders = orders.filter((order) => {
+    return filterStatus === '處理中' ? order.id % 2 === 1 : order.id % 2 === 0
+  })
+
   return (
     <div className="container mt-4">
-      <h5 className="mb-3 fw-bold">
-        <CiShoppingTag /> 我的訂單
+      <h5 className="fw-bold mb-4 d-flex align-items-center">
+        <CiShoppingTag className="me-2" />
+        我的訂單
       </h5>
 
-      <table className="table order-table table-rounded text-center">
-        <thead>
-          <tr>
-            <th>訂單編號</th>
-            <th>訂單金額</th>
-            <th>付款方式</th>
-            <th>訂單日期</th>
-            <th>訂單明細</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            <tr>
-              <td colSpan="5">載入中...</td>
-            </tr>
-          ) : orders.length === 0 ? (
-            <tr>
-              <td colSpan="5" className="text-muted">
-                尚無訂單紀錄
-              </td>
-            </tr>
-          ) : (
-            orders.map((order) => {
-              const total = Number(order.total_price || 0)
-              const date = new Date(order.created_at).toLocaleDateString()
+      {/* 狀態切換按鈕 */}
+      <div className="mb-4">
+        <button
+          className={`btn me-2 ${
+            filterStatus === '處理中' ? 'btn-primary' : 'btn-outline-primary'
+          }`}
+          onClick={() => setFilterStatus('處理中')}
+        >
+          處理中
+        </button>
+        <button
+          className={`btn ${
+            filterStatus === '已完成' ? 'btn-primary' : 'btn-outline-primary'
+          }`}
+          onClick={() => setFilterStatus('已完成')}
+        >
+          已完成
+        </button>
+      </div>
 
-              return (
-                <React.Fragment key={order.id}>
-                  <tr>
-                    <td>{order.order_number}</td>
-                    <td>${total.toLocaleString()}</td>
-                    <td>{order.payment_method}</td>
-                    <td>{date}</td>
-                    <td>
-                      <button
-                        className="btn btn-link text-decoration-none"
-                        onClick={() =>
-                          setOpenOrderId(
-                            openOrderId === order.id ? null : order.id
-                          )
-                        }
-                      >
-                        {openOrderId === order.id ? '收起' : '查看明細'}
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan="5" className="p-0 border-0">
-                      <Collapse in={openOrderId === order.id}>
-                        <div className="p-4 bg-light-subtle border-top">
-                          <div className="row">
-                            <div className="h2 text-start mb-4">訂單資訊</div>
-                            <div className="col-md-6 text-start">
-                              <p>
-                                <strong>訂單編號：</strong>
-                                {order.order_number}
-                              </p>
-                              <p>
-                                <strong>訂單日期：</strong>
-                                {date}
-                              </p>
-                              <p>
-                                <strong>收件人姓名：</strong>
-                                {order.recipient_name}
-                              </p>
-                              <p>
-                                <strong>聯絡電話：</strong>
-                                {order.recipient_phone}
-                              </p>
-                              <p>
-                                <strong>聯絡信箱：</strong>
-                                {order.recipient_email}
-                              </p>
-                              <p>
-                                <strong>取件方式：</strong>
-                                {order.shipping_method}
-                              </p>
+      {/* 訂單清單 */}
+      {loading ? (
+        <p>載入中...</p>
+      ) : filteredOrders.length === 0 ? (
+        <p className="text-muted">尚無{filterStatus}訂單紀錄</p>
+      ) : (
+        filteredOrders.map((order) => {
+          const total = Number(order.total_price || 0)
+          const discount = Number(order.discount || 0)
+          const shipping = Number(order.shipping_fee || 0)
+          const date = new Date(order.created_at).toLocaleDateString()
 
-                              <p>
-                                <strong>付款方式：</strong>
-                                {order.payment_method}
-                              </p>
-                            </div>
-                            <div className="col-md-6 text-start">
-                              <h6>商品明細</h6>
-                              <ul className="list-unstyled">
-                                {order.items.map((item, idx) => (
-                                  <li key={idx}>
-                                    {item.item_type === 'product'
-                                      ? '🛒 商品'
-                                      : '🎓 課程'}
-                                    ：{item.name}（{item.price} x{' '}
-                                    {item.quantity}） = $
-                                    {item.price * item.quantity}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
+          return (
+            <div
+              key={order.id}
+              className={`mb-4 p-4 rounded shadow-sm ${styles.orderCard}`}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <h6 className="mb-0">訂單編號：{order.order_number}</h6>
+                <span className="badge bg-secondary">{filterStatus}</span>
+              </div>
 
-                          <div className="text-end mt-3">
-                            <p>小計：${total.toLocaleString()}</p>
-                            <p className="text-danger">
-                              折扣：-${order.discount || 0}
-                            </p>
-                            <h5>
-                              合計：$
-                              {(total - (order.discount || 0)).toLocaleString()}
-                            </h5>
-                          </div>
-                        </div>
-                      </Collapse>
-                    </td>
-                  </tr>
-                </React.Fragment>
-              )
-            })
-          )}
-        </tbody>
-      </table>
+              <p className="text-muted mb-2">下單日期：{date}</p>
+
+              <div className="mb-2">
+                <strong>付款方式：</strong>
+                {order.payment_method}
+                <br />
+                <strong>取件方式：</strong>
+                {order.shipping_method}
+              </div>
+
+              <div className="mb-2">
+                <strong>訂購項目：</strong>
+                <ul className="list-unstyled mt-2 ps-3">
+                  {order.items.map((item, idx) => (
+                    <li
+                      key={idx}
+                      className="d-flex flex-wrap justify-content-between align-items-center border-bottom py-2"
+                    >
+                      <span>
+                        {item.item_type === 'product' ? '🛒 商品' : '🎓 課程'}：
+                        {item.name}
+                      </span>
+                      <div className="ms-3 d-flex flex-column flex-md-row gap-2 text-end">
+                        <span>金額：NT${item.price.toLocaleString()}</span>
+                        <span>數量：{item.quantity}</span>
+                        <span>
+                          小計：NT$
+                          {(item.price * item.quantity).toLocaleString()}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )
+        })
+      )}
     </div>
   )
 }

@@ -2,9 +2,7 @@
 // @use '../../_styles/foundation/mixins' as *;
 
 body {
-  margin-top: 120px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-top: 100px;
 }
 
 .myOrder {
@@ -232,3 +230,10 @@ body {
 //   padding-top: 0.75rem;
 //   padding-bottom: 0.75rem;
 // }
+.buyer-card {
+  // max-width: 600px;
+  padding: 16px 20px;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}

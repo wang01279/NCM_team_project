@@ -22,6 +22,7 @@ const OrderSchema = z
     cardCVC: z.string().optional(),
     cardHolder: z.string().optional(),
     shippingFee: z.number().min(0, "請提供運費"),
+    discount: z.number().min(0).optional().default(0),
     cartItems: z.array(
       z.object({
         id: z.number(),
@@ -119,9 +120,15 @@ router.post("/", async (req, res) => {
       address,
       paymentMethod,
       shippingFee,
+      discount,
       cartItems,
     } = result.data;
     // console.log('✅ 後端 Zod 驗證通過的資料：', result.data)
+
+    const totalPrice = cartItems.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
 
     // 3️⃣ 產生訂單編號
     const todayStr = dayjs().format("YYYYMMDD");
@@ -134,9 +141,9 @@ router.post("/", async (req, res) => {
     const fullAddress = `${city}${district}${address}`;
     const [orderResult] = await conn.execute(
       `INSERT INTO member_orders(
-    member_id, order_number, recipient_name, recipient_phone, recipient_email,
-    shipping_method, recipient_address, payment_method, shipping_fee
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        member_id, order_number, recipient_name, recipient_phone, recipient_email,
+        shipping_method, recipient_address, payment_method, shipping_fee, total_price, discount
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         memberId,
         orderNumber,
@@ -147,6 +154,8 @@ router.post("/", async (req, res) => {
         fullAddress,
         paymentMethod,
         shippingFee,
+        totalPrice,
+        discount ?? 0, // 如果沒有折扣就設為 0
       ]
     );
 
@@ -156,9 +165,17 @@ router.post("/", async (req, res) => {
     for (const item of cartItems) {
       await conn.execute(
         `INSERT INTO order_item 
-    (order_id, item_type, item_id, price, quantity)
-   VALUES (?, ?, ?, ?, ?)`,
-        [orderId, item.type, item.id, item.price, item.quantity]
+   (order_id, item_type, item_id, name, image_url, price, quantity)
+   VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          orderId,
+          item.type,
+          item.id,
+          item.name ?? null, // 如果是 undefined 就轉成 null
+          item.image_url ?? null, // 同上
+          item.price,
+          item.quantity,
+        ]
       );
     }
 
@@ -191,7 +208,7 @@ router.get("/:memberId", async (req, res) => {
     // 查詢訂單主檔
     const [member_orders] = await db.execute(
       `SELECT id, member_id, order_number, recipient_name, recipient_phone, recipient_email,
-          recipient_address, shipping_method, payment_method, shipping_fee, created_at
+          recipient_address, shipping_method, payment_method, shipping_fee, discount, created_at, total_price
    FROM member_orders
    WHERE member_id = ?
    ORDER BY created_at DESC`,
@@ -223,6 +240,8 @@ router.get("/:memberId", async (req, res) => {
     const result = member_orders.map((order) => ({
       ...order,
       items: groupedItems[order.id] || [],
+      finalAmount:
+        order.total_price - (order.discount || 0) + (order.shipping_fee || 0),
     }));
 
     res.json({ success: true, orders: result });
