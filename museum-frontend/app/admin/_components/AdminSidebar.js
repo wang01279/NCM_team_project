@@ -14,6 +14,8 @@ import {
 } from 'react-icons/fa'
 import Image from 'next/image'
 import styles from '../_styles/AdminNavbar.module.scss'
+import { usePathname } from 'next/navigation'
+import { MdOutlineMuseum } from 'react-icons/md'
 
 export default function ResponsiveSidebar({ children }) {
   const [isOpen, setIsOpen] = useState(undefined)
@@ -28,6 +30,7 @@ export default function ResponsiveSidebar({ children }) {
   }, [])
 
   const [isOpenSub, setIsOpenSub] = useState({})
+  const pathname = usePathname()
 
   const sidebarItems = [
     {
@@ -81,7 +84,7 @@ export default function ResponsiveSidebar({ children }) {
     {
       href: '/admin/coupon_upload',
       icon: <FaTags />,
-      label: '優惠券管理',
+      label: '優惠管理',
       children: [{ href: '/admin/coupon_upload', label: '優惠券列表' }],
     },
     {
@@ -101,13 +104,13 @@ export default function ResponsiveSidebar({ children }) {
     <div className="d-flex">
       {/* Sidebar */}
       <div
-        className={`sidebar text-white p-3 d-flex flex-column justify-content-between align-items-center ${
+        className={`sidebar text-white p-3 d-flex flex-column justify-content-center align-items-center ${
           isOpen ? 'sidebar-open' : 'sidebar-collapsed'
         }`}
         style={{
           position: 'fixed',
           width: isOpen ? '250px' : '60px',
-          height: '800px',
+          height: '95%',
           top: 20,
           left: 20,
           zIndex: 333,
@@ -117,7 +120,7 @@ export default function ResponsiveSidebar({ children }) {
         }}
       >
         <div className="w-100">
-          <div className="d-flex justify-content-center align-items-center mb-4 w-100">
+          <div className="d-flex flex-column justify-content-center align-items-center mb-4 w-100">
             <Image
               src={
                 isOpen
@@ -135,17 +138,21 @@ export default function ResponsiveSidebar({ children }) {
                 transition: 'all 0.3s ease',
               }}
             />
+            <button className="btn btn-info d-flex align-items-center">
+              {' '}
+              <MdOutlineMuseum className="fs-5 me-2" /> 返回前台網站
+            </button>
           </div>
           <hr />
 
-          <nav className="nav d-flex flex-column w-100 mt-4">
+          <nav className="nav d-flex flex-column justify-content-center  w-100 mt-4">
             {sidebarItems.map((item, index) => (
               <div key={index}>
                 {item.children ? (
                   <>
                     {/* Dropdown Toggle */}
                     <div
-                      className={`nav-link ${styles.customNavlink} text-white d-flex ms-2 text-decoration-none`}
+                      className={`nav-link ${styles.customNavlink} text-white d-flex justify-content-center align-items-center text-decoration-none`}
                       onClick={() =>
                         setIsOpenSub((prev) => ({
                           ...prev,
@@ -157,20 +164,20 @@ export default function ResponsiveSidebar({ children }) {
                       <div className={`${styles.iconWrapper} `}>
                         {item.icon}
                       </div>
-                      {isOpen && <span className="ms-2">{item.label}</span>}
+                      {isOpen && <span className=" pt-2">{item.label}</span>}
                     </div>
 
                     {/* Dropdown Children */}
                     {isOpenSub[index] && (
-                      <div className="ms-1">
+                      <div className="d-flex flex-column justify-content-center align-items-center">
                         {item.children.map((sub, subIndex) => (
                           <Link
                             key={subIndex}
                             href={sub.href}
-                            className={`nav-link ${styles.customNavlink} text-white d-flex align-items-center text-decoration-none`}
+                            className={`nav-link ${styles.customNavlink} text-white d-flex align-items-center text-decoration-none ${pathname === sub.href ? styles.active : ''}`}
                           >
                             {isOpen && (
-                              <span className="ms-4">{sub.label}</span>
+                              <span className="me-4">{sub.label}</span>
                             )}
                           </Link>
                         ))}
@@ -180,11 +187,9 @@ export default function ResponsiveSidebar({ children }) {
                 ) : (
                   <Link
                     href={item.href}
-                    className={`nav-link ${styles.customNavlink} text-white d-flex align-items-center justify-content-start`}
+                    className={`nav-link ${styles.customNavlink} text-white d-flex align-items-center justify-content-start ${pathname === item.href ? styles.active : ''}`}
                   >
-                    <div className={`${styles.iconWrapper} me-1`}>
-                      {item.icon}
-                    </div>
+                    <div className={`${styles.iconWrapper}`}>{item.icon}</div>
                     {isOpen && <span className="ms-2">{item.label}</span>}
                   </Link>
                 )}
@@ -196,7 +201,7 @@ export default function ResponsiveSidebar({ children }) {
         <div className="mt-auto w-100 text-center">
           <Link
             href="/logout"
-            className="btn btn-outline-light w-100 d-flex align-items-center justify-content-center"
+            className="btn btn-primary w-100 d-flex align-items-center justify-content-center text-decoration-none"
           >
             <FaSignOutAlt /> {isOpen && <span className="ms-2">登出</span>}
           </Link>

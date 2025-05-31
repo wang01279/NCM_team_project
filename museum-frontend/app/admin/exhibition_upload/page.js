@@ -38,7 +38,7 @@ export default function ExhibitionAdminPage() {
         <div className="pt-3 d-flex justify-content-start align-items-center">
           <a
             href="/admin/exhibition_upload/create"
-            className="btn btn-primary mb-3"
+            className="btn btn-primary mb-3 text-decoration-none"
           >
             <FaPlus className="me-2" />
             上架展覽

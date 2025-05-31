@@ -9,7 +9,7 @@ import exhibitionsRoutes from "./routes/exhibitions/index.js";
 import exhibitionsUploadsRoutes from "./routes/exhibitionUploads/index.js"
 import couponsRoutes from "./routes/coupons/index.js";
 import couponsClaimRoutes from "./routes/couponsClaim/index.js";
-import memberCouponRoutes from "./routes/memberCoupons.js";
+import memberCouponsRoutes from "./routes/memberCoupons/index.js";
 import couponUploadsRoutes from './routes/couponUploads/index.js'
 import productFavRoutes from "./routes/favorites/products.js";
 import courseFavRoutes from "./routes/favorites/courses.js";
@@ -143,7 +143,7 @@ app.use("/api/exhibitions", exhibitionsRoutes);
 app.use("/api/exhibitionUploads", exhibitionsUploadsRoutes);
 app.use("/api/coupons", couponsRoutes);
 app.use("/api/couponsClaim", couponsClaimRoutes);
-app.use("/api/memberCoupons", memberCouponRoutes);
+app.use("/api/memberCoupons", memberCouponsRoutes);
 app.use('/api/couponUploads', couponUploadsRoutes)
 app.use("/api/favorites/products", productFavRoutes);
 app.use("/api/favorites/courses", courseFavRoutes);

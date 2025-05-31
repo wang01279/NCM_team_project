@@ -163,6 +163,16 @@
   transform: 'rotate(90deg)';
   letter-spacing: 0.1em;
   color: $main-text; 
-  
+}
 
+// 加到主畫面容器
+.fadeIn {
+  opacity: 0;
+  animation: fadeIn 0.4s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
 }

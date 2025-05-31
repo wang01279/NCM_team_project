@@ -44,22 +44,32 @@ export default function ExhibitionDetailPage() {
 
           return (
             <>
-              <div className={`${styles.heroBanner} d-flex justify-content-center`}>
+              <div
+                className={`${styles.heroBanner} d-flex justify-content-center`}
+              >
                 <Image
                   src={`/images/${exhibits.image}`}
                   alt={exhibits.title}
                   width={1000}
                   height={500}
                   className="img-fluid"
-                  style={{ objectFit: 'contain', width: '100%', height: 'auto' }}
+                  style={{
+                    objectFit: 'contain',
+                    width: '100%',
+                    height: 'auto',
+                  }}
                 />
               </div>
 
-              <div className={`container d-flex justify-content-center flex-column py-4 ${styles.exhibitionInfo}`}>
+              <div
+                className={`container d-flex justify-content-center flex-column py-4 ${styles.exhibitionInfo}`}
+              >
                 <div className="d-flex justify-content-center align-items-center">
-                  <h3 className={`${styles.titleEx} fw-bold text-center d-flex align-items-center justify-content-center`}>
+                  <h3
+                    className={`${styles.titleEx} fw-bold text-center d-flex align-items-center justify-content-center`}
+                  >
                     {exhibits.title}
-                    <div className="ms-2 fs-6">
+                    <div className={styles.productActions}>
                       <AddToFavoritesButton
                         itemId={exhibits.id}
                         itemType="exhibition"
@@ -72,10 +82,18 @@ export default function ExhibitionDetailPage() {
                             }
 
                             if (state) {
-                              await addFavoriteByType(itemType, memberId, itemId)
+                              await addFavoriteByType(
+                                itemType,
+                                memberId,
+                                itemId
+                              )
                               showToast('success', '成功加入收藏')
                             } else {
-                              await removeFavoriteByType(itemType, memberId, itemId)
+                              await removeFavoriteByType(
+                                itemType,
+                                memberId,
+                                itemId
+                              )
                               showToast('warning', '已移除收藏')
                             }
 

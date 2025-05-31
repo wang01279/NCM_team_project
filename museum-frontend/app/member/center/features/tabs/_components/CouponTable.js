@@ -143,7 +143,7 @@ export default function CouponTable({
               </tr>
             ) : (
               getSorted(data).map((c) => (
-                <tr key={c.record_id}>
+                <tr key={c.uuid_code}>
                   <td data-label="名稱" className={
                       isExpiredMode ? 'text-muted' : ' text-dark'
                     }>{c.name}</td>

@@ -1,35 +1,43 @@
-//components/cou-card.js
-
+// 用途：送出已領取的優惠券資訊，以及優惠券卡片元件
 'use client'
 import Image from 'next/image'
 import { useToast } from '@/app/_components/ToastManager'
 import styles from '../_styles/coupon.module.scss'
 import axios from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-export default function CouponCard({ coupon, memberId, onClaimed }) {
-  const [isClaimed, setIsClaimed] = useState(coupon.isClaimed || false)
+export default function CouponCard({
+  coupon,
+  onClaimed,
+  token,
+  isLoggedIn,
+  isClaimed: claimedFromParent, // ✅ 來自父層 props 的狀態
+}) {
+  const [isClaimed, setIsClaimed] = useState(claimedFromParent || false)
   const { showToast } = useToast()
 
-  const payload = {
-    memberId,
-    couponId: coupon.id,
-  }
+  // ✅ 如果 claimedFromParent 改變，要同步狀態（尤其初次渲染後、領完券等）
+  useEffect(() => {
+    setIsClaimed(claimedFromParent)
+  }, [claimedFromParent])
 
   const handleClaim = async () => {
     if (isClaimed) return
-    if (!memberId) return showToast('danger', '請先登入會員')
+    if (!isLoggedIn || !token) {
+      showToast('danger', '請先登入會員')
+      return
+    }
 
     try {
       const res = await axios.post(
-        'http://localhost:3005/api/couponsClaim/claim', //單張領取api路徑
+        'http://localhost:3005/api/couponsClaim/claim',
+        { couponId: coupon.id },
         {
-          memberId,
-          couponId: coupon.id,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       )
-
-      console.log(payload)
 
       if (res.data.status === 'success') {
         setIsClaimed(true)
@@ -48,9 +56,7 @@ export default function CouponCard({ coupon, memberId, onClaimed }) {
     <div
       type="button"
       tabIndex={0}
-      className={`${styles.couponCard} d-flex flex-row position-relative ${
-        isClaimed ? styles.claimed : ''
-      }`}
+      className={`${styles.couponCard} d-flex flex-row position-relative ${isClaimed ? styles.claimed : ''}`}
       onClick={handleClaim}
       aria-label="點擊可領取"
       style={{
@@ -62,14 +68,12 @@ export default function CouponCard({ coupon, memberId, onClaimed }) {
       }}
     >
       {isClaimed && <div className={styles.claimedLabel}>已領取</div>}
+
       {/* 圖片欄位 */}
       <div
         className={styles.imageContainer}
-        style={{
-          backgroundImage: `url("/images/coupon1.jpg")`,
-        }}
+        style={{ backgroundImage: `url("/images/coupon1.jpg")` }}
       >
-        {/* <h6 className={`text-center {styles.verticleText}`}> COUPON</h6> */}
         <div className={styles.overlay}>
           <span className={styles.hintText}>點擊領取</span>
         </div>

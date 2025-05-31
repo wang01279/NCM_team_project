@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import styles from '../_styles/AdminNavbar.module.scss'
+import { MdOutlineMuseum } from "react-icons/md";
 
 export default function AdminNavbar({ name = '管理員', pageTitle = '首頁' }) {
   const pathname = usePathname()
@@ -52,8 +53,9 @@ export default function AdminNavbar({ name = '管理員', pageTitle = '首頁' }
           </div>
 
           {/* 右邊：使用者歡迎詞 */}
-          <div className="col-12 col-md-4 text-end">
-            <span className="user-welcome d-inline-flex align-items-center">
+          <div className="col-12 col-md-4 d-flex justify-content-end align-items-center text-end">
+            {/* <button className='btn btn-info d-flex align-items-center'> <MdOutlineMuseum className='fs-5 me-2'/> 返回前台網站</button> */}
+            <span className="d-flex align-items-center">
               <Image
                 src="/admin-logo-img/avatar2.jpg"
                 alt="User Avatar"
