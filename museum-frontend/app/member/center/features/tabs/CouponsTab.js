@@ -5,14 +5,11 @@ import { useState, useEffect } from 'react'
 import CouponTable from './_components/CouponTable'
 import './_style/memCoupons.module.scss'
 
-export default function CouponsTab() {
+export default function CouponsTab({ filter = 'available' }) {
   const { token, isLoggedIn } = useAuth()
   const [coupons, setCoupons] = useState([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState('可使用')
   const [reload, setReload] = useState(false)
-
-  const TABS = ['可使用', '已失效']
 
   const getCoupons = async () => {
     try {
@@ -36,14 +33,14 @@ export default function CouponsTab() {
     if (isLoggedIn) {
       getCoupons()
     }
-  }, [isLoggedIn])
+  }, [isLoggedIn, reload])
 
   const filteredCoupons = coupons.filter((c) => {
     const now = new Date()
-    if (activeTab === '可使用') {
+    if (filter === 'available') {
       return !c.is_used && new Date(c.expired_at || c.endDate) > now
     }
-    if (activeTab === '已失效') {
+    if (filter === 'expired') {
       return c.is_used || new Date(c.expired_at || c.endDate) <= now
     }
     return true
@@ -53,30 +50,12 @@ export default function CouponsTab() {
   if (loading) return <div>載入中...</div>
 
   return (
-    <>
-      <div className="container px-0">
-        {/* Tabs */}
-        <ul className={`nav nav-tabs mb-3`}>
-          {TABS.map((tab) => (
-            <li className="nav-item" key={tab}>
-              <button
-                className={`btn-primary customNav  ${activeTab === tab ? 'active' : ''}`}
-                style={{ borderRadius: '0px' }}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab}
-              </button>
-            </li>
-          ))}
-        </ul>
-
-        {/* Table */}
-        <CouponTable
-          coupons={filteredCoupons}
-          isExpiredMode={activeTab === '已失效'}
-          onActionSuccess={() => setReload((r) => !r)}
-        />
-      </div>
-    </>
+    <div className="container p-5">
+      <CouponTable
+        coupons={filteredCoupons}
+        isExpiredMode={filter === 'expired'}
+        onActionSuccess={() => setReload((r) => !r)}
+      />
+    </div>
   )
 }

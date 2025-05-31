@@ -19,7 +19,7 @@
     "clsx": "^2.1.1",
     "colorthief": "^2.6.0",
     "firebase": "^11.7.3",
-    "framer-motion": "^12.11.0",
+    "framer-motion": "^12.15.0",
     "jwt-decode": "^4.0.0",
     "next": "15.2.4",
     "react": "^19.0.0",
