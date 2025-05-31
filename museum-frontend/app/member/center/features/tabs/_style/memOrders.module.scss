@@ -1,23 +1,20 @@
-table.order-table {
-  border-radius: 8px;
-  overflow: hidden;
+.orderCard {
+  background-color: #f4f1ea;
+  border-left: 6px solid #7b2d12;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease;
 
-  th {
-    background-color: #7b2d12;
-    color: #f4f1ea;
-    font-weight: bold;
-    vertical-align: middle;
-    padding: 12px;
+  &:hover {
+    background-color: #f2dfd7;
   }
-  
-  td {
-    background-color: #f4f1ea;
-    vertical-align: middle;
-    padding: 12px;
-  }
-}
 
-.no-data {
-  color: #888;
-  padding: 20px;
+  ul {
+    li {
+      margin-bottom: 0.3rem;
+    }
+  }
+
+  .badge {
+    font-size: 0.85rem;
+  }
 }

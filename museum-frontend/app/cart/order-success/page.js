@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import Image from 'next/image'
 import Navbar from '../../_components/navbar'
+import Footer3 from '../../_components/footer3'
 import './orderSuccess.scss'
 
 export default function CartSuccessPage() {
@@ -89,6 +90,7 @@ export default function CartSuccessPage() {
           </div>
         </div>
       </div>
+      <Footer3 />
     </>
   )
 }
