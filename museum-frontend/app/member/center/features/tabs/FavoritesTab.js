@@ -7,6 +7,8 @@ import FavoriteCard from './_components/FavoriteCard'
 import Loader from '@/app/_components/load'
 import styles from './_styles/favoritesTab.module.scss'
 import { FaReply } from 'react-icons/fa'
+import FavoriteCourseRowCard from '@/app/course/_components/FavoriteCourseRowCard'
+
 
 export default function FavoritesTab({ type = 'menu', setType }) {
   const { member } = useAuth()
