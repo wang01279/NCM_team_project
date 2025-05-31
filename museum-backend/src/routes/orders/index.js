@@ -21,6 +21,7 @@ const OrderSchema = z
     cardExpiry: z.string().optional(),
     cardCVC: z.string().optional(),
     cardHolder: z.string().optional(),
+    shippingFee: z.number().min(0, "請提供運費"),
     cartItems: z.array(
       z.object({
         id: z.number(),
@@ -117,6 +118,7 @@ router.post("/", async (req, res) => {
       district,
       address,
       paymentMethod,
+      shippingFee,
       cartItems,
     } = result.data;
     // console.log('✅ 後端 Zod 驗證通過的資料：', result.data)
@@ -131,10 +133,12 @@ router.post("/", async (req, res) => {
     // 4️⃣ 插入訂單主檔
     const fullAddress = `${city}${district}${address}`;
     const [orderResult] = await conn.execute(
-      `INSERT INTO member_orders(member_id, order_number, recipient_name, recipient_phone, recipient_email, shipping_method, recipient_address, payment_method)
-   VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO member_orders(
+    member_id, order_number, recipient_name, recipient_phone, recipient_email,
+    shipping_method, recipient_address, payment_method, shipping_fee
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        memberId, // ✅ 綁會員
+        memberId,
         orderNumber,
         name,
         phone,
@@ -142,6 +146,7 @@ router.post("/", async (req, res) => {
         shippingMethod,
         fullAddress,
         paymentMethod,
+        shippingFee,
       ]
     );
 
@@ -185,10 +190,11 @@ router.get("/:memberId", async (req, res) => {
   try {
     // 查詢訂單主檔
     const [member_orders] = await db.execute(
-      `SELECT id, member_id, order_number, recipient_name, recipient_phone, recipient_email, recipient_address, shipping_method, payment_method, created_at
-       FROM member_orders
-       WHERE member_id = ?
-       ORDER BY created_at DESC`,
+      `SELECT id, member_id, order_number, recipient_name, recipient_phone, recipient_email,
+          recipient_address, shipping_method, payment_method, shipping_fee, created_at
+   FROM member_orders
+   WHERE member_id = ?
+   ORDER BY created_at DESC`,
       [memberId]
     );
 

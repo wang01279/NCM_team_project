@@ -11,15 +11,11 @@ import { Inter } from 'next/font/google'
 import ChatSidebar from './_components/Chat/ChatSidebar'
 // import ClientCanvas from './_components/home/ClientCanvas'
 
-
-
-
-
 // import { AuthProvider } from './_components/Auth/AuthProvider'
 // import { AuthProvider } from '@/app/_components/Auth/AuthProvider'
+import { CartProvider } from '@/app/_context/CartContext'
 
 const inter = Inter({ subsets: ['latin'] })
-
 
 export const metadata = {
   title: '國立故瓷博物館',
@@ -30,18 +26,20 @@ export default function RootLayout({ children }) {
   return (
     <html lang="zh-TW">
       <body className={inter.className}>
-        {/* <ClientCanvas /> */}
+        <CartProvider>
+          {/* <ClientCanvas /> */}
 
-        {/* <AuthProvider> */}
-        <ToastProvider>
-          {/* <Navbar /> */}
-          {/* <div style={{ border: '2px solid green', height: '100%' }}> */}
-          {children}
-          <ChatSidebar />
-          {/* </div> */}
-          {/* <Footer /> */}
-        </ToastProvider>
-        {/* </AuthProvider> */}
+          {/* <AuthProvider> */}
+          <ToastProvider>
+            {/* <Navbar /> */}
+            {/* <div style={{ border: '2px solid green', height: '100%' }}> */}
+            {children}
+            <ChatSidebar />
+            {/* </div> */}
+            {/* <Footer /> */}
+          </ToastProvider>
+          {/* </AuthProvider> */}
+        </CartProvider>
       </body>
     </html>
   )

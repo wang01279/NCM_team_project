@@ -12,6 +12,7 @@ import Footer from '@/app/_components/footer3'
 import useFavorites from '@/app/_hooks/useFavorites'
 import { useToast } from '@/app/_components/ToastManager'
 import Loader from '@/app/_components/load'
+import { useCart } from '@/app/_context/CartContext'
 
 export default function IdPage() {
   const { id } = useParams()
@@ -21,6 +22,7 @@ export default function IdPage() {
   const [categoryMap, setCategoryMap] = useState({})
   const [subcategoryMap, setSubcategoryMap] = useState({})
   const { favoriteIds, toggleFavorite, isFavorite } = useFavorites('product')
+  const { addItem } = useCart()
 
   // 撈分類資料
   useEffect(() => {
@@ -68,24 +70,15 @@ export default function IdPage() {
   const handleAddToCart = (quantity = 1) => {
     if (!product) return
 
-    const cartItem = {
+    addItem({
       id: product.id,
       name: product.name_zh,
       image: product.main_img,
-      price: product.price,
+      price: Number(product.price),
       quantity,
-    }
+      type: 'product',
+    })
 
-    const existing = JSON.parse(localStorage.getItem('cartItems')) || []
-    const index = existing.findIndex((item) => item.id === cartItem.id)
-
-    if (index > -1) {
-      existing[index].quantity += quantity
-    } else {
-      existing.push(cartItem)
-    }
-
-    localStorage.setItem('cartItems', JSON.stringify(existing))
     showToast('success', `已加入購物車 ${quantity} 件`, 3000)
   }
 

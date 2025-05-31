@@ -1,6 +1,5 @@
 'use client'
 
-import 'bootstrap/dist/css/bootstrap.min.css'
 import Accordion from 'react-bootstrap/Accordion'
 
 import React from 'react'
@@ -18,10 +17,14 @@ export default function Payment({ value, onChange }) {
 
   return (
     <div className="col-md-12">
+      <h4 className="mb-4">付款方式*</h4>
       <Accordion defaultActiveKey="credit">
         {/* 信用卡 */}
         <Accordion.Item eventKey="credit" className="accordion-item-payment">
-          <Accordion.Header onClick={() => selectPayment('credit')}>
+          <Accordion.Header
+            onClick={() => selectPayment('credit')}
+            style={{ marginTop: '0px' }}
+          >
             <div className="d-flex justify-content-between align-items-center w-100">
               <div className="d-flex align-items-center">
                 <input
@@ -120,7 +123,10 @@ export default function Payment({ value, onChange }) {
 
         {/* LinePay */}
         <Accordion.Item eventKey="linepay" className="accordion-item-payment">
-          <Accordion.Header onClick={() => selectPayment('linepay')}>
+          <Accordion.Header
+            onClick={() => selectPayment('linepay')}
+            style={{ marginTop: '0px' }}
+          >
             <div className="d-flex justify-content-between align-items-center w-100">
               <div className="d-flex align-items-center">
                 <input
@@ -137,7 +143,7 @@ export default function Payment({ value, onChange }) {
               </div>
               <div className="ms-auto d-flex gap-2">
                 <Image
-                  src="/images/LINE-Pay.png"
+                  src="/cart-img/ecpay_logo.svg"
                   alt="LINE Pay"
                   width={80}
                   height={25}

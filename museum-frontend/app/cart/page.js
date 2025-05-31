@@ -1,111 +1,56 @@
 'use client'
-// import AuthModal from '@/app/_components/Auth/AuthModal'
+
 import Navbar from '../_components/navbar'
 import Footer3 from '../_components/footer3'
-
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-
-//import icon
 import { FaShoppingCart } from 'react-icons/fa'
 import { MdOutlinePayment } from 'react-icons/md'
 import { AiOutlineTruck } from 'react-icons/ai'
 
-//import component
 import CartItems from './_components/CartItems'
 import OrderSummary from './_components/OrderSummary'
-import SuggestedProducts from './_components/SuggestedProducts'
+import YouMightLike from '../products/details/[id]/_components/YouMightLike'
 import ConfirmDeleteModal from './_components/ConfirmDeleteModal'
 import { useToast } from '@/app/_components/ToastManager'
+import { useCart } from '@/app/_context/CartContext'
+import useFavorites from '@/app/_hooks/useFavorites'
 
-//import style
 import './cart.scss'
 
 export default function CartPage() {
   const router = useRouter()
-  const [showModal, setShowModal] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  // 控制是否顯示刪除 Modal
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  //  儲存欲刪除商品的 id
-  const [deleteTargetId, setDeleteTargetId] = useState(null)
   const { showToast } = useToast()
-  const [items, setItems] = useState([])
+  const { cartItems, updateQuantity, removeItem } = useCart()
+
+  const [showModal, setShowModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState(null)
 
   const [productDiscount, setProductDiscount] = useState(0)
   const [courseDiscount, setCourseDiscount] = useState(0)
-
-  const productSubtotal = items
-    .filter((item) => item.type === 'product')
-    .reduce((sum, item) => sum + item.price * item.quantity, 0)
-
-  const courseSubtotal = items
-    .filter((item) => item.type === 'course')
-    .reduce((sum, item) => sum + item.price * item.quantity, 0)
-
-  const totalPrice = productSubtotal + courseSubtotal
-
   const [selectedProductCoupon, setSelectedProductCoupon] = useState(null)
   const [selectedCourseCoupon, setSelectedCourseCoupon] = useState(null)
   const [availableProductCoupons, setAvailableProductCoupons] = useState([])
   const [availableCourseCoupons, setAvailableCourseCoupons] = useState([])
 
-  // 更新數量
-  const updateQuantity = (id, delta) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              quantity: Math.max(1, item.quantity + delta),
-            }
-          : item
-      )
-    )
-  }
+  const [relatedProducts, setRelatedProducts] = useState([])
+  const { favoriteIds, toggleFavorite } = useFavorites('product')
 
-  // 點擊刪除按鈕時  啟用Modal
-  const confirmDeleteItem = (id) => {
-    setDeleteTargetId(id)
-    setShowDeleteModal(true)
-  }
-  // 在Modal點刪除，真正刪除
-  const handleDelete = (isConfirmed) => {
-    if (isConfirmed && deleteTargetId !== null) {
-      // 確認刪除
-      setItems((prev) => prev.filter((item) => item.id !== deleteTargetId))
-      showToast('success', '已刪除商品', 3000) //  吐司訊息
-    }
-    // 無論是否刪除，都關掉 Modal 並清空 targetId
-    setShowDeleteModal(false)
-    setDeleteTargetId(null)
-  }
+  const productSubtotal = cartItems
+    .filter((item) => item.type === 'product')
+    .reduce((sum, item) => sum + item.price * item.quantity, 0)
 
-  //造訪時從localstorage拿資料
-  useEffect(() => {
-    const saved = localStorage.getItem('cartItems')
-    //有值執行下一行，空值執行第二段
-    if (saved) setItems(JSON.parse(saved))
-  }, [])
+  const courseSubtotal = cartItems
+    .filter((item) => item.type === 'course')
+    .reduce((sum, item) => sum + item.price * item.quantity, 0)
 
-  //localStorage.setItem('key', 'value')
-  useEffect(() => {
-    localStorage.setItem('cartItems', JSON.stringify(items))
-  }, [items])
+  const totalPrice = productSubtotal + courseSubtotal
 
-  // 檢查是否登入，如果沒有 token，則顯示登入提示 Modal
+  // 檢查是否登入
   useEffect(() => {
     const token = localStorage.getItem('token')
-    if (!token) {
-      setShowModal(true)
-    }
-    setIsLoading(false) // 不論有沒有 token 都停止 loading
-  }, [])
-
-  // 取得會員優惠券
-  useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (!token) return
+    if (!token) setShowModal(true)
 
     fetch('http://localhost:3005/api/memberCoupons', {
       headers: { Authorization: `Bearer ${token}` },
@@ -122,25 +67,68 @@ export default function CartPage() {
               (c.category === '課程' && courseSubtotal >= c.minSpend)
             return notUsed && notExpired && minSpendOk
           })
-          // console.log('✅ 所有可用優惠券:', filtered)
 
-          // ✅ 依 category 分類
           setAvailableProductCoupons(
             filtered.filter((c) => c.category === '商品')
           )
-
           setAvailableCourseCoupons(
             filtered.filter((c) => c.category === '課程')
           )
-          // console.log(
-          //   '✅ 商品優惠券:',
-          //   filtered.filter((c) => c.category === '商品')
-          // )
         }
       })
-  }, [totalPrice])
+  }, [totalPrice, productSubtotal, courseSubtotal])
 
-  if (isLoading) return null
+  // 撈謝旻祐的推薦商品
+  useEffect(() => {
+    let isMounted = true
+
+    fetch('http://localhost:3005/api/products?limit=8&sort=hot')
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted && Array.isArray(data.products)) {
+          setRelatedProducts(data.products)
+        } else {
+          setRelatedProducts([])
+        }
+      })
+      .catch(() => {
+        if (isMounted) setRelatedProducts([])
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  // 儲存折扣資訊到 localStorage
+  useEffect(() => {
+    const discountInfo = {
+      productDiscount,
+      courseDiscount,
+      selectedProductCoupon,
+      selectedCourseCoupon,
+    }
+    localStorage.setItem('cartDiscount', JSON.stringify(discountInfo))
+  }, [
+    productDiscount,
+    courseDiscount,
+    selectedProductCoupon,
+    selectedCourseCoupon,
+  ])
+
+  const confirmDeleteItem = (id, type) => {
+    setDeleteTarget({ id, type })
+    setShowDeleteModal(true)
+  }
+
+  const handleDelete = (isConfirmed) => {
+    if (isConfirmed && deleteTarget) {
+      removeItem(deleteTarget.id, deleteTarget.type)
+      showToast('success', '已刪除商品', 3000)
+    }
+    setShowDeleteModal(false)
+    setDeleteTarget(null)
+  }
 
   const handleModalConfirm = () => {
     setShowModal(false)
@@ -149,10 +137,9 @@ export default function CartPage() {
 
   return (
     <>
-      {/* 登入提示 Modal */}
+      {/* 登入提醒 Modal */}
       {showModal && (
         <>
-          {/* 背景遮罩 */}
           <div className="modal-backdrop fade show"></div>
           <div className="modal show d-block" tabIndex={-1}>
             <div className="modal-dialog">
@@ -176,7 +163,8 @@ export default function CartPage() {
           </div>
         </>
       )}
-      {/* 刪除商品確認 Modal */}
+
+      {/* 刪除確認 Modal */}
       <ConfirmDeleteModal
         show={showDeleteModal}
         onConfirm={() => handleDelete(true)}
@@ -188,7 +176,6 @@ export default function CartPage() {
       <div className="container mt-5 mb-5">
         <div className="row justify-content-center">
           <div className="col-12">
-            {/* 購買流程 */}
             <div className="crumbs">
               <ul>
                 <li>
@@ -209,60 +196,77 @@ export default function CartPage() {
               </ul>
             </div>
 
-            {/* 購物車Title */}
-            <div>
-              <h3 className="mb-4 py-3 myCart">我的購物車</h3>
-            </div>
+            <h3 className="mb-4 py-3 myCart">我的購物車</h3>
 
             <div className="row">
-              {/* 商品列表 */}
+              {cartItems.length === 0 ? (
+                <div className="col-12 text-center text-muted py-5">
+                  <FaShoppingCart size={60} className="mb-3" />
+                  <h4 className="fst-italic">您的購物車是空的</h4>
+                  <p>請前往商品頁挑選商品或課程。</p>
+                  <button
+                    className="btn btn-primary mt-3"
+                    onClick={() => router.push('/products')}
+                  >
+                    前往選購商品
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <CartItems
+                    onQuantityChange={(id, type, newQty) =>
+                      updateQuantity(id, type, newQty)
+                    }
+                    onDelete={confirmDeleteItem}
+                  />
 
-              <CartItems
-                items={items}
-                updateQuantity={updateQuantity}
-                deleteItem={confirmDeleteItem}
-              />
-
-              {/* 訂單摘要 */}
-              <OrderSummary
-                items={items}
-                productCoupons={availableProductCoupons}
-                courseCoupons={availableCourseCoupons}
-                productDiscount={productDiscount}
-                courseDiscount={courseDiscount}
-                onProductCouponChange={(coupon) => {
-                  setSelectedProductCoupon(coupon)
-                  if (coupon) {
-                    const d =
-                      coupon.type === '百分比'
-                        ? Math.floor(
-                            (productSubtotal * Number(coupon.discount)) / 100
-                          )
-                        : Number(coupon.discount)
-                    setProductDiscount(d)
-                  } else {
-                    setProductDiscount(0)
-                  }
-                }}
-                onCourseCouponChange={(coupon) => {
-                  setSelectedCourseCoupon(coupon)
-                  if (coupon) {
-                    const d =
-                      coupon.type === '百分比'
-                        ? Math.floor(
-                            (courseSubtotal * Number(coupon.discount)) / 100
-                          )
-                        : Number(coupon.discount)
-                    setCourseDiscount(d)
-                  } else {
-                    setCourseDiscount(0)
-                  }
-                }}
-              />
+                  <OrderSummary
+                    items={cartItems}
+                    productCoupons={availableProductCoupons}
+                    courseCoupons={availableCourseCoupons}
+                    productDiscount={productDiscount}
+                    courseDiscount={courseDiscount}
+                    onProductCouponChange={(coupon) => {
+                      setSelectedProductCoupon(coupon)
+                      if (coupon) {
+                        const d =
+                          coupon.type === '百分比'
+                            ? Math.floor(
+                                (productSubtotal * Number(coupon.discount)) /
+                                  100
+                              )
+                            : Number(coupon.discount)
+                        setProductDiscount(d)
+                      } else {
+                        setProductDiscount(0)
+                      }
+                    }}
+                    onCourseCouponChange={(coupon) => {
+                      setSelectedCourseCoupon(coupon)
+                      if (coupon) {
+                        const d =
+                          coupon.type === '百分比'
+                            ? Math.floor(
+                                (courseSubtotal * Number(coupon.discount)) / 100
+                              )
+                            : Number(coupon.discount)
+                        setCourseDiscount(d)
+                      } else {
+                        setCourseDiscount(0)
+                      }
+                    }}
+                  />
+                </>
+              )}
             </div>
 
-            {/* 其他建議商品 */}
-            <SuggestedProducts />
+            {Array.isArray(relatedProducts) && relatedProducts.length > 0 && (
+              <YouMightLike
+                products={relatedProducts}
+                favoriteProductIds={favoriteIds}
+                onToggleFavorite={toggleFavorite}
+              />
+            )}
           </div>
         </div>
       </div>

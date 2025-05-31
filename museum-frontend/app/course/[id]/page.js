@@ -14,6 +14,7 @@ import EnrollmentSection from '@/app/course/_components/EnrollmentSection'
 import RelatedCourses from '@/app/course/_components/RelatedCourses'
 import Navbar from '@/app/_components/navbar'
 import Image from 'next/image'
+import { useCart } from '@/app/_context/CartContext'
 
 // API functions
 const fetchCourse = async (id) => {
@@ -45,6 +46,7 @@ const fetchRelatedCourses = async (courseId, categoryId) => {
 }
 
 export default function CourseDetailPage() {
+  const { cartItems, addItem } = useCart()
   const params = useParams()
   const id = params.id
   const [course, setCourse] = useState(null)
@@ -115,12 +117,11 @@ export default function CourseDetailPage() {
   }, [fetchCourseData])
 
   useEffect(() => {
-    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || []
     const alreadyInCart = cartItems.some(
       (item) => item.id === course?.id && item.type === 'course'
     )
     setIsEnrolled(alreadyInCart)
-  }, [course])
+  }, [cartItems, course])
 
   const handleFavorite = useCallback((courseId) => {
     console.log(`收藏課程 ${courseId}`)
@@ -166,32 +167,19 @@ export default function CourseDetailPage() {
       </div>
     )
   }
-  const handleAddToCart = () => {
-    if (!course || isEnrolled) return
+  const handleAddToCart = (quantity = 1) => {
+    if (!course) return
 
-    const cartItem = {
+    addItem({
       id: course.id,
       name: course.title,
       image: course.images?.find((img) => img.is_main == 0)?.image_path,
       price: Number(course.price),
+      quantity,
       type: 'course',
-      quantity: 1,
-    }
+    })
 
-    const existing = JSON.parse(localStorage.getItem('cartItems')) || []
-    const index = existing.findIndex(
-      (item) => item.id === cartItem.id && item.type === 'course'
-    )
-
-    if (index > -1) {
-      existing[index].quantity += 1
-    } else {
-      existing.push(cartItem)
-    }
-
-    localStorage.setItem('cartItems', JSON.stringify(existing))
-    setIsEnrolled(true) // ⬅️ 更新狀態
-    showToast('success', '已成功報名課程', 3000)
+    showToast('success', `已成功報名課程 ${quantity} 堂`, 3000)
   }
 
   return (

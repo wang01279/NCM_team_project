@@ -1,8 +1,8 @@
 'use client'
 
-import 'bootstrap/dist/css/bootstrap.min.css'
 import Accordion from 'react-bootstrap/Accordion'
 import React, { useEffect, useState } from 'react'
+import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import twzipcode from 'twzipcode-data'
 import Image from 'next/image'
 
@@ -62,12 +62,15 @@ export default function Shipping({ value, onChange, store711, openWindow }) {
 
   return (
     <div className="col-md-12">
-      <h4 className="mb-4">付款與取貨方式*</h4>
+      <h4 className="mb-4">取貨方式*</h4>
 
-      <Accordion defaultActiveKey="home">
+      <Accordion defaultActiveKey="home" style={{ backgroundColor: '#f8f9fa' }}>
         {/* ---------- 宅配 ---------- */}
         <Accordion.Item eventKey="home" className="accordion-item-shipping">
-          <Accordion.Header onClick={() => selectShipping('home')}>
+          <Accordion.Header
+            onClick={() => selectShipping('home')}
+            style={{ marginTop: '0px' }}
+          >
             <div className="d-flex align-items-center w-100">
               <input
                 className="form-check-input me-2 m-0"
@@ -86,54 +89,61 @@ export default function Shipping({ value, onChange, store711, openWindow }) {
           <Accordion.Body>
             <div className="row mb-3">
               <div className="col">
-                <label>縣市</label>
-                <select
-                  className="form-select"
-                  value={value.city || ''}
-                  onChange={handleCityChange}
-                >
-                  <option value="">請選擇縣市</option>
-                  {cities.map((c) => (
-                    <option key={c.name} value={c.name}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                <FloatingLabel label="縣市">
+                  <select
+                    className="form-select"
+                    value={value.city || ''}
+                    onChange={handleCityChange}
+                  >
+                    <option value="">請選擇縣市</option>
+                    {cities.map((c) => (
+                      <option key={c.name} value={c.name}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </FloatingLabel>
               </div>
               <div className="col">
-                <label>區域</label>
-                <select
-                  className="form-select"
-                  value={value.district || ''}
-                  onChange={handleDistrictChange}
-                  disabled={!value.city}
-                >
-                  <option value="">請選擇區域</option>
-                  {districts.map((d) => (
-                    <option key={`${d.zipcode}-${d.city}`} value={d.city}>
-                      {d.city}
-                    </option>
-                  ))}
-                </select>
+                <FloatingLabel label="區域">
+                  <select
+                    className="form-select"
+                    value={value.district || ''}
+                    onChange={handleDistrictChange}
+                    disabled={!value.city}
+                  >
+                    <option value="">請選擇區域</option>
+                    {districts.map((d) => (
+                      <option key={`${d.zipcode}-${d.city}`} value={d.city}>
+                        {d.city}
+                      </option>
+                    ))}
+                  </select>
+                </FloatingLabel>
               </div>
             </div>
 
             <div className="mb-3">
-              <label>地址</label>
-              <input
-                className="form-control"
-                type="text"
-                placeholder="輸入詳細地址"
-                value={value.address || ''}
-                onChange={handleAddressChange}
-              />
+              <FloatingLabel label="地址">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="輸入詳細地址"
+                  value={value.address || ''}
+                  onChange={handleAddressChange}
+                />
+              </FloatingLabel>
             </div>
+            <p className="small mt-2">⚠️ 宅配需酌收運費 NT$50</p>
           </Accordion.Body>
         </Accordion.Item>
 
         {/* ---------- 超商取貨 ---------- */}
         <Accordion.Item eventKey="store" className="accordion-item-shipping">
-          <Accordion.Header onClick={() => selectShipping('store')}>
+          <Accordion.Header
+            onClick={() => selectShipping('store')}
+            style={{ marginTop: '0px' }}
+          >
             <div className="d-flex align-items-center w-100">
               <input
                 className="form-check-input me-2 m-0"
@@ -164,7 +174,7 @@ export default function Shipping({ value, onChange, store711, openWindow }) {
               </label>
               <button
                 type="button"
-                className="btn btn-outline-dark w-100 mb-2"
+                className="btn btn-primary w-100 mb-2"
                 onClick={openWindow}
               >
                 {store711?.storename ? '更改門市' : '選擇門市'}
@@ -175,6 +185,7 @@ export default function Shipping({ value, onChange, store711, openWindow }) {
               <div className="border rounded p-3 bg-light mt-2">
                 <p className="mb-1">門市：{store711.storename}</p>
                 <p className="mb-1">地址：{store711.storeaddress}</p>
+                <p className="small mt-2">⚠️ 超商取貨需酌收運費 NT$45</p>
               </div>
             )}
           </Accordion.Body>
