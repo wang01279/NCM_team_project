@@ -1,40 +1,81 @@
 .scrollPrompt {
   text-align: center;
-  
+
   button {
     animation: bounce 1s infinite;
+
+    &:hover {
+      animation: none; // ✅ 滑鼠移上時可選擇停止搖動
+      transform: scale(1.05);
+    }
   }
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(5px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
 }
 
 .scrollAnchor {
   position: relative;
-  top: -90px; // 抵消 gameSection 的 margin-top
+  // top: -290px; // 抵消 gameSection 的 margin-top
 }
 
 .gameSection {
+  position: relative;
   min-height: 100vh;
-  max-width: auto;
+  max-width: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; // 或 center，看你要讓內容置頂還是置中
-  margin-top: 90px;
-  margin-bottom: 90px;
+  justify-content: center;
+  margin-top: 50px;
+  // margin-bottom: 90px;
+  background-color: #fbe7d6;
   box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
-  background-color: #FBE7D6;
 
-  h2 {
-  font-size: 2.2rem;
-  font-weight: bold;
-  letter-spacing: 2px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-  color: #7B2D12; // 你的主色
+  // ✅ 淡淡瓷器背景
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      url('/images/porcelain-2.png'),
+      url('/images/porcelain-1.png'),
+      url('/images/porcelain-3.png'),
+      url('/images/porcelain-4.png');
+    background-repeat: no-repeat;
+    background-size: 280px, 280px, 280px, 280px;
+// background-position:
+//   bottom 20px left 120px,
+//   bottom 20px left 100px,
+//   bottom 20px right 200px,
+//   bottom 20px right 20px;
+    background-position: top left, bottom right, top right, bottom left;
+    opacity: 0.47; // ✅ 只影響背景圖片
+    z-index: 0;
+
+    // 📱 平板寬度以下：3欄
+    @media (max-width: 992px) {
+      background-size: 180px, 180px, 180px, 180px;
+    }
+
+    // 📱 手機寬度以下：2欄
+    @media (max-width: 378px) {
+     background-size: 80px, 80px, 80px, 80px;
+    }
+  }
+
+  // ✅ 內容保持在上層
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 }
 
-}
