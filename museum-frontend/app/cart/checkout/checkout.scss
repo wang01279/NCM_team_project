@@ -1,3 +1,6 @@
+// @use '../../_styles/foundation/palette' as *;
+// @use '../../_styles/foundation/mixins' as *;
+
 body {
   margin-top: 120px;
   margin-left: auto;
@@ -64,22 +67,16 @@ body {
 //   border: 1px solid rgb(231, 221, 221);
 // }
 
-// .lottie-container {
-//   display: none;
-//   margin-top: 20px;
-//   text-align: center;
+// .form-check-input {
+//   &:checked {
+//     background-color: #7b2d12;
+//     border-color: #7b2d12;
+//   }
+
+//   &:focus {
+//     box-shadow: none;
+//   }
 // }
-
-.form-check-input {
-  &:checked {
-    background-color: #7b2d12;
-    border-color: #7b2d12;
-  }
-
-  &:focus {
-    box-shadow: none;
-  }
-}
 
 [role='tw-city-selector'] {
   display: flex;
@@ -211,4 +208,27 @@ body {
 // .accordion-body-payment {
 //   border: 1px solid #ccc;
 //   padding: 16px;
+// }
+
+.order-bg {
+  // background-image: url("https://www.transparenttextures.com/patterns/brushed-alum-dark.png");
+  background-image: url('https://www.transparenttextures.com/patterns/egg-shell.png');
+  background-color: #faebdd9a;
+
+  box-shadow: #383b3a5f 0px 0px 3px;
+}
+
+.form-control:focus {
+  border-color: #9a3412;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(236, 104, 22, 0.25); // 橘色微光圈
+}
+// .accordion-item-shipping {
+//   margin-bottom: 0.5rem !important; // 調整原本過大的間距
+// }
+
+// // 控制內部 padding，使內容更精緻緊湊
+// .accordion-body-shipping {
+//   padding-top: 0.75rem;
+//   padding-bottom: 0.75rem;
 // }

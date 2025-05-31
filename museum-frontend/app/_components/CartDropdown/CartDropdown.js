@@ -1,45 +1,68 @@
-import React, { useEffect, useRef } from 'react'
+'use client'
+import Link from 'next/link'
 import './CartDropdown.scss'
+import Image from 'next/image'
 
-
-export default function CartDropdown({ isOpen, onClose, cartItems = [] }) {
-  const ref = useRef(null)
-
-  // 點擊外部自動關閉
-  useEffect(() => {
-    if (!isOpen) return
-    function handleClickOutside(e) {
-      if (ref.current && !ref.current.contains(e.target)) {
-        onClose()
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [isOpen, onClose])
-
-  if (!isOpen) return null
-
+export default function CartDropdown({ cartItems }) {
   return (
-    <div className="cart-dropdown" ref={ref} style={{right: 0, left: 'auto', minWidth: 280}}>
-      <div className="user-profile-header" style={{borderBottom: 'none', marginBottom: 0, paddingBottom: 0}}>
+    <div
+      className="cart-dropdown bg-white text-dark p-3 rounded shadow"
+      style={{
+        position: 'absolute',
+        top: '120%',
+        right: 0,
+        width: '320px',
+        zIndex: 999,
+      }}
+    >
+      <div className="user-profile-header mb-2">
         <div className="user-profile-info">
           <div className="user-profile-name">購物車</div>
         </div>
       </div>
-      <div style={{padding: '1rem 0'}}>
-        {cartItems.length === 0 ? (
-          <div style={{color: '#888', textAlign: 'center'}}>購物車是空的</div>
-        ) : (
-          <ul style={{margin: 0, padding: 0, listStyle: 'none'}}>
-            {cartItems.map(item => (
-              <li key={item.id} style={{padding: '0.5rem 0', borderBottom: '1px solid #eee'}}>
-                {item.name} x {item.qty}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-      <button className="btn btn-primary" style={{width: '100%', marginTop: '0.5rem'}}>前往結帳</button>
+      {cartItems.length === 0 ? (
+        <div className="text-muted text-center">購物車是空的</div>
+      ) : (
+        <ul className="list-unstyled">
+          {cartItems.map((item) => (
+            <li
+              key={`${item.id}-${item.type}`}
+              className="d-flex align-items-center mb-2 border-bottom pb-2"
+            >
+              {/* 商品圖片 */}
+              <Image
+                src={item.image}
+                alt={item.name}
+                width={50}
+                height={50}
+                style={{
+                  objectFit: 'cover',
+                  borderRadius: '6px',
+                  marginRight: '10px',
+                }}
+              />
+
+              {/* 商品名稱與數量 */}
+              <div className="flex-grow-1">
+                <div className="fw-bold">{item.name}</div>
+                <small className="text-muted">x {item.quantity}</small>
+              </div>
+
+              {/* 單價 */}
+              <div className="text-end" style={{ minWidth: '60px' }}>
+                <small className="text-muted">${item.price}</small>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+      <Link
+        href="/cart"
+        className="btn btn-primary w-100 mt-2 justify-content-center"
+        style={{ color: 'white' }}
+      >
+        前往結帳
+      </Link>
     </div>
   )
 }

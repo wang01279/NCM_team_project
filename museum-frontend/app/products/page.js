@@ -14,8 +14,10 @@ import Footer from '../_components/footer3'
 import { useToast } from '@/app/_components/ToastManager'
 import './_styles/productPage.scss'
 import CouponLink from '../_components/CouponLink'
+import { useCart } from '@/app/_context/CartContext'
 
 export default function ProductPage() {
+  const { addItem } = useCart()
   const { showToast } = useToast()
   const [currentPage, setCurrentPage] = useState(1)
   const [products, setProducts] = useState([])
@@ -148,25 +150,15 @@ export default function ProductPage() {
     const product = products.find((p) => p.id === productId)
     if (!product) return
 
-    const cartItem = {
-      id: product.id,
+    addItem({
+      id: Number(product.id),
       name: product.name_zh,
       image: product.main_img,
       price: Number(product.price),
       type: 'product',
       quantity: 1,
-    }
+    })
 
-    const existing = JSON.parse(localStorage.getItem('cartItems')) || []
-    const index = existing.findIndex((item) => item.id === cartItem.id)
-
-    if (index > -1) {
-      existing[index].quantity += 1
-    } else {
-      existing.push(cartItem)
-    }
-
-    localStorage.setItem('cartItems', JSON.stringify(existing))
     showToast('success', '已加入購物車', 3000)
   }
 
@@ -178,7 +170,7 @@ export default function ProductPage() {
       <CategoryShowcase onCategoryClick={handleCategoryClick} />
       <CategoryMenu onCategoryClick={handleCategoryClick} />
       <ProductFilter filters={filters} setFilters={updateFilters} />
-      <CouponLink /> 
+      <CouponLink />
       <div className="container py-2">
         {selectedCategory.category && (
           <span className="badge bg-secondary me-2">

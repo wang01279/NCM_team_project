@@ -1,11 +1,6 @@
 import React from 'react'
 
-export default function EnrollmentSection({
-  course,
-  // onEnroll,
-  onAddToCart,
-  isEnrolled,
-}) {
+export default function EnrollmentSection({ course, onAddToCart, isEnrolled }) {
   const { price, original_price, maxStudents, materials_included } = course
   const formatPrice = (price) => {
     return new Intl.NumberFormat('zh-TW', {
@@ -35,7 +30,7 @@ export default function EnrollmentSection({
       </ul>
       <button
         className="btn btn-primary mb-3"
-        onClick={onAddToCart}
+        onClick={() => onAddToCart(1)}
         disabled={isEnrolled}
       >
         <i className="bi bi-cart-plus"></i> {isEnrolled ? '已報名' : '立即報名'}

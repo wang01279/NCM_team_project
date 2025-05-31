@@ -17,6 +17,16 @@ export const OrderSchema = z
     cardExpiry: z.string().optional(),
     cardCVC: z.string().optional(),
     cardHolder: z.string().optional(),
+    shippingFee: z.number().min(0, '請提供運費'),
+    cartItems: z.array(
+      z.object({
+        id: z.number(),
+        name: z.string(),
+        type: z.enum(['product', 'course']),
+        price: z.number(),
+        quantity: z.number(),
+      })
+    ),
   })
 
   // ✅ 當付款方式為信用卡時，需填卡片欄位

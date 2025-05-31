@@ -1,4 +1,5 @@
 'use client'
+
 import Navbar from '../../_components/navbar'
 import Footer3 from '../../_components/footer3'
 import React, { useEffect, useState } from 'react'
@@ -6,38 +7,30 @@ import { useRouter } from 'next/navigation'
 import { OrderSchema } from '@/app/_schemas/orderSchema'
 import { useShip711StoreOpener } from './_hooks/use-ship-711-store'
 import { apiUrl } from '@/app/_config/index.js'
+import { useCart } from '@/app/_context/CartContext'
 
-//import icon
 import { FaShoppingCart } from 'react-icons/fa'
 import { MdOutlinePayment } from 'react-icons/md'
 import { AiOutlineTruck } from 'react-icons/ai'
 
-//import component
 import Shipping from '../_components/Shipping'
 import BuyerInfo from '../_components/BuyerInfo'
 import Payment from '../_components/Payment'
 import OrderSummary2 from '../_components/OrderSummary2'
 
-// import style
 import './checkout.scss'
 
-export default function CartPage() {
+export default function CheckoutPage() {
   const router = useRouter()
+  const { cartItems, clearCart } = useCart()
 
-  // useShip711StoreOpener的第一個傳入參數是"伺服器7-11運送商店用Callback路由網址"
-  // 指的是node(express)的對應api路由。詳情請見說明文件:
-  const { store711, openWindow } = useShip711StoreOpener(
-    `${apiUrl}/cart/711`, // 也可以用express伺服器的api路由
-    { autoCloseMins: 3 } // x分鐘沒完成選擇會自動關閉，預設5分鐘。
-  )
-
-  const [buyer, setBuyer] = useState({
-    name: '',
-    phone: '',
-    email: '',
+  const { store711, openWindow } = useShip711StoreOpener(`${apiUrl}/cart/711`, {
+    autoCloseMins: 3,
   })
+
+  const [buyer, setBuyer] = useState({ name: '', phone: '', email: '' })
   const [shipping, setShipping] = useState({
-    shippingMethod: '宅配', // ✅ 預設值
+    shippingMethod: '宅配',
     city: '',
     district: '',
     address: '',
@@ -50,16 +43,14 @@ export default function CartPage() {
     cardCVC: '',
     cardHolder: '',
   })
-  const [cartItems, setCartItems] = useState([])
-  // console.log('shipping:', shipping)
+  const shippingFee = shipping.shippingMethod === '超商' ? 45 : 50
 
-  useEffect(() => {
-    // 從 localStorage 拿購物車資料，假設 key 是 'cartItems'
-    const storedCart = localStorage.getItem('cartItems')
-    if (storedCart) {
-      setCartItems(JSON.parse(storedCart))
-    }
-  }, [])
+  const [discountInfo, setDiscountInfo] = useState({
+    productDiscount: 0,
+    courseDiscount: 0,
+    selectedProductCoupon: null,
+    selectedCourseCoupon: null,
+  })
 
   useEffect(() => {
     if (store711?.storename && store711?.storeaddress) {
@@ -70,31 +61,52 @@ export default function CartPage() {
     }
   }, [store711])
 
+  // ✅ 沒商品就導回購物車
+  // useEffect(() => {
+  //   if (cartItems.length === 0) {
+  //     router.push('/cart')
+  //   }
+  // }, [cartItems, router])
+
+  // ✅ 讀取優惠券資訊
+  useEffect(() => {
+    const saved = localStorage.getItem('cartDiscount')
+    if (saved) {
+      setDiscountInfo(JSON.parse(saved))
+    }
+  }, [])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const result = OrderSchema.safeParse({ ...buyer, ...shipping, ...payment })
-
+    const result = OrderSchema.safeParse({
+      ...buyer,
+      ...shipping,
+      ...payment,
+      cartItems,
+      shippingFee,
+    })
     if (!result.success) {
       const errors = result.error.flatten().fieldErrors
       alert('欄位錯誤：' + Object.values(errors)[0][0])
       return
     }
 
-    // ✅ 清洗 cartItems → 轉換 price 與 quantity 為數字
     const cleanedItems = cartItems.map((item) => ({
       ...item,
       price: Number(item.price),
       quantity: Number(item.quantity),
     }))
 
-    // ✅ 組成送出資料
     const orderData = {
       ...result.data,
       cartItems: cleanedItems,
-      // usedCouponCode: selectedCoupon?.uuid_code || null,
+      productDiscount: discountInfo.productDiscount,
+      courseDiscount: discountInfo.courseDiscount,
+      usedProductCoupon: discountInfo.selectedProductCoupon?.uuid_code || null,
+      usedCourseCoupon: discountInfo.selectedCourseCoupon?.uuid_code || null,
+      shippingFee,
     }
-    console.log('orderData:', orderData)
 
     const token = localStorage.getItem('token')
 
@@ -118,23 +130,18 @@ export default function CartPage() {
       const res = await response.json()
 
       if (res.success) {
-        // ✅ 信用卡付款：導向成功頁
+        clearCart()
+
         if (payment.paymentMethod === 'credit') {
           router.push('/cart/order-success')
-          return
-        }
-
-        // ✅ 綠界付款：轉址到金流
-        if (payment.paymentMethod === 'linepay') {
+        } else if (payment.paymentMethod === 'linepay') {
           const itemsStr = cleanedItems
             .map((item) => `${item.title || item.name}X${item.quantity}`)
             .join(',')
-
           const totalPrice = cleanedItems.reduce(
             (acc, item) => acc + item.price * item.quantity,
             0
           )
-
           window.location.href = `http://localhost:3005/api/ecpay-test-only?amount=${totalPrice}&items=${encodeURIComponent(
             itemsStr
           )}`
@@ -143,8 +150,8 @@ export default function CartPage() {
         alert(`訂單建立失敗：${res.message}`)
       }
     } catch (err) {
-      alert('網路錯誤，請稍後再試')
       console.error('fetch 錯誤:', err)
+      alert('網路錯誤，請稍後再試')
     }
   }
 
@@ -155,7 +162,6 @@ export default function CartPage() {
       <div className="container mt-5 mb-5">
         <div className="row justify-content-center">
           <div className="col-12">
-            {/* 購買流程 */}
             <div className="crumbs">
               <ul>
                 <li>
@@ -177,22 +183,21 @@ export default function CartPage() {
             </div>
 
             <div className="row">
-              {/* 訂單資訊Title */}
               <div>
                 <h3 className="mb-4 py-3 myOrder">付款資訊</h3>
               </div>
-              {/* 左側收件人資料 */}
+
               <h4 className="mb-4">購買人資訊*</h4>
+
               <div className="col-md-8 col-12">
                 <form onSubmit={handleSubmit}>
                   <div className="row g-3 mb-4">
-                    {/* 購買人資訊 */}
                     <BuyerInfo value={buyer} onChange={setBuyer} />
                     <Shipping
                       value={shipping}
                       onChange={setShipping}
-                      store711={store711} // ✅ 傳入門市資料
-                      openWindow={openWindow} // ✅ 傳入開視窗函式
+                      store711={store711}
+                      openWindow={openWindow}
                     />
                     <Payment value={payment} onChange={setPayment} />
                   </div>
@@ -213,8 +218,11 @@ export default function CartPage() {
                 </form>
               </div>
 
-              {/* 右側訂單明細 */}
-              <OrderSummary2 cartItems={cartItems} />
+              <OrderSummary2
+                cartItems={cartItems}
+                discountInfo={discountInfo}
+                shippingMethod={shipping.shippingMethod}
+              />
             </div>
           </div>
         </div>

@@ -8,6 +8,7 @@ import { useAuth } from '@/app/_hooks/useAuth'
 
 import CartDropdown from './CartDropdown/CartDropdown'
 // import { useAuth } from '@/app/_components/Auth/AuthProvider'
+import Link from 'next/link'
 
 import {
   FaUserCircle,
@@ -25,6 +26,7 @@ import Image from 'next/image'
 import { useToast } from './ToastManager'
 import { io } from 'socket.io-client'
 import ChatSidebar from './Chat/ChatSidebar'
+import { useCart } from '@/app/_context/CartContext'
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -58,7 +60,9 @@ export default function Navbar() {
   const [isChatOpen, setIsChatOpen] = useState(false)
 
   const [isCartOpen, setIsCartOpen] = useState(false)
-  const cartItems = [] // 這裡可接
+  // const cartItems = [] // 這裡可接
+  // const [cartItems, setCartItems] = useState([])
+  const { cartItems } = useCart()
 
   /* -------------------- Effects ---------------------- */
   // 1. 監聽捲動：縮小／還原 Header
@@ -143,6 +147,10 @@ export default function Navbar() {
     }
     setIsChatOpen(!isChatOpen)
   }
+  // useEffect(() => {
+  //   const saved = localStorage.getItem('cartItems')
+  //   if (saved) setCartItems(JSON.parse(saved))
+  // }, [])
 
   //管理區不需要選單列
   if (pathname.includes('/admin')) {
@@ -208,22 +216,35 @@ export default function Navbar() {
                 <span className="cart-count">0</span>
               </a> */}
 
-              <a
-                href="#"
+              <div
                 className="nav-icon"
-                onClick={(e) => {
-                  e.preventDefault()
-                  setIsCartOpen((v) => !v)
+                onMouseEnter={() => setIsCartOpen(true)}
+                onMouseLeave={() => setIsCartOpen(false)}
+                style={{
+                  position: 'relative',
+                  width: 'fit-content',
+                  height: 'fit-content',
                 }}
               >
-                <FaShoppingCart className="icon cart-icon" />
-                <span className="cart-count">{cartItems.length}</span>
-              </a>
-              <CartDropdown
-                isOpen={isCartOpen}
-                onClose={() => setIsCartOpen(false)}
-                cartItems={cartItems}
-              />
+                <Link href="/cart">
+                  <FaShoppingCart className="icon cart-icon" />
+                </Link>
+
+                {cartItems.length > 0 && (
+                  <span className="cart-count">
+                    {cartItems.reduce(
+                      (total, item) => total + item.quantity,
+                      0
+                    )}
+                  </span>
+                )}
+
+                {isCartOpen && (
+                  <div className="cart-dropdown-container">
+                    <CartDropdown cartItems={cartItems} />
+                  </div>
+                )}
+              </div>
 
               {/* 個人檔案 */}
               {!isLoading &&
