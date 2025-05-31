@@ -1,0 +1,40 @@
+.scrollPrompt {
+  text-align: center;
+  
+  button {
+    animation: bounce 1s infinite;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(5px); }
+}
+
+.scrollAnchor {
+  position: relative;
+  top: -90px; // 抵消 gameSection 的 margin-top
+}
+
+.gameSection {
+  min-height: 100vh;
+  max-width: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; // 或 center，看你要讓內容置頂還是置中
+  margin-top: 90px;
+  margin-bottom: 90px;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+  background-color: #FBE7D6;
+
+  h2 {
+  font-size: 2.2rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  color: #7B2D12; // 你的主色
+}
+
+}

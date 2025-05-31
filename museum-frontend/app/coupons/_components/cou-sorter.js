@@ -1,7 +1,10 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 
 export default function CouponSorter({ coupons, onSorted }) {
   const [sortType, setSortType] = useState('default')
+
+  // ✅ 確保 onSorted 不重複建立（避免觸發 useEffect）
+  const handleSorted = useCallback(onSorted, [])
 
   const sortedCoupons = useMemo(() => {
     let sorted = [...coupons]
@@ -21,9 +24,10 @@ export default function CouponSorter({ coupons, onSorted }) {
     return sorted
   }, [coupons, sortType])
 
+  // ✅ 通知父層排序完的結果（只在排序結果變更時呼叫）
   useEffect(() => {
-    if (onSorted) onSorted(sortedCoupons)
-  }, [sortedCoupons, onSorted])
+    if (handleSorted) handleSorted(sortedCoupons)
+  }, [sortedCoupons, handleSorted])
 
   return (
     <select

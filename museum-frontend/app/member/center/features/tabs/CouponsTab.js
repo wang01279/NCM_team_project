@@ -14,7 +14,7 @@ export default function CouponsTab({ filter = 'available' }) {
   const getCoupons = async () => {
     try {
       const response = await fetch(`http://localhost:3005/api/memberCoupons`, {
-        headers: {
+        headers: { 
           Authorization: `Bearer ${token}`,
         },
       })

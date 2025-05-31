@@ -20,8 +20,26 @@ export default function DataFetcher({
 }) {
   const { data, error, isLoading, mutate } = useSWR(url, fetcher)
 
-  // 顯示 loading 畫面
-  if (isLoading) return <Loader />
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: 'rgba(255,255,255,0.85)',
+          zIndex: 9999,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Loader />
+      </div>
+    )
+  }
 
   // 顯示錯誤畫面
   if (error) {

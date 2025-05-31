@@ -1,49 +1,58 @@
+// ✅ TabCoupons + CouponSorter 穩定整合版
+
 'use client'
-import CouponCard from './cou-card'
-import styles from '../_styles/coupon.module.scss'
-import CouponSorter from './cou-sorter'
-import { useState, useEffect } from 'react'
+
+import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
+import CouponCard from './cou-card'
+import CouponSorter from './cou-sorter'
+import styles from '../_styles/coupon.module.scss'
+import { useToast } from '@/app/_components/ToastManager'
 import { LuMousePointer2 } from 'react-icons/lu'
 import { FaTicketAlt } from 'react-icons/fa'
-import { useToast } from '@/app/_components/ToastManager'
-import { useAuth } from '@/app/_hooks/useAuth'
+import Loader from '@/app/_components/load'
 
-export default function TabCoupons({ category, coupons }) {
+export default function TabCoupons({ category, coupons = [], token, memberId }) {
   const [sortedCoupons, setSortedCoupons] = useState([])
   const [claimedIds, setClaimedIds] = useState([])
-  const { member } = useAuth()
-  const memberId = member?.id
+  const [loading, setLoading] = useState(true)
   const { showToast } = useToast()
+  const isLoggedIn = !!token
 
-  // ✅ 初始化 sorted 與 localStorage 中已領取的 ID
   useEffect(() => {
     setSortedCoupons(coupons)
+  }, [coupons])
 
-    if (typeof window !== 'undefined' && memberId) {
-      const STORAGE_KEY = `claimed_${category}_${memberId}`
-      const saved = localStorage.getItem(STORAGE_KEY)
-      const parsed = saved ? JSON.parse(saved) : []
-      setClaimedIds(parsed)
-    } else {
-      setClaimedIds([])
+  const fetchClaimedCoupons = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/memberCoupons`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      if (response.data.success) {
+        const ids = response.data.data.map((c) => c.coupon_id)
+        setClaimedIds(ids)
+      }
+    } catch (error) {
+      console.error('❌ 無法取得已領取清單:', error)
+      showToast('danger', '無法取得已領取清單')
+    } finally {
+      setLoading(false)
     }
-  }, [category, memberId, coupons])
-
-  // ✅ 更新 localStorage 與狀態
-  const updateClaimedStorage = (newIds) => {
-    const updated = [...new Set([...claimedIds, ...newIds])]
-    setClaimedIds(updated)
-    const storageKey = `claimed_${category}_${memberId}`
-    localStorage.setItem(storageKey, JSON.stringify(updated))
   }
 
-  // ✅ 一鍵領取
-  const handleOneClickClaim = async () => {
-    if (!memberId) {
-      showToast('danger', '請先登入會員')
-      return
+  useEffect(() => {
+    if (isLoggedIn && category) {
+      fetchClaimedCoupons()
+    } else {
+      setLoading(false)
     }
+  }, [token, category])
+
+  const handleOneClickClaim = async () => {
+    if (!isLoggedIn) return showToast('danger', '請先登入會員')
 
     const idsToClaim = sortedCoupons
       .filter((c) => !claimedIds.includes(c.id))
@@ -56,16 +65,14 @@ export default function TabCoupons({ category, coupons }) {
 
     try {
       const res = await axios.post(
-        'http://localhost:3005/api/couponsClaim/claim-multiple',
-        {
-          memberId,
-          couponIds: idsToClaim,
-        }
+        `${process.env.NEXT_PUBLIC_API_URL}/api/couponsClaim/claim-multiple`,
+        { couponIds: idsToClaim },
+        { headers: { Authorization: `Bearer ${token}` } }
       )
 
       if (res.data.status === 'success') {
         showToast('success', '成功領取所有優惠券')
-        updateClaimedStorage(idsToClaim)
+        setClaimedIds((prev) => [...new Set([...prev, ...idsToClaim])])
       } else {
         showToast('warning', res.data.message || '一鍵領取失敗')
       }
@@ -75,16 +82,21 @@ export default function TabCoupons({ category, coupons }) {
     }
   }
 
-  // ✅ 單張領取後更新
   const handleSingleClaimed = (id) => {
-    updateClaimedStorage([id])
+    setClaimedIds((prev) => [...new Set([...prev, id])])
   }
 
-  // ✅ 過濾已領取
-  const visibleCoupons = sortedCoupons.filter((c) => !claimedIds.includes(c.id))
-  console.log('👉 可見優惠券', visibleCoupons)
+  const handleSorted = useCallback((sorted) => {
+    setSortedCoupons(sorted)
+  }, [])
+
+  const visibleCoupons = isLoggedIn
+    ? sortedCoupons.filter((c) => c.source === 'normal' && !claimedIds.includes(c.id))
+    : sortedCoupons.filter((c) => c.source === 'normal')
+
   return (
-    <div className={`container my-4 ${styles.borderCustom}`}>
+    <div className={`container my-4 ${styles.borderCustom} ${styles.fadeIn}`}>
+      {/* ✅ Header */}
       <div className="row pt-3 px-3 mb-3 align-items-center">
         <div className="col-12 col-md-6 mb-2 mb-md-0">
           <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center">
@@ -92,49 +104,71 @@ export default function TabCoupons({ category, coupons }) {
               <FaTicketAlt className="me-2" />
               可領取張數：{visibleCoupons.length}
             </h5>
-            <button
-              className="btn btn-secondary ms-0 ms-sm-4"
-              onClick={handleOneClickClaim}
-            >
-              <LuMousePointer2 className="me-2" />
-              一鍵領取
-            </button>
+            {isLoggedIn && (
+              <button
+                className="btn btn-secondary ms-0 ms-sm-4"
+                onClick={handleOneClickClaim}
+              >
+                <LuMousePointer2 className="me-2" />
+                一鍵領取
+              </button>
+            )}
           </div>
         </div>
 
         <div className="col-12 col-md-6 d-flex justify-content-md-end">
-          <CouponSorter
-            coupons={coupons}
-            onSorted={(sorted) => setSortedCoupons(sorted)}
-          />
+          <CouponSorter coupons={coupons} onSorted={handleSorted} />
         </div>
       </div>
 
       <hr />
 
-      <div
-        className="row row-cols-1 row-cols-md-4 g-4 pb-4 justify-content-center"
-        style={{ minHeight: '300px' }}
-      >
-        {visibleCoupons.length === 0 ? (
-          <div className="text-center text-muted fs-5 mt-5">
-            🎉 優惠券已全數領取。
-          </div>
-        ) : (
-          visibleCoupons.map((c) => (
-            <div
-              key={c.id}
-              className="col d-flex justify-content-center align-items-center"
-            >
-              <CouponCard
-                coupon={c}
-                memberId={memberId}
-                onClaimed={handleSingleClaimed}
-              />
+      {/* ✅ 卡片區塊 */}
+      {loading ? (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(255,255,255,0.85)',
+            zIndex: 19999,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Loader />
+        </div>
+      ) : (
+        <div
+          className="row row-cols-1 row-cols-md-4 g-4 pb-4 justify-content-center"
+          style={{ minHeight: '300px' }}
+        >
+          {visibleCoupons.length === 0 ? (
+            <div className="text-center text-muted fs-5 mt-5">
+              {isLoggedIn ? '🎉 你已領取所有優惠券囉！' : '🔒 請登入領取優惠券'}
             </div>
-          ))
-        )}
-      </div>
+          ) : (
+            visibleCoupons.map((c) => (
+              <div
+                key={c.id}
+                className="col d-flex justify-content-center align-items-center"
+              >
+                <CouponCard
+                  coupon={c}
+                  memberId={isLoggedIn ? memberId : null}
+                  token={isLoggedIn ? token : null}
+                  onClaimed={handleSingleClaimed}
+                  isLoggedIn={isLoggedIn}
+                  isClaimed={isLoggedIn && claimedIds.includes(c.id)}
+                />
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   )
 }

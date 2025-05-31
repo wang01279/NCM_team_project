@@ -82,7 +82,7 @@ export default function ExhibitionCreatePage() {
   }
 
   return (
-    <div className="container py-5">
+    <div className="container">
       <h2 className="mb-4 text-center">新增展覽</h2>
       {error && <div className="alert alert-danger">{error}</div>}
       <form
@@ -217,7 +217,7 @@ export default function ExhibitionCreatePage() {
         </div>
         <div className="col-12 text-center mt-5">
           <button type="submit" className="btn btn-primary px-5">
-            送出新增
+            送出
           </button>
         </div>
       </form>
