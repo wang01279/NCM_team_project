@@ -1,0 +1,344 @@
+.museumVideoSection {
+  width: 100%;
+  padding: 32px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // background: #faf8f3;
+}
+
+.museumVideoCard {
+  display: flex;
+  backdrop-filter: blur(10px);
+  width: 90vw;
+  max-width: 1400px;
+  min-height: 420px;
+  background: #fffdfadc;
+  // filter: drop-shadow(0 4px 24px rgba(123,45,18,0.10));
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(123,45,18,0.10);
+  overflow: hidden;
+  flex-direction: row;
+  margin: 0 auto 2.5rem auto;
+  animation: fadeSlideUp 1s cubic-bezier(0.23, 1, 0.32, 1) both;
+
+ 
+}
+
+.museumVideoLeft {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 48px 36px 48px 48px;
+  min-width: 260px;
+}
+
+.museumVideoTag {
+  color: #EA580C;
+  background: #F4F1EA;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 3px 16px;
+  margin-bottom: 18px;
+  letter-spacing: 0.12em;
+  display: inline-block;
+  box-shadow: 0 1px 4px rgba(234,88,12,0.06);
+}
+
+.museumVideoTitle {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #7B2D12;
+  margin-bottom: 12px;
+  letter-spacing: 0.08em;
+  text-shadow: 0 1px 0 #f5f0e8, 0 2px 8px rgba(123,45,18,0.08);
+  line-height: 1.2;
+  text-align: left;
+}
+
+.museumVideoDesc {
+  color: #8d7b5a;
+  font-size: 1.08rem;
+  margin-bottom: 28px;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  text-align: left;
+  opacity: 0.92;
+}
+
+.museumVideoBtn {
+  background: linear-gradient(90deg, #b98c4b 0%, #7B2D12 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 28px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(123,45,18,0.08);
+  transition: background 0.2s, transform 0.18s;
+  margin-top: 8px;
+  &:hover {
+    background: linear-gradient(90deg, #7B2D12 0%, #b98c4b 100%);
+    transform: scale(1.05);
+  }
+}
+
+.museumVideoRight {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+}
+
+.museumVideoImg {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 320px;
+  border-radius: 0 16px 16px 0;
+}
+
+.museumVideoIframe {
+  width: 100%;
+  height: 420px;
+  border: 0;
+  border-radius: 0 16px 16px 0;
+  background: #eee;
+  object-fit: cover;
+}
+
+.museumTicketCard {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  width: 90vw;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #fffdfa;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  overflow: hidden;
+  border: 2px dashed #e0cfa7;
+  position: relative;
+}
+
+.museumTicketLeft {
+  flex: 1 1 0;
+  padding: 32px 28px 32px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.museumTicketTag {
+  display: inline-block;
+  background: #e0cfa7;
+  color: #7B2D12;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 2px 14px;
+  margin-bottom: 14px;
+  letter-spacing: 0.1em;
+}
+
+.museumTicketTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #7B2D12;
+  margin-bottom: 8px;
+}
+
+.museumTicketDesc {
+  color: #8d7b5a;
+  font-size: 1.05rem;
+  margin-bottom: 22px;
+}
+
+.museumTicketBtn {
+  background: linear-gradient(90deg, #b98c4b 0%, #7B2D12 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 28px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(123,45,18,0.08);
+  transition: background 0.2s;
+}
+
+.museumTicketBtn:hover {
+  background: linear-gradient(90deg, #7B2D12 0%, #b98c4b 100%);
+}
+
+.museumTicketRight {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: #f5f5f5;
+  height: auto;
+  padding: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.museumTicketRight img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.museumTicketCard::before, .museumTicketCard::after {
+  content: '';
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  background: #faf8f3;
+  border-radius: 50%;
+  left: -16px;
+}
+
+.museumTicketCard::after {
+  left: auto;
+  right: -16px;
+}
+
+.museumTicketPrice {
+  color: #b98c4b;
+  font-size: 1.08rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+  letter-spacing: 0.05em;
+  align-self: flex-end;
+  margin-top: 0;
+}
+
+.museumTicketTime {
+  color: #7B2D12;
+  font-size: 1.02rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  letter-spacing: 0.04em;
+}
+
+.desktopOnly {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 12px;
+}
+.mobileOnly {
+  display: none;
+}
+@media (max-width: 800px) {
+  .desktopOnly {
+    display: none;
+  }
+  .mobileOnly {
+    display: block;
+  }
+  .museumTicketCard {
+    flex-direction: column;
+    max-width: 98vw;
+    margin: 32px auto 0 auto;
+    border-radius: 16px;
+  }
+  .museumTicketLeft {
+    padding: 24px 16px 16px 16px;
+    align-items: center;
+    text-align: center;
+  }
+  .museumTicketPrice {
+    align-self: center;
+    text-align: center;
+  }
+  .museumTicketRight {
+    width: 100%;
+    height: 200px;
+    flex: none;
+    border-radius: 16px 16px 0 0;
+    padding: 0;
+    justify-content: center;
+    align-items: stretch;
+    overflow: hidden;
+  }
+  .museumTicketRight img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+  }
+  .museumTicketCard::before, .museumTicketCard::after {
+    width: 20px;
+    height: 20px;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .museumTicketCard::after {
+    right: -10px;
+    left: auto;
+  }
+}
+
+@media (max-width: 800px) {
+  .museumVideoCard {
+    flex-direction: column;
+    min-height: unset;
+    padding: 0;
+  }
+  .museumVideoLeft {
+    padding: 32px 16px 24px 16px;
+    align-items: center;
+    text-align: center;
+  }
+  .museumVideoTitle,
+  .museumVideoDesc {
+    text-align: center;
+  }
+  .museumVideoIframe {
+    border-radius: 0 0 16px 16px;
+    height: 220px;
+    width: 100%;
+    display: block;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.slideInUp {
+  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+  will-change: opacity, transform;
+}
+.slideInUpDelayed {
+  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: 0.18s;
+  will-change: opacity, transform;
+} 
+
+
+.museumTicketIcon {
+  margin-right: 8px;
+  font-size: 1.2rem;
+
+  
+}

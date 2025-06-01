@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import '../_styles/navbar.scss'
+import '../_styles/navbar.moudle.scss'
 import AuthModal from '@/app/_components/Auth/AuthModal'
 import { useAuth } from '@/app/_hooks/useAuth'
 
@@ -173,7 +173,7 @@ export default function Navbar() {
       <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
         <nav className="nav-container">
           {/* Logo */}
-          <a href="/" className="logo-container logo" onClick={closeMenu}>
+          <Link href="/" className="logo-container logo" onClick={closeMenu}>
             <Image
               src="/img/logo-navbar/logo-navbar-light-1.svg"
               alt="國立故瓷博物館"
@@ -188,7 +188,7 @@ export default function Navbar() {
               width={40}
               height={40}
             />
-          </a>
+          </Link>
 
           {/* Hamburger */}
           <button
@@ -203,24 +203,28 @@ export default function Navbar() {
 
           {/* Desktop nav ----------------------------------------------------------------*/}
           <div className="nav-menu desktop-menu">
-            <a
-              href="/exhibitions"
-              className={isActive('/exhibitions') ? 'active' : ''}
-            >
+            <Link href="/" className={isActive('/') ? 'active' : ''}>首頁</Link>
+            <Link href="/exhibitions" className={isActive('/exhibitions') ? 'active' : ''}>
               展覽
-            </a>
-            <a href="/courses" className={isActive('/courses') ? 'active' : ''}>
+            </Link>
+            <Link href="/course" className={isActive('/course') ? 'active' : ''}>
               課程
-            </a>
-            <a
+            </Link>
+            <Link
               href="/products"
               className={isActive('/products') ? 'active' : ''}
             >
               故瓷電商
-            </a>
+            </Link>
 
             {/* Right cluster */}
             <div className="nav-right">
+              {/* 客服 */}
+              {isLoggedIn && (
+              <a href="#" className="nav-icon"  onClick={handleChatClick}>
+                <FaCommentDots className="icon" />
+              </a>
+              )}
               {/* 購物車 */}
               {/* <a href="/cart" className="nav-icon">
                 <FaShoppingCart className="icon cart-icon" />
@@ -300,14 +304,14 @@ export default function Navbar() {
                       >
                         <FaUser className="icon" /> 個人檔案
                       </a>
-                      <a
+                      {/* <a
                         href="#"
                         className="user-dropdown-item"
                         onClick={handleChatClick}
                       >
                         <span className="notification-dot">12</span>
                         <FaCommentDots className="icon" /> 我的訊息
-                      </a>
+                      </a> */}
                       <a
                         href="/member/center?tab=coupons"
                         className="user-dropdown-item"
@@ -351,21 +355,16 @@ export default function Navbar() {
         {/* Mobile nav (side‑drawer) ----------------------------------------------------- */}
         <aside className={`mobile-nav ${menuOpen ? 'active' : ''}`}>
           <nav className="nav-menu" onClick={closeMenu}>
-            <a
-              href="/exhibitions"
-              className={isActive('/exhibitions') ? 'active' : ''}
-            >
+            {/* <Link href="/" className={isActive('/') ? 'active' : ''}>首頁</Link> */}
+            <Link href="/exhibitions" className={isActive('/exhibitions') ? 'active' : ''}>
               展覽
-            </a>
-            <a href="/courses" className={isActive('/courses') ? 'active' : ''}>
+            </Link>
+            <Link href="/course" className={isActive('/course') ? 'active' : ''}>
               課程
-            </a>
-            <a
-              href="/products"
-              className={isActive('/products') ? 'active' : ''}
-            >
+            </Link>
+            <Link href="/products" className={isActive('/products') ? 'active' : ''}>
               故瓷電商
-            </a>
+            </Link>
           </nav>
 
           {/* Profile & logout */}

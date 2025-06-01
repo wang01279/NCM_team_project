@@ -5,17 +5,80 @@ import Navbar from '@/app/_components/navbar'
 import FullScreenIntro from '@/app/_components/home/FullScreenIntro'
 import MarqueeGallery from '@/app/_components/home/MarqueeGallery'
 import MuseumVideo from '@/app/_components/home/MuseumVideo'
+import MuseumTicket from '@/app/_components/home/MuseumTicket'
 import SeriesCalendar from '@/app/_components/home/SeriesCalendar'
 import SeriesGallery from '@/app/_components/home/SeriesGallery'
+import YourSection from '@/app/_components/home/YourSection'
 // import Footer from '@/app/_components/footer'
 import CardGallery from '@/app/_components/home/CardGallery'
-import '@/app/_styles/globals.scss'
-import '@/app/_styles/home.scss'
+// import '@/app/_styles/globals.scss'
+import styles from '@/app/_styles/home.module.scss'
 
 import Footer from '@/app/_components/footer3'
+import RippleCanvas from '@/app/_components/home/RippleCanvas'
+
+// import waveButton from '@/app/_styles/components/waveButton.scss'
+
+const ceramicColors = [
+  '#F8F1E3', // 0% 米白
+  '#E4D5C2', // 30% 淡陶粉（比奶茶色更明顯一點）
+  '#D8CFC0', // 60%
+  '#CBAE93', // 80%
+  '#8A4B30', // 100%
+]
+
+const colorStops = [0, 0.3, 0.6, 0.8, 1]
+
+function interpolateColor(color1, color2, t) {
+  const c1 = color1.match(/\w\w/g).map((x) => parseInt(x, 16))
+  const c2 = color2.match(/\w\w/g).map((x) => parseInt(x, 16))
+  const c = c1.map((v, i) => Math.round(v + (c2[i] - v) * t))
+  return `#${c.map((x) => x.toString(16).padStart(2, '0')).join('')}`
+}
+
+function getColorIdx(percent) {
+  for (let i = 0; i < colorStops.length - 1; i++) {
+    if (percent >= colorStops[i] && percent <= colorStops[i + 1]) {
+      const localT =
+        (percent - colorStops[i]) / (colorStops[i + 1] - colorStops[i])
+      return { idx: i, localT }
+    }
+  }
+  return { idx: 0, localT: 0 }
+}
 
 export default function AppPage() {
   const [activeSection, setActiveSection] = useState('home')
+  const [scrollY, setScrollY] = useState(0)
+  const [bgColor, setBgColor] = useState(ceramicColors[0])
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrollY(window.scrollY)
+      const scroll = window.scrollY
+      const docH = document.body.scrollHeight - window.innerHeight
+      const percent = docH === 0 ? 0 : scroll / docH
+      const { idx, localT } = getColorIdx(percent)
+      const topColor = interpolateColor(
+        ceramicColors[idx],
+        ceramicColors[idx + 1],
+        localT
+      )
+      const bottomIdx = Math.min(idx + 1, ceramicColors.length - 2)
+      const bottomT = Math.min(localT + 0.2, 1)
+      const bottomColor = interpolateColor(
+        ceramicColors[bottomIdx],
+        ceramicColors[bottomIdx + 1],
+        bottomT
+      )
+      setBgColor(
+        `linear-gradient(to bottom, ${topColor} 0%, ${bottomColor} 100%)`
+      )
+    }
+    window.addEventListener('scroll', onScroll)
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId)
@@ -26,77 +89,113 @@ export default function AppPage() {
   }
 
   return (
-    // <main className="min-h-screen">
     <>
-      <Navbar sticky={true} />
-      
-      {/* 導航按鈕 */}
-      <div className="page-nav">
-        <button 
-          className={activeSection === 'home' ? 'active' : ''} 
-          onClick={() => scrollToSection('home')}
-        >
-          {/* 首頁 */}
-        </button>
-        <button 
-          className={activeSection === 'video' ? 'active' : ''} 
-          onClick={() => scrollToSection('video')}
-        >
-          {/* 影片導覽 */}
-        </button>
-        <button 
-          className={activeSection === 'exhibitions' ? 'active' : ''} 
-          onClick={() => scrollToSection('exhibitions')}
-        >
-          {/* 展覽資訊 */}
-        </button>
-        <button 
-          className={activeSection === 'brands' ? 'active' : ''} 
-          onClick={() => scrollToSection('brands')}
-        >
-          {/* 合作品牌 */}
-        </button>
-      </div>
-
-      {/* 第一個區塊就是3D動畫 */}
-      <section
-        id="home"
+      {/* 紋理層 */}
+      <div
         style={{
-          height: '100vh',
-          width: '100%',
-          position: 'relative',
-          overflow: 'hidden',
-          // background: '#FDFBF7',
+          position: 'fixed',
+          inset: 0,
+          zIndex: 100,
+          pointerEvents: 'none',
+          opacity: 0.18,
+          background: "url('/img/crackle-texture.png') center/cover repeat",
         }}
-      >
-        <div className="hero-card">
-          <h2 className="hero-card__title">國立故瓷博物館</h2>
-          <p className="hero-card__desc">歡迎來到 3D 虛擬博物館</p>
+      />
+      {/* 動態漸層背景層 */}
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 1,
+          pointerEvents: 'none',
+          background: bgColor,
+          transition: 'background 0.5s',
+        }}
+      />
+      {/* RippleCanvas 水波層 */}
+      <RippleCanvas />
+      {/* 內容層 */}
+      <div style={{ position: 'relative', zIndex: 10 }}>
+        <Navbar sticky={true} />
+
+        {/* 導航按鈕 */}
+        <div className={styles.pageNav}>
+          <button
+            className={activeSection === 'home' ? styles.active : ''}
+            onClick={() => scrollToSection('home')}
+          >
+            {/* 首頁 */}
+          </button>
+          <button
+            className={activeSection === 'video' ? styles.active : ''}
+            onClick={() => scrollToSection('video')}
+          >
+            {/* 影片導覽 */}
+          </button>
+          <button
+            className={activeSection === 'exhibitions' ? styles.active : ''}
+            onClick={() => scrollToSection('exhibitions')}
+          >
+            {/* 展覽資訊 */}
+          </button>
+          <button
+            className={activeSection === 'brands' ? styles.active : ''}
+            onClick={() => scrollToSection('brands')}
+          >
+            {/* 合作品牌 */}
+          </button>
         </div>
-        <FullScreenIntro />
-        <div className="series-calendar">
-          <SeriesCalendar/>
-        </div>
-      </section>
 
-     
+        {/* 第一個區塊就是3D動畫 */}
+        <section id="home" className={styles.homeSection}>
+          <div className={styles['welcome-tile']}>
+            <h2>國立故瓷博物館</h2>
+            <p>歡迎來到 3D 虛擬陶瓷博物館</p>
+            <button
+              className={styles.enterBtn}
+              onClick={() => {
+                const videoSection = document.getElementById('video')
+                if (videoSection) {
+                  const y = videoSection.getBoundingClientRect().top + window.scrollY - 60 // 60px offset
+                  window.scrollTo({ top: y, behavior: 'smooth' })
+                }
+              }}
+            >
+              <span>進入博物館</span>
+            </button>
+          </div>
 
-      <section id="video" className="museum-video-section">
-        <MuseumVideo />
-      </section>
+          <div className={styles.fullScreenIntroWrap}>
+            <FullScreenIntro scrollY={scrollY} />
+          </div>
+          <div className={styles.seriesCalendarWrap}>
+            <SeriesCalendar />
+          </div>
+        </section>
 
-      <section id="exhibitions" className="gallery-section">
-        <SeriesGallery />
-      </section>
+        <div className="ceramic-transition transition1" />
 
-      <section id="brands" className="brand-section">
-       {/* 卡片瀑布流區塊 */}
-       <CardGallery />
-        <MarqueeGallery />
-      </section>
+        <section id="video" className={styles.museumVideoSection}>
+          <MuseumTicket />
+          <MuseumVideo />
+        </section>
 
-      <Footer />
+        <div className="ceramic-transition transition2" />
+
+        <section id="exhibitions" className={styles.gallerySection}>
+          <SeriesGallery />
+        </section>
+
+        <div className="ceramic-transition transition3" />
+
+        <section id="brands" className={styles.brandSection}>
+          {/* 卡片瀑布流區塊 */}
+          <CardGallery />
+          <MarqueeGallery />
+        </section>
+
+        <Footer className={styles.homeFooter} />
+      </div>
     </>
-    // </main>
   )
 }

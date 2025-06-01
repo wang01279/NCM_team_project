@@ -27,9 +27,10 @@ $warning-color: #ffc107;
 .chat-sidebar {
   position: fixed;
   top: 0;
-  right: 0;
-  width: 350px !important;
+  left: 0;
+  width: 450px !important;
   height: 100vh;
+  border-radius: 16px;
   background: $bg-color;
   box-shadow: -2px 0 10px $shadow-color;
   display: flex;
@@ -301,26 +302,6 @@ $warning-color: #ffc107;
   }
 } 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // 玻璃霧面共用 Mixin
 @mixin glass-panel($bg-opacity: 0.15, $border-opacity: 0.3, $blur: 10px) {
     background: rgba(255, 255, 255, $bg-opacity);
@@ -413,4 +394,45 @@ $warning-color: #ffc107;
   .chat-window:not([style*="animation"])[open] {
     animation: chat-open 0.3s ease-out forwards;
   }
+  
+// 品牌 loading spinner
+.brand-spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-width: 0.3em;
+  border-color: #7b2d12 #f8ebd8 #f8ebd8 #f8ebd8;
+  border-style: solid;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem auto;
+  display: block;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+} 
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.2em;
+  margin: 0.5em 0 0.2em 0;
+  font-size: 1.02em;
+  color: #7b2d12;
+  .dot {
+    width: 0.9em;
+    height: 0.9em;
+    border-radius: 50%;
+    background: #7b2d12;
+    margin: 0 0.12em;
+    animation: typing-bounce 1.2s infinite both;
+    display: inline-block;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; background: #b98c4b; }
+  .dot:nth-child(3) { animation-delay: 0.4s; background: #f8ebd8; }
+}
+@keyframes typing-bounce {
+  0%, 80%, 100% { transform: translateY(0) scale(0.7); opacity: 0.7; }
+  40% { transform: translateY(-0.4em) scale(1.2); opacity: 1; }
+} 
   

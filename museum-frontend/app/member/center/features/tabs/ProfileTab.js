@@ -14,9 +14,12 @@ import DeleteAccountModal from './_profile/DeleteAccountModal'
 
 import styles from './_style/profile.module.scss'
 
-import { FaKey, FaEdit, FaTrash } from 'react-icons/fa'
+import { FaUserShield, FaHeadset, FaCrown, FaKey, FaEdit, FaTrash } from 'react-icons/fa'
 
 export default function ProfileTab({ member, formData, onEdit, onCancel, onSubmit, onChange }) {
+  console.log('member:', member)
+  console.log('createdAt:', member?.createdAt)
+  console.log('new Date(createdAt):', new Date(member?.createdAt))
   const [showModal, setShowModal] = useState(false)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -210,26 +213,52 @@ export default function ProfileTab({ member, formData, onEdit, onCancel, onSubmi
     }
   }
 
+  const roleMap = {
+    admin: {
+      label: '管理員',
+      icon: <FaUserShield style={{ color: '#fff', marginLeft: 6 }} />,
+      className: `${styles.roleTag} ${styles.admin}`,
+    },
+    staff: {
+      label: '客服人員',
+      icon: <FaHeadset style={{ color: '#fff', marginLeft: 6 }} />,
+      className: `${styles.roleTag} ${styles.staff}`,
+    },
+    member: {
+      label: '一般會員',
+      icon: <FaCrown style={{ color: '#fff', marginLeft: 6 }} />,
+      className: `${styles.roleTag} ${styles.user}`,
+    },
+  }
+
+  const roleKey = member?.role === 'admin' ? 'admin' : member?.role === 'staff' ? 'staff' : 'member'
+  const roleInfo = roleMap[roleKey]
+
   return (
     <>
       <div className={styles['profile-card']}>
         <div className={styles['profile-main-row']}>
           <div className={styles['profile-avatar-col']}>
+            <div className={styles['profile-avatar-title']}>個人檔案</div>
             <img
               src={member?.avatar || '/default-avatar.png'}
               alt="頭像"
               className={styles['profile-avatar']}
             />
-            <div className={styles['profile-name']}>{member?.name}</div>
-            <div className={styles['profile-role']}>
-              {member?.role === 'admin' ? '管理員' : '一般會員'}
+            <div className={roleInfo.className}>
+              {roleInfo.label} {roleInfo.icon}
+            </div>
+            <div className={styles['profile-join-info']}>
+              <div>加入時間：{member?.created_at ? new Date(member.created_at).toLocaleDateString('zh-TW') : '—'}</div>
+              {/* <div>修改時間：{member?.updated_at ? new Date(member.updated_at).toLocaleDateString('zh-TW') : '—'}</div> */}
             </div>
           </div>
           <div className={styles['profile-info-col']}>
-            <div className={styles['profile-info']}>
+            <div className={styles['profile-section']}>
+              <div className={styles['profile-section-title']}>基本資料</div>
               <div className={styles['profile-row']}>
-                <span className={styles['profile-label']}>電子郵件</span>
-                <span className={styles['profile-value']}>{member?.email}</span>
+                <span className={styles['profile-label']}>姓名</span>
+                <span className={styles['profile-value']}>{member?.name}</span>
               </div>
               <div className={styles['profile-row']}>
                 <span className={styles['profile-label']}>性別</span>
@@ -238,20 +267,25 @@ export default function ProfileTab({ member, formData, onEdit, onCancel, onSubmi
                 </span>
               </div>
               <div className={styles['profile-row']}>
+                <span className={styles['profile-label']}>生日</span>
+                <span className={styles['profile-value']}>
+                  {member?.birthday ? new Date(member.birthday).toLocaleDateString('zh-TW') : '未設定'}
+                </span>
+              </div>
+            </div>
+            <div className={styles['profile-section']}>
+              <div className={styles['profile-section-title']}>聯絡資訊</div>
+              <div className={styles['profile-row']}>
                 <span className={styles['profile-label']}>電話</span>
                 <span className={styles['profile-value']}>{member?.phone}</span>
               </div>
               <div className={styles['profile-row']}>
-                <span className={styles['profile-label']}>地址</span>
-                <span className={styles['profile-value']}>{member?.address}</span>
+                <span className={styles['profile-label']}>電子郵件</span>
+                <span className={styles['profile-value']}>{member?.email}</span>
               </div>
               <div className={styles['profile-row']}>
-                <span className={styles['profile-label']}>生日</span>
-                <span className={styles['profile-value']}>
-                  {member?.birthday
-                    ? new Date(member?.birthday).toLocaleDateString('zh-TW')
-                    : '未設定'}
-                </span>
+                <span className={styles['profile-label']}>地址</span>
+                <span className={styles['profile-value']}>{member?.address}</span>
               </div>
             </div>
             <div className={styles['profile-btns-row']}>
@@ -259,16 +293,19 @@ export default function ProfileTab({ member, formData, onEdit, onCancel, onSubmi
                 variant="outline-primary"
                 onClick={() => setShowPasswordModal(true)}
               >
-                <FaKey className="icon my-auto" />修改密碼
+                {/* <FaKey className="icon my-auto" /> */}
+                修改密碼
               </Button>
               <Button variant="primary" onClick={handleShow}>
-                <FaEdit className="icon my-auto" />編輯資料
+                {/* <FaEdit className="icon my-auto" /> */}
+                編輯資料
               </Button>
               <Button
                 variant="outline-danger"
                 onClick={() => setShowDeleteModal(true)}
               >
-                <FaTrash className="icon my-auto" />刪除帳號
+                {/* <FaTrash className="icon my-auto" /> */}
+                刪除帳號
               </Button>
             </div>
           </div>

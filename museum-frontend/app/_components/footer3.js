@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { Container, Row, Col } from 'react-bootstrap'
-import '../_styles/footer3.scss'
+import '@/app/_styles/footer3.moudle.scss'
 import '@/app/_styles/globals.scss'
 import {
   FaFacebookF,
