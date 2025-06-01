@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import { useToast } from '@/app/_components/ToastManager'
 
 export default function ExhibitionCreatePage() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ export default function ExhibitionCreatePage() {
   })
   const [error, setError] = useState('')
   const router = useRouter()
+  const { showToast } = useToast()
 
   const todayStr = new Date().toISOString().split('T')[0]
 
@@ -45,17 +47,20 @@ export default function ExhibitionCreatePage() {
     // 日期防呆
     const todayStr = new Date().toISOString().split('T')[0]
     if (formData.startDate < todayStr) {
-      setError('起始日期不得早於今天')
+      showToast('warning', '起始日期不得早於今天')
+      // setError('起始日期不得早於今天')
       return
     }
 
     if (formData.endDate < formData.startDate) {
-      setError('結束日期不得早於起始日期')
+      showToast('warning', '結束日期不得早於今天')
+      // setError('結束日期不得早於起始日期')
       return
     }
 
     if (!formData.image) {
-      setError('請選擇展覽圖片')
+      showToast('warning', '請選擇展覽圖片')
+      // setError('請選擇展覽圖片')
       return
     }
 
@@ -73,8 +78,8 @@ export default function ExhibitionCreatePage() {
         ...formData,
         state,
       })
-
-      alert('✅ 展覽新增成功')
+      showToast('success', '新增成功')
+      // alert('✅ 展覽新增成功')
       router.push('/admin/exhibition_upload?state=future')
     } catch (err) {
       setError(err.response?.data?.message || '新增失敗')

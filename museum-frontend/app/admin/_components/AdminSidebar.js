@@ -17,6 +17,7 @@ import styles from '../_styles/AdminNavbar.module.scss'
 import { usePathname } from 'next/navigation'
 import { MdOutlineMuseum } from 'react-icons/md'
 
+
 export default function ResponsiveSidebar({ children }) {
   const [isOpen, setIsOpen] = useState(undefined)
 
@@ -104,9 +105,8 @@ export default function ResponsiveSidebar({ children }) {
     <div className="d-flex">
       {/* Sidebar */}
       <div
-        className={`sidebar text-white p-3 d-flex flex-column justify-content-center align-items-center ${
-          isOpen ? 'sidebar-open' : 'sidebar-collapsed'
-        }`}
+        className={`sidebar text-white p-3 d-flex flex-column justify-content-center align-items-center ${isOpen ? 'sidebar-open' : 'sidebar-collapsed'
+          }`}
         style={{
           position: 'fixed',
           width: isOpen ? '250px' : '60px',
@@ -138,10 +138,11 @@ export default function ResponsiveSidebar({ children }) {
                 transition: 'all 0.3s ease',
               }}
             />
-            <button className="btn btn-info d-flex align-items-center">
-              {' '}
-              <MdOutlineMuseum className="fs-5 me-2" /> 返回前台網站
-            </button>
+            <Link href="/">
+              <button className="btn btn-info d-flex align-items-center">
+                <MdOutlineMuseum className="fs-5 me-2" /> 返回前台網站
+              </button>
+            </Link>
           </div>
           <hr />
 

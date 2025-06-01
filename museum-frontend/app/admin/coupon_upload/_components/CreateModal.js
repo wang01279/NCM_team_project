@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useToast } from '@/app/_components/ToastManager'
 
 export default function CreateModal({ onClose, onSuccess }) {
   const getToday = () => new Date().toISOString().split('T')[0]
@@ -15,6 +16,7 @@ export default function CreateModal({ onClose, onSuccess }) {
     expired_at: '',
     status: '啟用',
   })
+  const {showToast} = useToast()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -49,7 +51,7 @@ export default function CreateModal({ onClose, onSuccess }) {
     e.preventDefault()
     // 🧠 驗證：領取截止日不能大於使用期限
     if (form.endDate > form.expired_at) {
-      alert('❌ 領取截止日不能晚於優惠券到期日')
+      showToast('danger', '❌ 領取截止日不能晚於優惠券到期日')
       return
     }
     setIsSubmitting(true)
@@ -59,15 +61,16 @@ export default function CreateModal({ onClose, onSuccess }) {
         form
       )
       if (res.data.success) {
-        alert('新增成功')
+        // alert('新增成功')
+        showToast('success', '新增成功')
         onClose()
         if (onSuccess) onSuccess() // 通知父層更新
       } else {
-        alert('新增失敗')
+        showToast('danger', '新增失敗')
       }
     } catch (err) {
       console.error(err)
-      alert('錯誤：無法新增')
+      showToast('warning', '無法新增')
     } finally {
       setIsSubmitting(false)
     }

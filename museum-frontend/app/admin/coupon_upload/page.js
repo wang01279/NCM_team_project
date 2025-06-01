@@ -5,6 +5,7 @@ import DataFetcher from '@/app/_components/DataFetcher'
 import CreateModal from './_components/CreateModal'
 import { FaTicketAlt, FaPlus } from 'react-icons/fa'
 import SortCoupon from './_components/SortCoupon'
+import { useToast } from '@/app/_components/ToastManager'
 
 export default function CouponAdminPage() {
   const baseUrl = 'http://localhost:3005/api/couponUploads'
@@ -28,6 +29,7 @@ export default function CouponAdminPage() {
     setPage(1) // 重新篩選時從第 1 頁開始
     setRefreshKey((prev) => prev + 1)
   }
+    const { showToast } = useToast()
 
   // 將篩選條件與分頁資訊轉成查詢字串
   const query = new URLSearchParams({
