@@ -1,33 +1,47 @@
 @use '../../../app/_styles/foundation/palette' as *;
 /* 細節頁樣式 */
 
-.heroBanner img {
-  display: block;
-  max-width: 80%;
-  height: auto; // 等比例縮放重點
-  object-fit: contain;
-  object-position: center;
+.infoSection {
+  width: 100%;
+  max-width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .heroBanner {
   margin-top: 60px;
   text-align: center;
 
-  @media (max-width: 375px) {
+  @media (max-width: 376px) {
     margin-top: 80px;
   }
 
   img {
+    width: 100%;
     max-width: 100%;
     height: auto;
     object-fit: contain;
-    // margin-top: 80px;
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+.box {
+  height: 40px;
+
+  @media (max-width: 768px) {
+    height: 5px;
   }
 }
 
 .titleEx {
+  word-break: break-word;
+  text-align: center;
+
   @media (max-width: 768px) {
-    font-size: 25px;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
   }
 }
 .subEx {
@@ -37,103 +51,26 @@
 }
 
 .exhibitionDescription {
-  max-width: 768px;
-  font-size: 28px;
+  font-size: 20px;
   line-height: 1.8;
-  color: $sub-text;
+  color: $main-text;
+  word-break: break-word;
+  white-space: normal;
 }
 
-.customHover {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: $primary !important;
-    // text-decoration: underline;
-
-    svg {
-      transform: scale(1.1);
-    }
-  }
-}
-
-.customFav {
-  border: none;
-}
-
-// 按鈕
 .productActions {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 15px;
-  margin-bottom: 10px; //不貼底部
-
-  .btn-primary {
-    // background-color: #823b20;
-    // color: white;
-    border: none;
-    padding: 12px 40px; //改長
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    height: 45px;
-    min-width: 78px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    // cursor: pointer;
-    transition: all 0.3s ease;
-
-    &:hover {
-      // background-color: #c04b00;
-    }
-
-    &.disabled {
-      background-color: #ccc;
-      color: #666;
-      cursor: not-allowed;
-      opacity: 0.7;
-    }
-
-    &:disabled {
-      background-color: #ccc;
-      color: #666;
-      cursor: not-allowed;
-      opacity: 0.7;
-    }
-    &.btn.disabled {
-      cursor: not-allowed;
-    }
-
-    svg {
-      font-size: 16px;
-    }
-  }
-
-  .btn-icon {
-    width: 45px;
-    height: 45px;
-    font-size: 18px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    &:hover {
-      background-color: #f2f2f2;
-    }
-
-    &:focus {
-      outline: none;
-      box-shadow: none;
-    }
-  }
+  // margin-bottom: 10px;
+  flex-wrap: wrap; // ✅ 加這行避免按鈕太多時爆版
+  margin-left: 10px;
 }
+
+.faBtn > * {
+    @media (max-width: 376px) {
+      font-size: 10px;
+    }
+  }
+

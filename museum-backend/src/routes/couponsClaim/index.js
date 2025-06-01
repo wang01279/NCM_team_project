@@ -13,11 +13,12 @@ router.post('/claim', authenticateToken, async (req, res) => {
 
   try {
     const [rows] = await db.query(
-      'SELECT * FROM member_coupons WHERE member_id = ? AND coupon_id = ?',
+      `SELECT * FROM member_coupons 
+   WHERE member_id = ? AND coupon_id = ? AND DATE(claimed_at) = CURDATE()`,
       [memberId, couponId]
     )
     if (rows.length > 0) {
-      return res.status(409).json({ status: 'error', message: '已經領取過此優惠券' })
+      return res.status(409).json({ status: 'error', message: '今日已經領取過此優惠券' })
     }
 
     const [[coupon]] = await db.query(
@@ -31,8 +32,8 @@ router.post('/claim', authenticateToken, async (req, res) => {
 
     await db.query(
       `INSERT INTO member_coupons 
-      (member_id, coupon_id, uuid_code, claimed_at, expired_at, name, minSpend, category, type) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (member_id, coupon_id, uuid_code, claimed_at, expired_at, name, minSpend, category, type, source) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         memberId,
         couponId,
@@ -43,6 +44,7 @@ router.post('/claim', authenticateToken, async (req, res) => {
         coupon.minSpend,
         coupon.category,
         coupon.type,
+        coupon.source,
       ]
     )
 

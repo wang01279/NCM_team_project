@@ -15,9 +15,17 @@ export default function ExhibitionPage() {
   const searchParams = useSearchParams()
   const state = searchParams.get('state') || 'current'
   const year = searchParams.get('year') || ''
-
-  // 對過去展覽篩選年份
+    // 對過去展覽篩選年份
   const [selectedYear, setSelectedYear] = useState(year)
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 6  // 每頁 6 筆
+
+  // 切換 tab 或篩選年份時，重置回第 1 頁
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [state, selectedYear])
+
+
 
   useEffect(() => {
     setSelectedYear(year)
@@ -56,8 +64,28 @@ export default function ExhibitionPage() {
           <ExhibitionList
             state={state}
             year={state === 'past' ? selectedYear : ''}
+            page={currentPage}
+            pageSize={pageSize}
           />
         </div>
+        {/* <div className="d-flex justify-content-center my-4">
+          <button
+            className="btn btn-outline-secondary me-2"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+          >
+            上一頁
+          </button>
+          <span className="mx-2 align-self-center">第 {currentPage} 頁</span>
+          <button
+            className="btn btn-outline-secondary ms-2"
+            // 若你已知總頁數 totalPages，也可加入 disabled 限制
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+          >
+            下一頁
+          </button>
+        </div> */}
+
       </main>
       <Footer />
     </>
