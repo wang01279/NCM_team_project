@@ -133,7 +133,6 @@
   font-size: 2rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  padding-left: 2rem;
 }
 .barScroller {
   display: flex;
@@ -259,6 +258,7 @@
   transition: color 0.2s;
   padding: 0 0.5rem;
   user-select: none;
+  
 }
 .arrowBtn:hover {
   color: #222;
@@ -270,7 +270,6 @@
   }
   .header {
     font-size: 1.3rem;
-    padding-left: 1rem;
   }
   .barScroller {
     padding: 0 1rem;
@@ -299,7 +298,6 @@
   }
   .header {
     font-size: 1.05rem;
-    padding-left: 0.5rem;
   }
   .calendarNav {
     gap: 0.5rem;

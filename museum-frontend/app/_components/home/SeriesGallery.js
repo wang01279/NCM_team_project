@@ -47,7 +47,11 @@ export default function SeriesMarqueeMasonry() {
         <button className={styles.toggle} onClick={() => setPlaying((p) => !p)}>
           {playing ? '❚❚ 暫停' : '► 播放'}
         </button>
-        <div className={styles.marqueeRows}>
+        <div
+          className={styles.marqueeRows}
+          onMouseEnter={() => setPlaying(false)}
+          onMouseLeave={() => setPlaying(true)}
+        >
           {rows.map((row, rowIdx) => (
             <div
               className={styles.marqueeRow}

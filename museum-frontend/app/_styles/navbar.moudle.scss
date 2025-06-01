@@ -40,7 +40,7 @@
 
 /* 导航容器 */
 .nav-container {
-  max-width: 1600px;
+  max-width: 1900px;
   margin: 0 auto;
   padding: 1rem 3rem;
   display: flex;
@@ -178,6 +178,7 @@
   gap: .5rem;
   margin-left: 2rem;
   padding-left: 2rem;
+  
   border-left: 1px solid rgba(123, 45, 18, 0.1);
 }
 
@@ -639,4 +640,28 @@
     background-color: rgba(123, 45, 18, 0.05);
     color: var(--primary-color);
     transform: translateX(5px);
+}
+
+
+
+@media (max-width: 1050px) {
+  .logo img.large-logo {
+    opacity: 0 !important;
+    transform: translateY(-50%) scale(0.8) !important;
+  }
+  .logo img.small-logo {
+    opacity: 1 !important;
+    transform: translateY(-50%) scale(0.8) !important;
+  }
+}
+
+@media (max-width: 880px) {
+  .logo img.large-logo {
+    opacity: 1 !important;
+    transform: translateY(-50%) scale(1) !important;
+  }
+  .logo img.small-logo {
+    opacity: 0 !important;
+    transform: translateY(-50%) scale(0.8) !important;
+  }
 }

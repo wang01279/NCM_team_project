@@ -346,18 +346,18 @@ const ChatSidebar = ({ isOpen, onClose, receiverId, isStaff = false }) => {
     <Offcanvas
       show={isOpen}
       onHide={onClose}
-      placement="end"
+      placement="start"
       className="chat-sidebar"
     >
       <Offcanvas.Header closeButton>
         <Offcanvas.Title>
-          {isStaff ? '客服中心' : '與客服聊天'}
-          <span className={`status-indicator ${userStatus}`}>
-            {userStatus === 'online' ? '在線' : '離線'}
+          {isStaff ? '客服人員' : '客服中心'}
+          {/* <span className={`status-indicator ${userStatus}`}>
+            {userStatus === 'online' ? '(在線)' : '(離線)'}
           </span>
           {!isStaff && waitingForStaff && (
             <span className="waiting-status">等待客服連線中...</span>
-          )}
+          )} */}
           {connectionStatus !== 'connected' && (
             <span className={`connection-status ${connectionStatus}`}>
               {connectionStatus === 'reconnecting' ? (
@@ -381,11 +381,20 @@ const ChatSidebar = ({ isOpen, onClose, receiverId, isStaff = false }) => {
       </Offcanvas.Header>
 
       <Offcanvas.Body className="d-flex flex-column p-0">
+        {member && (
+          <div className="member-info p-3 border-bottom d-flex align-items-center">
+            <img
+              src={member.avatar || '/img/default-avatar.png'}
+              alt="會員頭像"
+              className="member-avatar me-2"
+              style={{ width: 40, height: 40, borderRadius: '50%' }}
+            />
+            <span className="member-name">{member.name || member.email}</span>
+          </div>
+        )}
         {!isStaff && waitingForStaff && (
           <div className="waiting-message text-center p-4">
-            <div className="spinner-border text-primary mb-3" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
+            <div className="brand-spinner" role="status"></div>
             <p className="mb-0">正在等待客服連線，請稍候...</p>
           </div>
         )}
@@ -405,20 +414,7 @@ const ChatSidebar = ({ isOpen, onClose, receiverId, isStaff = false }) => {
               className={`message ${message.sender_id === member?.id ? 'sent' : 'received'}`}
             >
               {message.sender_id !== member?.id && (
-                <div className="message-sender">
-                  <img
-                    src={
-                      message.senderType === 'staff'
-                        ? '/img/ncmLogo/logo-ncm.png'
-                        : '/img/default-avatar.png'
-                    }
-                    alt="avatar"
-                    className="message-avatar"
-                  />
-                  <span className="message-name">
-                    {message.senderType === 'staff' ? '客服' : '會員'}
-                  </span>
-                </div>
+                null // 暫時不顯示對方頭像與名字
               )}
               <div className="message-bubble">
                 {message.image && (
@@ -446,7 +442,7 @@ const ChatSidebar = ({ isOpen, onClose, receiverId, isStaff = false }) => {
               <span className="dot"></span>
               <span className="dot"></span>
               <span className="dot"></span>
-              對方正在輸入...
+              {/* <span className="text-muted">對方正在輸入...</span> */}
             </div>
           )}
         </div>

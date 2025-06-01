@@ -58,10 +58,26 @@
   height: 100%;
 }
 
+@media (max-width: 1300px) {
+  .container {
+    grid-template-columns: 250px 1fr 0px;
+    grid-template-areas:
+    "left-sidebar low-content right-content"
+    "left-sidebar main-content right-content"
+    "left-sidebar main-content right-content";
+  }
+
+  .rightContent {
+    display: none;
+    
+  }
+}
+
 @include media-breakpoint-down(md) {
 
   .container {
     padding: 10px;
+    // grid-template-columns:250px 1fr 200px;
     grid-template-columns: 1fr;
     grid-template-areas:
       "low-content"
@@ -78,3 +94,4 @@
     display: none;
   }
 } 
+
