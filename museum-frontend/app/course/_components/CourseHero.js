@@ -1,9 +1,10 @@
 import React from 'react'
+import styles from '../_styles/courseDetail.module.scss'
 
 const CourseHero = ({ bannerImage, category, title }) => {
   return (
     <section 
-      className="course-hero" 
+      className={styles['course-hero']} 
       style={{ 
         backgroundImage: `url(${bannerImage})`,
         backgroundSize: 'cover',
@@ -11,9 +12,9 @@ const CourseHero = ({ bannerImage, category, title }) => {
       }}
     >
       <div className="container">
-        <div className="hero-content" data-aos="fade-up">
-          <span className="hero-badge">{category}</span>
-          <h1 className="course-title">{title}</h1>
+        <div className={styles['hero-content']} data-aos="fade-up">
+          <span className={styles['hero-badge']}>{category}</span>
+          <h1 className={styles['course-title']}>{title}</h1>
         </div>
       </div>
     </section>

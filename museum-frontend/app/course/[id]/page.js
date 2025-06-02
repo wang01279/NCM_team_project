@@ -7,14 +7,20 @@ import axios from 'axios'
 import { useToast } from '@/app/_components/ToastManager'
 import Head from 'next/head'
 import '@/app/_styles/globals.scss'
-import '@/app/_styles/courseDetail.scss'
+import styles from '@/app/course/_styles/courseDetail.module.scss'
 import CourseInfo from '@/app/course/_components/CourseInfo'
 import CourseContent from '@/app/course/_components/CourseContent'
 import EnrollmentSection from '@/app/course/_components/EnrollmentSection'
 import RelatedCourses from '@/app/course/_components/RelatedCourses'
 import Navbar from '@/app/_components/navbar'
+import Footer from '../../_components/footer3'
 import Image from 'next/image'
 import { useCart } from '@/app/_context/CartContext'
+import CommentSection from '@/app/_components/comments/CommentSection'
+import CourseNotice from '../_components/CourseNotice'
+import Loader from '@/app/_components/load'
+import useFavorites from '@/app/_hooks/useFavorites'
+import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 
 // API functions
 const fetchCourse = async (id) => {
@@ -54,6 +60,8 @@ export default function CourseDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isEnrolled, setIsEnrolled] = useState(false)
+  const { isFavorite, toggleFavorite } = useFavorites('course')
+  const [isMobile, setIsMobile] = useState(false)
 
   const toast = useToast()
   const { showToast } = useToast()
@@ -88,6 +96,7 @@ export default function CourseDetailPage() {
         maxStudents: courseData.max_students || '20',
         artist,
         artistExperiences,
+        studentCount: courseData.studentCount || 0,
       }
       setCourse(unifiedCourse)
       // 相關課程
@@ -98,7 +107,7 @@ export default function CourseDetailPage() {
             id,
             courseData.categories[0].id
           )
-        } catch {}
+        } catch { }
       }
       setRelatedCourses(relCourses)
       setLoading(false)
@@ -123,10 +132,9 @@ export default function CourseDetailPage() {
     setIsEnrolled(alreadyInCart)
   }, [cartItems, course])
 
-  const handleFavorite = useCallback((courseId) => {
-    console.log(`收藏課程 ${courseId}`)
-    // TODO: Implement favorite logic
-  }, [])
+  const handleFavorite = useCallback(async (courseId) => {
+    return await toggleFavorite(courseId, !isFavorite(courseId))
+  }, [toggleFavorite, isFavorite])
 
   // const handleEnroll = useCallback(() => {
   //   if (!course) return
@@ -134,13 +142,30 @@ export default function CourseDetailPage() {
   //   // TODO: Implement enrollment logic
   // }, [course])
 
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia('(max-width: 700px)').matches)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   if (loading) {
     return (
-      <div className="container py-5 text-center">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">載入中...</span>
-        </div>
-        <p className="mt-3">載入中...</p>
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: 'rgba(255,255,255,0.85)',
+          zIndex: 9999,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Loader />
       </div>
     )
   }
@@ -194,41 +219,50 @@ export default function CourseDetailPage() {
       {/* Gallery Section */}
       <section className="course-gallery container py-4">
         <div className="row g-3">
-          {Array.isArray(course.images) &&
-            course.images.slice(0, 3).map((img, idx) => (
-              <div className="col-md-4" key={img.image_path}>
-                <div className="gallery-img-wrapper">
-                  {/* <img
-                    src={img.image_path}
-                    alt={`課程圖片${idx + 1}`}
-                    className="img-fluid rounded"
-                    style={{
-                      objectFit: 'cover',
-                      width: '100%',
-                      height: '260px',
-                    }}
-                  /> */}
-                  <Image
-                    src={img.image_path}
-                    alt={`課程圖片${idx + 1}`}
-                    width={100}
-                    height={260}
-                    className="img-fluid rounded"
-                    style={{
-                      objectFit: 'cover',
-                      width: '100%',
-                      height: '260px',
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
+          {Array.isArray(course.images) && (
+            isMobile
+              ? course.images.filter(img => img.is_main == 1).slice(0, 1).map((img, idx) => (
+                  <div className="col-12" key={img.image_path || idx}>
+                    <div className="gallery-img-wrapper">
+                      <Image
+                        src={img.image_path || '/default-course.jpg'}
+                        alt={`課程圖片主圖`}
+                        width={100}
+                        height={260}
+                        className="img-fluid rounded"
+                        style={{
+                          objectFit: 'cover',
+                          width: '100%',
+                          height: '260px',
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))
+              : course.images.slice(0, 3).map((img, idx) => (
+                  <div className="col-md-4" key={img.image_path || idx}>
+                    <div className="gallery-img-wrapper">
+                      <Image
+                        src={img.image_path || '/default-course.jpg'}
+                        alt={`課程圖片${idx + 1}`}
+                        width={100}
+                        height={260}
+                        className="img-fluid rounded"
+                        style={{
+                          objectFit: 'cover',
+                          width: '100%',
+                          height: '260px',
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))
+          )}
         </div>
       </section>
 
       <div className="container px-3 px-md-4">
-        <CourseInfo course={course} onFavorite={handleFavorite} />
-
+        <CourseInfo course={course} />
         <div className="row mt-5">
           <div className="col-lg-8">
             <CourseContent course={course} />
@@ -239,6 +273,8 @@ export default function CourseDetailPage() {
               // onEnroll={handleEnroll}
               onAddToCart={handleAddToCart}
               isEnrolled={isEnrolled}
+              isFavorite={isFavorite(course.id)}
+              onFavorite={handleFavorite}
             />
           </div>
         </div>
@@ -246,6 +282,13 @@ export default function CourseDetailPage() {
 
       {/* 推薦課程板塊 */}
       <RelatedCourses courses={relatedCourses} />
+
+      {/* 課程購買注意事項區塊（可折疊） */}
+      <CourseNotice />
+
+      {/* 學員評價區塊 */}
+      <CommentSection type="course" id={course.id} />
+      <Footer />
     </>
   )
 }

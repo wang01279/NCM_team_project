@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import AOS from 'aos'
-import '@/app/_styles/courseDetail.scss'
+import styles from '@/app/course/_styles/courseDetail.module.scss'
 
 export default function CourseLayout({ children }) {
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function CourseLayout({ children }) {
   }, [])
 
   return (
-    <div className="course-layout">
+    <div className={`${styles['course-layout']} course-layout`}>
       {children}
     </div>
   )

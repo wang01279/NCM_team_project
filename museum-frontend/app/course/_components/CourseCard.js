@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
-import styles from '../_styles/CourseList.module.css'
+import styles from '../_styles/CourseList.module.scss'
 import { FaRegCalendarPlus } from 'react-icons/fa'
 
 export default function CourseCard({
@@ -20,7 +20,7 @@ export default function CourseCard({
         className={styles.courseCardImg}
       />
       <div className={styles.courseCardBody}>
-        <div className={styles.bookmarkBtn} style={{position: 'absolute', top: '1.2rem', right: '1.2rem', zIndex: 2}}>
+        <div className={`btn-icon favorite-button ${styles.bookmarkBtn}`} >
           <AddToFavoritesButton
             itemId={course.id}
             itemType="course"
@@ -41,26 +41,28 @@ export default function CourseCard({
           </Link>
         </div>
         <div className={styles.courseCardBodyFooter}>
-          <div className={styles.coursePrice}>{course.price} ntd</div>
+          <div className={styles.coursePrice}>$ {course.price}</div>
           <div className={styles.divider}></div>
-          <div
-            className={styles.courseDateFooter}
-            style={{ cursor: 'pointer' }}
-            title="加入 Google 行事曆"
-            onClick={e => {
-              e.stopPropagation();
-              onCalendarClick && onCalendarClick(course)
-            }}
+          <div className={styles.courseDateFooter}>
+          <p className={`col-6 ${styles.courseDateadd}`}>加入行事曆</p>
+          <p className={`col-6 ${styles.courseDate}`}
+          style={{ cursor: 'pointer' }}
+          title="加入 Google 行事曆"
+          onClick={e => {
+            e.stopPropagation();
+            onCalendarClick && onCalendarClick(course)
+          }}
           >
-            <FaRegCalendarPlus />
-            {new Date(course.start_time).toLocaleDateString('zh-TW', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </div>
+          <FaRegCalendarPlus /> {/* 加入行事曆 */}
+          {new Date(course.start_time).toLocaleDateString('zh-TW', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })}
+        </p>
         </div>
       </div>
     </div>
+    </div >
   )
 } 
