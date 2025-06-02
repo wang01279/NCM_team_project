@@ -617,6 +617,15 @@ Form Controls
 }
 
 
+@media (max-width: 600px) {
+  .modal-dialog {
+    max-width: 85vw !important;
+    width: 85vw !important;
+    min-width: unset !important;
+    margin: 0 auto !important;
+  }
+}
+
 
 
 
