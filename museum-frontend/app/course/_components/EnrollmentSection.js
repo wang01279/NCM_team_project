@@ -2,6 +2,7 @@ import React from 'react'
 import styles from '../_styles/courseDetail.module.scss'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 import CouponLink from '@/app/_components/CouponLink'
+import '@/app/_styles/components/productCard.scss'
 
 export default function EnrollmentSection({ course, onAddToCart, isEnrolled, isFavorite, onFavorite }) {
   const { price, original_price, maxStudents, materials_included } = course
@@ -22,21 +23,29 @@ export default function EnrollmentSection({ course, onAddToCart, isEnrolled, isF
   })();
 
   return (
-    <div className={styles['enrollment-section']} data-aos="fade-left" style={{ position: 'relative' }}>
-      <div style={{ position: 'absolute', top: '30px', right: '30px'}}>
-        <AddToFavoritesButton
-          itemId={course.id}
-          itemType="course"
-          isFavorite={isFavorite}
-          onToggleFavorite={onFavorite}
-          className="favorite-button"
-        />
-      </div>
+    <div className={styles['enrollment-section']} data-aos="fade-left">
       <div className={styles['price-tag']}>
         {formatPrice(price)}
         {original_price && (
           <span className={styles['original-price']}>{formatPrice(original_price)}</span>
         )}
+      </div>
+      <div
+        className="product-actions ms-1 mb-0 p-0 d-flex align-items-center"
+        style={{
+          position: 'absolute',
+          top: 20,
+          right: 20,
+          zIndex: 2,
+          gap: '15px'
+        }}
+      >
+        <AddToFavoritesButton
+          itemId={course.id}
+          itemType="course"
+          isFavorite={isFavorite}
+          onToggleFavorite={onFavorite}
+        />
       </div>
       <div className={styles['enrollment-features']}>
         <p style={{ color: '#7B2D12' }}>

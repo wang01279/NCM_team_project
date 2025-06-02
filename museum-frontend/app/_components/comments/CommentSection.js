@@ -34,7 +34,7 @@ export default function CommentSection({ type, id }) {
   // 發表評論
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!content.trim()) return showToast('請輸入評論內容', 'error')
+    if (!content.trim()) return showToast('warning', '請輸入評論內容', 3000)
     setSubmitting(true)
     try {
       await axios.post(
@@ -44,10 +44,10 @@ export default function CommentSection({ type, id }) {
       )
       setContent('')
       setRating(5)
-      showToast('評論發表成功', 'success')
+      showToast('success', '評論發表成功', 3000)
       mutate()
     } catch (err) {
-      showToast('評論發表失敗', 'error')
+      showToast('warning', '評論發表失敗', 3000)
     } finally {
       setSubmitting(false)
     }
