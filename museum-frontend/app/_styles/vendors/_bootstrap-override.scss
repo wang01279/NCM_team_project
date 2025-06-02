@@ -171,8 +171,15 @@ Form Controls
     box-shadow: none;
   }
 
+  &-disabled {
+    background: rgba(palette.$light, 0.5);
+    border-color: rgba(palette.$dark, 0.1);
+    color: palette.$sub-text;
+    cursor: not-allowed;
+  }
+
   &-primary {
-    background: rgba(palette.$primary, 0.6);
+    background: rgba(palette.$primary, 0.9);
     border-color: palette.$primary;
     color: #fff;
 
@@ -186,6 +193,13 @@ Form Controls
     .show > &.btn-primary.dropdown-toggle {
       background: rgba(palette.$primary, 0.9);
       border-color: darken(palette.$primary, 10%);
+    }
+
+    &.btn-primary:disabled {
+      background: rgba(palette.$primary, 0.5);
+      border-color: rgba(palette.$primary, 0.1);
+      color: palette.$sub-text;
+      cursor: not-allowed;
     }
   }
 
@@ -342,6 +356,13 @@ Form Controls
   // ----------------------------------------------------------------------------
   // Outline 按鈕
   // ----------------------------------------------------------------------------
+
+  &-outline {
+    background: transparent;
+    border: 1px solid palette.$primary;
+    color: palette.$primary;
+  }
+
   &-outline-primary {
     @include transition(all);
     backdrop-filter: blur(4px);
@@ -355,7 +376,7 @@ Form Controls
 
     &:hover {
       background: rgba(palette.$primary, 0.1);
-      color: #fff;
+      color: palette.$primary;
       border-color: palette.$primary;
       box-shadow:
         inset 0 0 8px rgba(255, 255, 255, 0.4),
@@ -365,7 +386,7 @@ Form Controls
 
     &:active {
       background: rgba(palette.$primary, 0.2);
-      color: #fff;
+      color: palette.$primary;
       border-color: darken(palette.$primary, 10%);
       transform: scale(0.98);
       box-shadow:
@@ -474,24 +495,6 @@ Form Controls
   }
 }
 
-// Modal
-.modal {
-  &-content {
-    border-radius: palette.$border-radius;
-    @include box-shadow(2);
-    background-color: palette.$main-bg;
-  }
-
-  &-header {
-    border-bottom: 1px solid rgba(palette.$dark, 0.1);
-    background-color: palette.$light;
-  }
-
-  &-footer {
-    border-top: 1px solid rgba(palette.$dark, 0.1);
-    background-color: palette.$light;
-  }
-}
 
 // Alerts
 .alert {
@@ -510,3 +513,137 @@ Form Controls
 }
 
 
+
+
+
+
+
+// Glassmorphism Backdrop
+// .modal-backdrop.show {
+//   background-color: rgba(255, 253, 250, 0.15) !important;
+//   backdrop-filter: blur(8px) !important;
+// }
+
+
+// @keyframes backdrop-glass-in {
+//   from {
+//     background-color: rgba(255, 253, 250, .3);
+//     backdrop-filter: blur(0px);
+//   }
+//   to {
+//     background-color: rgba(98, 97, 96, 0.8);
+//     backdrop-filter: blur(10px);
+//   }
+// }
+
+
+// .modal-backdrop.show {
+//   animation: backdrop-glass-in 0.4s ease-out forwards !important;
+// }
+
+
+
+
+
+// Modal
+.modal {
+  &-content {
+    border-radius: palette.$border-radius;
+    @include box-shadow(2);
+    background-color: palette.$main-bg;
+
+    .close-btn {
+      // 移除
+      display: none;
+    }
+
+  }
+
+  &-header {
+    border-bottom: 1px solid rgba(palette.$dark, 0.1);
+    background-color: palette.$light;
+    color: palette.$primary;
+    font-weight: 700;
+    font-size: 2rem;
+    text-align: center !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center !important;
+    gap: 0.5rem;
+
+    img {
+      width: 140px;
+      // height: 64px;
+      margin-bottom: 0.2rem;
+      object-fit: contain;
+      display: block;
+    } 
+
+
+  }
+
+  &-footer {
+    border-top: 1px solid rgba(palette.$dark, 0.1);
+    background-color: palette.$light;
+  }
+}
+
+
+.modal-backdrop {
+  background: linear-gradient(120deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.32) 100%) !important;
+  backdrop-filter: blur(10px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
+}
+
+
+@keyframes modalExpandX {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.2) scaleY(0.95);
+  }
+  60% {
+    opacity: 1;
+    transform: scaleX(1.08) scaleY(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1) scaleY(1);
+  }
+}
+
+.modal-content {
+  animation: modalExpandX 0.48s cubic-bezier(.23,1.1,.32,1) both;
+  transform-origin: center center;
+}
+
+
+
+
+
+
+// Offcanvas 
+.offcanvas-backdrop,
+.sidebar-backdrop,
+.drawer-backdrop {
+  background: rgba(255, 255, 255, 0.22) !important; // 半透明白
+  backdrop-filter: blur(6px) saturate(120%) !important; // 模糊＋飽和
+  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
+  // 你也可以用其他顏色
+  // background: rgba(122, 92, 54, 0.18) !important; // 淺咖啡
+}
+
+.offcanvas-backdrop.show {
+  background: rgba(255, 255, 255, 0.22) !important; // 玻璃感白色
+  backdrop-filter: blur(8px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(130%) !important;
+  // 你也可以用主題色：background: rgba(122, 92, 54, 0.13) !important;
+}
+
+
+.overlay.show {
+  background: rgba(255, 255, 255, 0.22) !important; // 半透明白
+  backdrop-filter: blur(8px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(130%) !important;
+  // 你也可以用主題色
+  // background: rgba(122, 92, 54, 0.13) !important;
+}

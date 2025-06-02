@@ -15,7 +15,7 @@ const logos = [
 export default function MarqueeGallery() {
   return (
     <div className={styles.marqueeSection}>
-      <h2 className={styles.title}>合作品牌</h2>
+      <h2 className={styles.title} style={{ color: '#7b4c0f' }}>合作品牌</h2>
       <div className={styles.marqueeWrapper}>
         <div className={styles.marquee}>
           {logos.concat(logos).map((src, idx) => (

@@ -19,7 +19,7 @@ export default function EditProfileModal({
 }) {
   return (
     <Modal show={show} onHide={onHide} centered>
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title>編輯個人資料</Modal.Title>
       </Modal.Header>
       <Modal.Body>

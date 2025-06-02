@@ -453,9 +453,10 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    margin-top: 2rem;
+    margin-top: .5rem;
     width: 100%;
     align-items: center;
+    text-align: center;
 }
 
 .mobile-nav .nav-menu a {
@@ -495,8 +496,46 @@
   visibility: visible;
 }
 
-
-
+.mobile-nav-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px 0;
+  align-items: center;
+  .mobile-nav-icon {
+    display: flex;
+    align-items: center;
+    position: relative;
+    background: transparent;
+    border: none;
+    outline: none;
+    .icon {
+      font-size: 1.5rem;
+    }
+    .cart-count {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      background: #e74c3c;
+      color: #fff;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 0.8rem;
+    }
+    .mobile-nav-label {
+      margin-left: 8px;
+      font-size: 1rem;
+    }
+  }
+  .mobile-nav-divider {
+    display: inline-block;
+    width: 1.5px;
+    height: 28px;
+    background: #d1bfa7;
+    margin: 0 12px;
+    border-radius: 2px;
+  }
+}
 
 @media (max-width: 880px) {
   .desktop-menu {

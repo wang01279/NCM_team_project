@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styles from './_style/MuseumVideo.module.scss'
-import { useInView } from 'react-intersection-observer'
 
 export default function MuseumVideo() {
-  const { ref, inView } = useInView({ threshold: 0.05, triggerOnce: true })
-  const [show, setShow] = useState(false)
-  useEffect(() => {
-    if (inView) setShow(true)
-  }, [inView])
   return (
-    <section className={styles.museumVideoSection} ref={ref}>
-      <div className={styles.museumVideoCard + ' ' + (show ? styles.slideInUp : '')}>
+    <section className={styles.museumVideoSection}>
+      <div className={styles.museumVideoCard}>
         <div className={styles.museumVideoLeft}>
           <div className={styles.museumVideoTag}>線上展覽</div>
           <h2 className={styles.museumVideoTitle}>360°互動式展覽</h2>

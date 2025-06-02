@@ -52,15 +52,20 @@ export default function AuthModal({ show, onHide, onSubmit }) {
 
   return (
     <Modal show={show} onHide={handleClose} centered>
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title>
-          {isForgotPassword
-            ? isVerificationSent
-              ? '重設密碼'
-              : '忘記密碼'
-            : isLogin
-            ? '會員登入'
-            : '註冊新帳號'}
+          <div className="d-flex flex-column align-items-center w-100">
+            <img src="/img/logo.png" alt="logo" className="auth-logo mb-2" />
+            <span style={{ width: '100%', textAlign: 'center' }}>
+              {isForgotPassword
+                ? isVerificationSent
+                  ? '重設密碼'
+                  : '忘記密碼'
+                : isLogin
+                ? '故瓷會員登入'
+                : '註冊新帳號'}
+            </span>
+          </div>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -98,7 +103,7 @@ export default function AuthModal({ show, onHide, onSubmit }) {
           {isForgotPassword ? (
             <button
               type="button"
-              className="btn btn-link"
+              className="btn btn-link mx-2"
               onClick={toggleForgotPassword}
             >
               返回登入
@@ -107,7 +112,7 @@ export default function AuthModal({ show, onHide, onSubmit }) {
             <>
               <button
                 type="button"
-                className="btn btn-link"
+                className="btn btn-link mx-2"
                 onClick={toggleMode}
               >
                 {isLogin ? '還沒有帳號？立即註冊' : '已有帳號？立即登入'}
@@ -115,7 +120,7 @@ export default function AuthModal({ show, onHide, onSubmit }) {
               {isLogin && (
                 <button
                   type="button"
-                  className="btn btn-link"
+                  className="btn btn-link mx-2"
                   onClick={toggleForgotPassword}
                 >
                   忘記密碼？

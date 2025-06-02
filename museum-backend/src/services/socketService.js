@@ -125,6 +125,10 @@ const initializeSocket = (server) => {
           onlineUsers.set(socket.userId, userInfo)
         }
 
+        // debug log
+        console.log('onlineUsers:', Array.from(onlineUsers.keys()))
+        console.log('onlineStaff:', Array.from(onlineStaff.keys()))
+
         // 廣播用戶狀態更新
         io.emit('userStatus', {
           userId: socket.userId,
@@ -176,29 +180,20 @@ const initializeSocket = (server) => {
 
         console.log('消息已保存到數據庫:', message)
 
-        // 發送給接收者
-        const receiverSocketId = senderType === 'staff' 
-          ? onlineUsers.get(receiver_id)?.socketId 
-          : onlineStaff.get(receiver_id)?.socketId
-
-        if (receiverSocketId) {
-          io.to(receiverSocketId).emit('privateMessage', {
-            id: message.id,
-            sender_id: message.sender_id,
-            receiver_id: message.receiver_id,
-            content: message.content,
-            image: message.image_url,
-            status: message.status,
-            created_at: message.created_at,
-            senderType
-          })
-          console.log('消息已發送給接收者:', receiverSocketId)
-        } else {
-          console.log('接收者不在線:', receiver_id)
+        // 查詢 sender 的 name 和 avatar
+        let senderProfile = null;
+        try {
+          senderProfile = await prisma.member_profiles.findFirst({
+            where: { member_id: senderId },
+            select: { name: true, avatar: true }
+          });
+          console.log('查到 senderProfile:', senderProfile);
+        } catch (err) {
+          console.error('查詢 senderProfile 失敗:', err);
         }
 
-        // 發送回發送者
-        socket.emit('privateMessage', {
+        // 組合 payload
+        const messagePayload = {
           id: message.id,
           sender_id: message.sender_id,
           receiver_id: message.receiver_id,
@@ -206,24 +201,55 @@ const initializeSocket = (server) => {
           image: message.image_url,
           status: message.status,
           created_at: message.created_at,
-          senderType
-        })
+          senderType,
+          sender_name: senderProfile?.name || '',
+          sender_avatar: senderProfile?.avatar || ''
+        };
+
+        // 發送給接收者
+        const receiverSocketId = senderType === 'staff' 
+          ? onlineUsers.get(receiver_id)?.socketId 
+          : onlineStaff.get(receiver_id)?.socketId
+
+        if (receiverSocketId) {
+          io.to(receiverSocketId).emit('privateMessage', messagePayload)
+          console.log('消息已發送給接收者:', receiverSocketId)
+        } else {
+          console.log('接收者不在線:', receiver_id)
+        }
+
+        // 發送回發送者
+        socket.emit('privateMessage', messagePayload)
         console.log('消息已發送回發送者')
       } catch (error) {
         console.error('發送消息錯誤:', error)
-        socket.emit('error', { message: '發送消息失敗: ' + error.message })
+        console.error('錯誤訊息:', error.message)
+        socket.emit('error', { message: '發送消息失敗: ' + (error.message || error) })
       }
     })
 
     // 標記消息為已讀
     socket.on('markAsRead', async (messageId) => {
       try {
+        // 先查出該訊息的 sender_id
+        const msg = await prisma.chatMessage.findUnique({
+          where: { id: messageId },
+          select: { sender_id: true }
+        })
         await prisma.chatMessage.update({
           where: { id: messageId },
           data: { status: 'read' }
         })
 
+        // 通知自己
         socket.emit('messageRead', { messageId })
+        // 通知發送者
+        if (msg && msg.sender_id) {
+          const senderSocketId = onlineUsers.get(msg.sender_id)?.socketId || onlineStaff.get(msg.sender_id)?.socketId
+          if (senderSocketId) {
+            io.to(senderSocketId).emit('messageRead', { messageId })
+          }
+        }
       } catch (error) {
         console.error('標記已讀錯誤:', error)
         socket.emit('error', { message: '標記已讀失敗' })
@@ -232,13 +258,17 @@ const initializeSocket = (server) => {
 
     // 處理正在輸入事件
     socket.on('typing', ({ to }) => {
+      console.log('收到 typing 事件，to:', to)
       let targetSocketId = onlineUsers.get(to)?.socketId || onlineStaff.get(to)?.socketId;
+      console.log('找到 targetSocketId:', targetSocketId)
       if (targetSocketId) {
         io.to(targetSocketId).emit('typing', { from: socket.userId });
       }
     });
     socket.on('stopTyping', ({ to }) => {
+      console.log('收到 stopTyping 事件，to:', to)
       let targetSocketId = onlineUsers.get(to)?.socketId || onlineStaff.get(to)?.socketId;
+      console.log('找到 targetSocketId:', targetSocketId)
       if (targetSocketId) {
         io.to(targetSocketId).emit('stopTyping', { from: socket.userId });
       }

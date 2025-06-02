@@ -30,7 +30,15 @@ export const getChatHistory = async (userId, otherUserId) => {
       ORDER BY m.created_at ASC`,
       [userId, otherUserId, otherUserId, userId]
     );
-    return messages;
+    // created_at 只轉成 UTC ISO 字串（帶 Z），不要加 +08:00
+    const messagesWithISO = messages.map(msg => ({
+      ...msg,
+      created_at: msg.created_at
+        ? new Date(msg.created_at).toISOString()
+        : null
+    }))
+    console.log(messagesWithISO); // 除錯用，檢查查詢結果
+    return messagesWithISO;
   } catch (error) {
     throw new Error('獲取聊天記錄失敗');
   }

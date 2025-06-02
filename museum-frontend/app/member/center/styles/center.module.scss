@@ -1,5 +1,5 @@
 @use '../../../_styles/foundation/palette' as *;
-@use '../../../_styles/foundation/_mixins' as *;
+// @use '../../../_styles/foundation/_mixins' as *;
 
 // body {
 //   background-color: #f8f1e3;
@@ -73,7 +73,7 @@
   }
 }
 
-@include media-breakpoint-down(md) {
+@media (max-width: 768px) {
 
   .container {
     padding: 10px;

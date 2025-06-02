@@ -43,7 +43,10 @@ export default function SeriesMarqueeMasonry() {
   return (
     <section className={styles.seriesGallery}>
       <div className={styles.wrapper}>
-        <h2 className={styles.title}>系列作品</h2>
+        <h2 className={styles.title}>展覽焦點｜中國陶瓷藝術巡禮</h2>
+        <div className={styles.subtitle}>
+          從唐三彩到青花瓷，<br />重現歷史紋理中的優雅與溫度。
+        </div>
         <button className={styles.toggle} onClick={() => setPlaying((p) => !p)}>
           {playing ? '❚❚ 暫停' : '► 播放'}
         </button>

@@ -19,6 +19,8 @@ import {
   FaSignOutAlt,
   FaShoppingCart,
   FaUser,
+  FaHistory,
+  FaBookmark,
 } from 'react-icons/fa'
 import Image from 'next/image'
 
@@ -204,15 +206,16 @@ export default function Navbar() {
           {/* Desktop nav ----------------------------------------------------------------*/}
           <div className="nav-menu desktop-menu">
             <Link href="/" className={isActive('/') ? 'active' : ''}>首頁</Link>
-            <Link href="/exhibitions" className={isActive('/exhibitions') ? 'active' : ''}>
+            <Link href="/exhibitions" className={isActive('/exhibitions') ? 'active' : ''} onClick={closeMenu}>
               展覽
             </Link>
-            <Link href="/course" className={isActive('/course') ? 'active' : ''}>
+            <Link href="/course" className={isActive('/course') ? 'active' : ''} onClick={closeMenu}>
               課程
             </Link>
             <Link
               href="/products"
               className={isActive('/products') ? 'active' : ''}
+              onClick={closeMenu}
             >
               故瓷電商
             </Link>
@@ -323,13 +326,13 @@ export default function Navbar() {
                         href="/member/center?tab=orders"
                         className="user-dropdown-item"
                       >
-                        <FaShoppingBag className="icon" /> 我的訂單
+                        <FaHistory className="icon" /> 我的訂單
                       </a>
                       <a
                         href="/member/center?tab=favorites"
                         className="user-dropdown-item"
                       >
-                        <FaHeart className="icon" /> 我的收藏
+                        <FaBookmark className="icon" /> 我的收藏
                       </a>
 
                       <div className="user-dropdown-divider" />
@@ -354,27 +357,29 @@ export default function Navbar() {
 
         {/* Mobile nav (side‑drawer) ----------------------------------------------------- */}
         <aside className={`mobile-nav ${menuOpen ? 'active' : ''}`}>
-          <nav className="nav-menu" onClick={closeMenu}>
-            {/* <Link href="/" className={isActive('/') ? 'active' : ''}>首頁</Link> */}
-            <Link href="/exhibitions" className={isActive('/exhibitions') ? 'active' : ''}>
+          <nav className="nav-menu">
+            <Link href="/exhibitions" className={isActive('/exhibitions') ? 'active' : ''} onClick={closeMenu}>
               展覽
             </Link>
-            <Link href="/course" className={isActive('/course') ? 'active' : ''}>
+            <Link href="/course" className={isActive('/course') ? 'active' : ''} onClick={closeMenu}>
               課程
             </Link>
-            <Link href="/products" className={isActive('/products') ? 'active' : ''}>
+            <Link href="/products" className={isActive('/products') ? 'active' : ''} onClick={closeMenu}>
               故瓷電商
             </Link>
           </nav>
 
-          {/* Profile & logout */}
+          {/* 新增：購物車與聊天室 */}
           <div className="mobile-profile">
             {!isLoading &&
               (isLoggedIn ? (
                 <>
-                  <div
+                  <button
                     className="mobile-profile-header"
                     onClick={handleNavigateToMemberCenter}
+                    tabIndex={0}
+                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleNavigateToMemberCenter() }}
+                    style={{ background: 'none', border: 'none', width: '100%', padding: 0 }}
                   >
                     <img
                       src={member?.avatar || '/img/ncmLogo/logo-ncm.png'}
@@ -392,6 +397,32 @@ export default function Navbar() {
                         {member?.email}
                       </div>
                     </div>
+                  </button>
+                  <div className="mobile-nav-actions">
+                    {isLoggedIn && (
+                      <Link href="/cart" className="mobile-nav-icon" onClick={closeMenu}>
+                        <FaShoppingCart className="icon" />
+                        {cartItems.length > 0 && (
+                          <span className="cart-count">
+                            {cartItems.reduce((total, item) => total + item.quantity, 0)}
+                          </span>
+                        )}
+                        {/* <span className="mobile-nav-label style={{ color: '#7b2d12' }}>購物車</span> */}
+                      </Link>
+                    )}
+                    <span className="mobile-nav-divider" />
+                    {isLoggedIn && (
+                      <button
+                        className="mobile-nav-icon"
+                        onClick={() => {
+                          setIsChatOpen(true)
+                          closeMenu()
+                        }}
+                      >
+                        <FaCommentDots className="icon" style={{ color: '#7b2d12' }} />
+                        {/* <span className="mobile-nav-label" style={{ color: '#7b2d12' }}>客服中心</span> */}
+                      </button>
+                    )}
                   </div>
                   <button
                     className="mobile-profile-item"
@@ -413,6 +444,9 @@ export default function Navbar() {
       <div
         className={`mobile-overlay ${menuOpen ? 'active' : ''}`}
         onClick={closeMenu}
+        role="button"
+        tabIndex={0}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') closeMenu() }}
       />
 
       {/* Login Modal */}

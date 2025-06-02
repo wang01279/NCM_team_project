@@ -752,7 +752,7 @@ const sendResetPasswordEmail = async (email, verificationCode) => {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      subject: '故瓷博物院 - 密碼重設驗證碼',
+      subject: '國立故瓷博物館 - 密碼重設驗證碼',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #333;">密碼重設驗證碼</h2>
@@ -764,7 +764,7 @@ const sendResetPasswordEmail = async (email, verificationCode) => {
           <p>此驗證碼將在 15 分鐘後失效。</p>
           <p>如果您沒有請求重設密碼，請忽略此郵件。</p>
           <p>謝謝！</p>
-          <p>故瓷博物院團隊</p>
+          <p>國立故瓷博物館團隊</p>
         </div>
       `
     };
