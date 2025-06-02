@@ -58,6 +58,7 @@
     h4 {
       margin-bottom: 0;
       font-weight: 800;
+      color: var(--light-text);
     }
 
     div {
@@ -115,7 +116,7 @@
         margin: 8px 0;
       }
       p {
-        color: var(--main-text);
+        color: var(--light-text);
       }
     }
 
@@ -127,7 +128,7 @@
         font-weight: 500;
         margin-bottom: 20px;
         padding: 0 10px;
-        color: var(--main-text);
+        color: var(--light-text);
       }
     }
   }
