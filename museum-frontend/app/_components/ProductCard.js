@@ -38,28 +38,33 @@ export default function ProductCard({
     : ''
 
   return (
-    <div className="col-12 col-sm-6 col-md-4 col-lg-3">
+    <div className="product-card-wrap">
       <div className="product-card">
         {/* 商品圖片 */}
         <div className="product-img">
-          <Image
-            src={imageUrl}
-            alt={name}
-            fill
-            style={{ objectFit: 'contain' }}
-            onError={(e) => {
-              console.error('Image failed to load:', imageUrl)
-              e.currentTarget.onerror = null
-            }}
-          />
-          <div className="img-overlay">
-            <Link
-              href={`/products/details/${id}`}
-              className="more-btn btn-secondary"
-            >
-              顯示更多
-            </Link>
-          </div>
+          <Link href={`/products/details/${id}`}>
+            <Image
+              src={imageUrl}
+              alt={name}
+              fill
+              className="product-img-hover"
+              style={{ objectFit: 'contain' }}
+              onError={(e) => {
+                console.error('Image failed to load:', imageUrl)
+                e.currentTarget.onerror = null
+              }}
+            />
+          </Link>
+
+          {/* 原本的查看更多按鈕拿掉或註解 */}
+          {/* <div className="img-overlay">
+    <Link
+      href={`/products/details/${id}`}
+      className="more-btn btn-secondary"
+    >
+      查看更多
+    </Link>
+  </div> */}
         </div>
 
         {/* 商品資訊 */}

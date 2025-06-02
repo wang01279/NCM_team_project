@@ -47,7 +47,7 @@ export async function fetchProducts({
   const offset = (page - 1) * limit;
   const params = [];
 
-  // ✅ 修正重點：把字串轉陣列
+  //重點：把字串轉陣列
   if (typeof material === "string") {
     material = material.split(",").filter(Boolean);
   }
@@ -58,11 +58,11 @@ export async function fetchProducts({
     functions = functions.split(",").filter(Boolean);
   }
 
-  // ✅ 價格字串轉數字
+  //價格字串轉數字
   const parsedMinPrice = Number(price_min);
   const parsedMaxPrice = Number(price_max);
 
-  // ✅ 查名稱對應的 ID 陣列
+  //查名稱對應的 ID 陣列
   if (material && Array.isArray(material) && material.length > 0) {
     const [rows] = await db.query(
       `SELECT id FROM product_materials WHERE name IN (${material
@@ -93,7 +93,7 @@ export async function fetchProducts({
     functions = rows.map((r) => r.id);
   }
 
-  // ✅ 商品查詢條件組合
+  //商品查詢條件組合
   let baseQuery = `FROM products WHERE deleted_at IS NULL`;
 
   if (search) {
@@ -112,13 +112,13 @@ export async function fetchProducts({
     params.push(subcategory);
   }
 
-  // ✅ 價格篩選 (考慮折扣)
+  //價格篩選 (考慮折扣)
   if (!isNaN(parsedMinPrice)) {
-    baseQuery += ` AND price * (1 - discount_rate) >= ?`;
+    baseQuery += ` AND IF(discount_rate IS NOT NULL, price * (1 - discount_rate), price) >= ?`;
     params.push(parsedMinPrice);
   }
   if (!isNaN(parsedMaxPrice)) {
-    baseQuery += ` AND price * (1 - discount_rate) <= ?`;
+    baseQuery += ` AND IF(discount_rate IS NOT NULL, price * (1 - discount_rate), price) <= ?`;
     params.push(parsedMaxPrice);
   }
 
@@ -137,22 +137,29 @@ export async function fetchProducts({
     params.push(...functions);
   }
 
-  // ✅ 查總筆數
+  //查總筆數
   const countQuery = `SELECT COUNT(*) AS total ${baseQuery}`;
   const [countResult] = await db.query(countQuery, params);
   const total = countResult[0].total;
 
-  // ✅ 排序 + 分頁
+  //排序 + 分頁
   let orderClause = "";
-  if (sort === "price_asc") {
-    orderClause = ` ORDER BY price ASC`;
-  } else if (sort === "price_desc") {
-    orderClause = ` ORDER BY price DESC`;
-  } else {
-    orderClause = ` ORDER BY id ASC`;
+
+  switch (sort) {
+    case "price_asc":
+      orderClause = ` ORDER BY price ASC`;
+      break;
+    case "price_desc":
+      orderClause = ` ORDER BY price DESC`;
+      break;
+    case "newest":
+      orderClause = ` ORDER BY created_at DESC`;
+      break;
+    default:
+      orderClause = ` ORDER BY id ASC`;
   }
 
-  const dataQuery = `SELECT *, price * (1 - discount_rate) AS discounted_price ${baseQuery}${orderClause} LIMIT ? OFFSET ?`;
+  const dataQuery = `SELECT *, IF(discount_rate IS NOT NULL, price * (1 - discount_rate), price) AS discounted_price ${baseQuery}${orderClause} LIMIT ? OFFSET ?`;
   const [rows] = await db.query(dataQuery, [...params, limit, offset]);
 
   return {
@@ -161,9 +168,111 @@ export async function fetchProducts({
       final_price: Math.round(row.discounted_price),
     })),
     total,
+    totalCount: total,
     page,
     totalPages: Math.ceil(total / limit),
   };
+}
+//篩選
+export async function countFilteredProducts({
+  category,
+  subcategory,
+  material,
+  origin,
+  functions,
+  search,
+  price_min,
+  price_max,
+}) {
+  const params = [];
+
+  if (typeof material === "string")
+    material = material.split(",").filter(Boolean);
+  if (typeof origin === "string") origin = origin.split(",").filter(Boolean);
+  if (typeof functions === "string")
+    functions = functions.split(",").filter(Boolean);
+
+  const parsedMinPrice = Number(price_min);
+  const parsedMaxPrice = Number(price_max);
+
+  if (material?.length) {
+    const [rows] = await db.query(
+      `SELECT id FROM product_materials WHERE name IN (${material
+        .map(() => "?")
+        .join(",")})`,
+      material
+    );
+    material = rows.map((r) => r.id);
+  }
+
+  if (origin?.length) {
+    const [rows] = await db.query(
+      `SELECT id FROM product_origins WHERE name IN (${origin
+        .map(() => "?")
+        .join(",")})`,
+      origin
+    );
+    origin = rows.map((r) => r.id);
+  }
+
+  if (functions?.length) {
+    const [rows] = await db.query(
+      `SELECT id FROM product_functions WHERE name IN (${functions
+        .map(() => "?")
+        .join(",")})`,
+      functions
+    );
+    functions = rows.map((r) => r.id);
+  }
+
+  let baseQuery = `FROM products WHERE deleted_at IS NULL`;
+
+  if (search) {
+    baseQuery += ` AND (name_zh LIKE ? OR name_en LIKE ?)`;
+    const keyword = `%${search}%`;
+    params.push(keyword, keyword);
+  }
+
+  if (category) {
+    baseQuery += ` AND category_id = ?`;
+    params.push(category);
+  }
+
+  if (subcategory) {
+    baseQuery += ` AND subcategory_id = ?`;
+    params.push(subcategory);
+  }
+
+  if (!isNaN(parsedMinPrice)) {
+    baseQuery += ` AND IF(discount_rate IS NOT NULL, price * (1 - discount_rate), price) >= ?`;
+    params.push(parsedMinPrice);
+  }
+
+  if (!isNaN(parsedMaxPrice)) {
+    baseQuery += ` AND IF(discount_rate IS NOT NULL, price * (1 - discount_rate), price) <= ?`;
+    params.push(parsedMaxPrice);
+  }
+
+  if (material?.length) {
+    baseQuery += ` AND material_id IN (${material.map(() => "?").join(",")})`;
+    params.push(...material);
+  }
+
+  if (origin?.length) {
+    baseQuery += ` AND origin_id IN (${origin.map(() => "?").join(",")})`;
+    params.push(...origin);
+  }
+
+  if (functions?.length) {
+    baseQuery += ` AND function_id IN (${functions.map(() => "?").join(",")})`;
+    params.push(...functions);
+  }
+
+  const [rows] = await db.query(
+    `SELECT COUNT(*) AS total ${baseQuery}`,
+    params
+  );
+  return rows[0].total || 0;
 }
 
 /* 取得最新商品*/
@@ -235,4 +344,91 @@ export async function fetchProductCategoryId(id) {
     [id]
   );
   return rows[0]?.category_id || null;
+}
+/**
+ * 新增評論
+ * @param {object} reviewData - 包含 product_id, member_id, rating, comment
+ */
+export async function addReview({ product_id, member_id, rating, comment }) {
+  try {
+    const [existingReviews] = await db.query(
+      "SELECT review_id FROM reviews WHERE product_id = ? AND member_id = ?",
+      [product_id, member_id]
+    );
+
+    if (existingReviews.length > 0) {
+      throw new Error("您已評論過此商品，請編輯您的評論。");
+    }
+
+    const [result] = await db.query(
+      `INSERT INTO reviews (product_id, member_id, rating, comment) VALUES (?, ?, ?, ?)`,
+      [product_id, member_id, rating, comment]
+    );
+
+    return { id: result.insertId, product_id, member_id, rating, comment };
+  } catch (error) {
+    console.error("新增評論失敗:", error.message);
+    throw error;
+  }
+}
+
+/**
+ * 更新評論
+ * @param {number} reviewId - 要更新的評論 ID
+ * @param {object} reviewData - 包含 rating, comment (可能也包含 member_id 進行安全檢查)
+ * @param {number} memberIdFromAuth - 從 JWT 或 Session 中獲取的會員 ID (用於安全檢查)
+ */
+export async function updateReview(
+  reviewId,
+  { rating, comment },
+  memberIdFromAuth
+) {
+  try {
+    const [result] = await db.query(
+      `UPDATE reviews SET rating = ?, comment = ? WHERE review_id = ? AND member_id = ?`,
+      [rating, comment, reviewId, memberIdFromAuth]
+    );
+
+    if (result.affectedRows === 0) {
+      const [check] = await db.query(`SELECT id FROM reviews WHERE id = ?`, [
+        reviewId,
+      ]);
+      if (check.length === 0) throw new Error("評論不存在。");
+      throw new Error("您無權編輯此評論。");
+    }
+
+    return { message: "評論更新成功", affectedRows: result.affectedRows };
+  } catch (error) {
+    console.error("更新評論失敗:", error.message);
+    throw error;
+  }
+}
+
+/**
+ * 根據 product_id 取得所有評論
+ * @param {number} productId
+ */
+export async function fetchReviewsByProductId(productId) {
+  try {
+const [reviews] = await db.query(
+  `SELECT
+    r.review_id AS id,
+    r.product_id,
+    r.member_id,
+    r.rating,
+    r.comment,
+    r.created_at,
+    COALESCE(mp.name, '匿名使用者') AS reviewer_name,
+    COALESCE(mp.avatar, '') AS reviewer_avatar
+  FROM reviews r
+  LEFT JOIN member_profiles mp ON r.member_id = mp.member_id
+  WHERE r.product_id = ?
+  ORDER BY r.created_at DESC`,
+  [productId]
+);
+    return reviews;
+  } catch (error) {
+    console.error("從資料庫取得評論失敗:", error.message);
+    throw new Error("無法取得評論");
+  }
 }

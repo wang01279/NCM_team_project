@@ -11,14 +11,14 @@ export default function CategoryShowcase({ onCategoryClick }) {
     }
     requestAnimationFrame(() => {
       setTimeout(() => {
-        const section = document.getElementById('product-list')
+        const section = document.getElementById('category-menu')
         if (section) {
           const yOffset = -80 // 可根據 header 高度微調
           const y =
             section.getBoundingClientRect().top + window.scrollY + yOffset
           window.scrollTo({ top: y, behavior: 'smooth' })
         }
-      }, 100) // 給前端分類變動一點渲染時間
+      }, 100)
     })
   }
 
@@ -62,8 +62,8 @@ export default function CategoryShowcase({ onCategoryClick }) {
                     />
                   </div>
                   <div className="col-md-6 col-6 text-start">
-                    <h1 className="fw-bold mb-3">文創商品</h1>
-                    <p className="group-hover-opacity-100 transition-opacity">
+                    <h1 className="fw-bold mb-3 ps-2">文創商品</h1>
+                    <p className="group-hover-opacity-100 transition-opacity fw-bold ps-2">
                       融合創意與傳統，打造兼具匠心的精緻文創商品，為生活帶來藝術氣息與文化記憶。
                     </p>
                   </div>
@@ -109,7 +109,7 @@ export default function CategoryShowcase({ onCategoryClick }) {
                       </div>
                       <div className="col-6 text-start">
                         <h2 className="fw-bold mb-3">餐廚用品</h2>
-                        <p className="small text-muted group-hover-opacity-100 transition-opacity">
+                        <p className="small text-muted group-hover-opacity-100 transition-opacity fw-bold">
                           美觀實用的陶瓷餐具，提升生活品質。
                         </p>
                       </div>
@@ -155,7 +155,7 @@ export default function CategoryShowcase({ onCategoryClick }) {
                       </div>
                       <div className="col-6 text-start">
                         <h2 className="fw-bold mb-3">圖書影音</h2>
-                        <p className="small text-muted group-hover-opacity-100 transition-opacity">
+                        <p className="small text-muted group-hover-opacity-100 transition-opacity fw-bold">
                           探索陶藝歷史與美學，感受文化深度。
                         </p>
                       </div>
@@ -183,10 +183,10 @@ export default function CategoryShowcase({ onCategoryClick }) {
               >
                 <div className="row align-items-center animate-slidein">
                   <div className="col-6 text-start text-lg-start">
-                    <h2 className="fw-bold mb-2 text-white text-center">
+                    <h1 className="fw-bold mb-3 text-white text-start ps-3">
                       典藏精品
-                    </h2>
-                    <p className="group-hover-opacity-100 transition-opacity text-white">
+                    </h1>
+                    <p className=" group-hover-opacity-100 transition-opacity text-white ps-3">
                       匠藝與美學融合，限期入藏計畫展現文化創作，感受精緻收藏的非凡之美。
                     </p>
                   </div>

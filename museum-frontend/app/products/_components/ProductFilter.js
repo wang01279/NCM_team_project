@@ -3,72 +3,132 @@ import React, { useState, useEffect } from 'react'
 import { FaFilter, FaSearch } from 'react-icons/fa'
 import '../_styles/productFilter.scss'
 
-export default function ProductFilter({ filters, setFilters }) {
+export default function ProductFilter({
+  filters,
+  setFilters,
+  selectedCategory,
+}) {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [tempFilters, setTempFilters] = useState(filters)
   const [showSection, setShowSection] = useState({
     material: true,
     origin: true,
     function: true,
   })
 
-  const openFilterPanel = () => setIsFilterOpen(true)
+  const openFilterPanel = () => {
+    setPreviewCount(0)
+    setIsFilterOpen(true)
+  }
   const closeFilterPanel = () => setIsFilterOpen(false)
 
-  const handleFilterChange = (newFilters) => {
-    setFilters(newFilters)
+  const applyFilters = () => {
+    setFilters(tempFilters)
+    closeFilterPanel()
+  }
+
+  const handleTempChange = (key, value) => {
+    setTempFilters({ ...tempFilters, [key]: value })
   }
 
   const toggleFilter = (type, value) => {
-    const updated = filters[type].includes(value)
-      ? filters[type].filter((v) => v !== value)
-      : [...filters[type], value]
-    handleFilterChange({ ...filters, [type]: updated })
-  }
-
-  const handleMinPriceChange = (e) => {
-    handleFilterChange({ ...filters, minPrice: Number(e.target.value) })
-  }
-
-  const handleMaxPriceChange = (e) => {
-    handleFilterChange({ ...filters, maxPrice: Number(e.target.value) })
-  }
-
-  const handleSearch = (e) => {
-    handleFilterChange({ ...filters, search: e.target.value })
-  }
-
-  const handleSort = (e) => {
-    handleFilterChange({ ...filters, sort: e.target.value })
+    const updated = tempFilters[type].includes(value)
+      ? tempFilters[type].filter((v) => v !== value)
+      : [...tempFilters[type], value]
+    handleTempChange(type, updated)
   }
 
   const clearFilters = () => {
-    handleFilterChange({
+    const cleared = {
       material: [],
       origin: [],
       function: [],
       minPrice: 0,
-      maxPrice: 100000,
+      maxPrice: 50000,
       search: '',
       sort: '',
-    })
+    }
+    setTempFilters(cleared)
+    setFilters(cleared)
   }
 
   const rangePercent = () => {
-    const min = Math.min(filters.minPrice, filters.maxPrice)
-    const max = Math.max(filters.minPrice, filters.maxPrice)
-    const minPct = (min / 100000) * 100
-    const maxPct = (max / 100000) * 100
+    const min = Math.min(tempFilters.minPrice, tempFilters.maxPrice)
+    const max = Math.max(tempFilters.minPrice, tempFilters.maxPrice)
+    const minPct = (min / 50000) * 100
+    const maxPct = (max / 50000) * 100
     return { left: `${minPct}%`, width: `${maxPct - minPct}%` }
   }
 
   useEffect(() => {
+    setTempFilters(filters)
+  }, [isFilterOpen, filters])
+
+  const [previewCount, setPreviewCount] = useState(0)
+
+  useEffect(() => {
+    if (!isFilterOpen) return
+
+    const hasActiveFilters =
+      tempFilters.material.length > 0 ||
+      tempFilters.origin.length > 0 ||
+      tempFilters.function.length > 0 ||
+      tempFilters.search.trim() !== '' ||
+      tempFilters.sort !== '' ||
+      tempFilters.minPrice !== 0 ||
+      tempFilters.maxPrice !== 50000
+
+    if (!hasActiveFilters) {
+      setPreviewCount(0) // 沒有篩選條件就顯示 0 筆
+      return
+    }
+
+    const query = new URLSearchParams()
+    if (selectedCategory?.category)
+      query.set('category', selectedCategory.category)
+    if (selectedCategory?.subcategory)
+      query.set('subcategory', selectedCategory.subcategory)
+    if (tempFilters.search) query.set('search', tempFilters.search)
+    if (tempFilters.sort) query.set('sort', tempFilters.sort)
+    if (tempFilters.material.length > 0)
+      query.set('material', tempFilters.material.join(','))
+    if (tempFilters.origin.length > 0)
+      query.set('origin', tempFilters.origin.join(','))
+    if (tempFilters.function.length > 0)
+      query.set('functions', tempFilters.function.join(','))
+    if (tempFilters.minPrice !== 0) query.set('price_min', tempFilters.minPrice)
+    if (tempFilters.maxPrice !== 50000)
+      query.set('price_max', tempFilters.maxPrice)
+
+    fetch(`http://localhost:3005/api/products/count?${query.toString()}`)
+      .then((res) => res.json())
+      .then((data) => setPreviewCount(data.total || 0))
+      .catch(() => setPreviewCount(0))
+  }, [tempFilters, isFilterOpen, selectedCategory])
+
+  useEffect(() => {
+    const closeBtn = document.querySelector('.filter-close-btn')
+    const handleScroll = () => {
+      if (!closeBtn) return
+      const scrollTop =
+        document.querySelector('.filter-content')?.scrollTop || 0
+      if (scrollTop > 10) {
+        closeBtn.classList.add('hide')
+      } else {
+        closeBtn.classList.remove('hide')
+      }
+    }
     if (isFilterOpen) {
       document.body.classList.add('no-scroll')
+      const scrollContainer = document.querySelector('.filter-content')
+      scrollContainer?.addEventListener('scroll', handleScroll)
     } else {
       document.body.classList.remove('no-scroll')
     }
     return () => {
       document.body.classList.remove('no-scroll')
+      const scrollContainer = document.querySelector('.filter-content')
+      scrollContainer?.removeEventListener('scroll', handleScroll)
     }
   }, [isFilterOpen])
 
@@ -84,123 +144,149 @@ export default function ProductFilter({ filters, setFilters }) {
               type="text"
               className="form-control"
               placeholder="搜尋商品..."
-              value={filters.search}
-              onChange={handleSearch}
+              value={tempFilters.search}
+              onChange={(e) => handleTempChange('search', e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setFilters({ ...tempFilters, search: e.target.value })
+                }
+              }}
             />
           </div>
         </div>
         <div className="col-12 col-md-3">
           <select
             className="form-select"
-            value={filters.sort}
-            onChange={handleSort}
+            value={tempFilters.sort}
+            onChange={(e) => {
+              const newValue = e.target.value
+              setTempFilters({ ...tempFilters, sort: newValue })
+              setFilters({ ...tempFilters, sort: newValue })
+            }}
           >
-            <option value="">排序</option>
-            <option value="price-asc">價格低到高</option>
-            <option value="price-desc">價格高到低</option>
+            <option value="" disabled hidden>
+              請選擇排序方式
+            </option>
             <option value="newest">最新上架</option>
+            <option value="price_asc">價格低到高</option>
+            <option value="price_desc">價格高到低</option>
           </select>
         </div>
         <div className="col-12 col-md-3">
-          <button
-            className="btn-add btn btn-primary p-3"
-            onClick={openFilterPanel}
-          >
-            <FaFilter className="me-2 " /> 篩選
+          <button className="btn-add btn btn-primary" onClick={openFilterPanel}>
+            <FaFilter /> 篩選
           </button>
         </div>
       </div>
 
       <div className={`filter-panel ${isFilterOpen ? 'show' : ''}`}>
         <button
-          className="btn-close position-absolute top-0 end-0 m-3"
+          className="btn-close filter-close-btn"
           aria-label="Close"
           onClick={closeFilterPanel}
         ></button>
-        <h5 className="mb-3">篩選條件</h5>
 
-        <div className="mb-4">
-          <label className="form-label">價格範圍</label>
-          <div className="d-flex gap-2 align-items-center mb-2">
-            <input
-              type="number"
-              value={filters.minPrice}
-              onChange={handleMinPriceChange}
-              className="form-control"
-            />
-            <span>~</span>
-            <input
-              type="number"
-              value={filters.maxPrice}
-              onChange={handleMaxPriceChange}
-              className="form-control"
-            />
+        <div className="filter-content">
+          <h5 className="mb-3">篩選條件</h5>
+
+          <div className="mb-4">
+            <label className="form-label">價格範圍</label>
+            <div className="d-flex gap-2 align-items-center mb-2">
+              <input
+                type="number"
+                value={tempFilters.minPrice}
+                onChange={(e) =>
+                  handleTempChange('minPrice', Number(e.target.value))
+                }
+                className="form-control"
+              />
+              <span>~</span>
+              <input
+                type="number"
+                value={tempFilters.maxPrice}
+                onChange={(e) =>
+                  handleTempChange('maxPrice', Number(e.target.value))
+                }
+                className="form-control"
+              />
+            </div>
+            <div className="range-container">
+              <div className="range-track"></div>
+              <div className="range-selected" style={rangePercent()}></div>
+              <input
+                type="range"
+                min="0"
+                max="50000"
+                step="100"
+                value={tempFilters.minPrice}
+                onChange={(e) =>
+                  handleTempChange('minPrice', Number(e.target.value))
+                }
+              />
+              <input
+                type="range"
+                min="0"
+                max="50000"
+                step="100"
+                value={tempFilters.maxPrice}
+                onChange={(e) =>
+                  handleTempChange('maxPrice', Number(e.target.value))
+                }
+              />
+            </div>
+            <div className="text-center mt-2">
+              價格：NT${Math.min(tempFilters.minPrice, tempFilters.maxPrice)} ~
+              NT$
+              {Math.max(tempFilters.minPrice, tempFilters.maxPrice)}
+            </div>
           </div>
-          <div className="range-container">
-            <div className="range-track"></div>
-            <div className="range-selected" style={rangePercent()}></div>
-            <input
-              type="range"
-              min="0"
-              max="100000"
-              step="100"
-              value={filters.minPrice}
-              onChange={handleMinPriceChange}
-            />
-            <input
-              type="range"
-              min="0"
-              max="100000"
-              step="100"
-              value={filters.maxPrice}
-              onChange={handleMaxPriceChange}
-            />
-          </div>
-          <div className="text-center mt-2">
-            價格：NT${Math.min(filters.minPrice, filters.maxPrice)} ~ NT$
-            {Math.max(filters.minPrice, filters.maxPrice)}
-          </div>
+
+          {['material', 'origin', 'function'].map((type) => (
+            <div className="mb-4" key={type}>
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <label className="form-label mb-0">
+                  {type === 'material'
+                    ? '材質'
+                    : type === 'origin'
+                      ? '生產地'
+                      : '功能'}
+                </label>
+                <button
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() =>
+                    setShowSection({
+                      ...showSection,
+                      [type]: !showSection[type],
+                    })
+                  }
+                >
+                  {showSection[type] ? '-' : '+'}
+                </button>
+              </div>
+              {showSection[type] && (
+                <div className="filter-button-group">
+                  {getOptions(type).map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      className={`btn btn-secondary filter-btn ${tempFilters[type].includes(option.value) ? 'active' : ''}`}
+                      onClick={() => toggleFilter(type, option.value)}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
-        {['material', 'origin', 'function'].map((type) => (
-          <div className="mb-4" key={type}>
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <label className="form-label mb-0">
-                {type === 'material'
-                  ? '材質'
-                  : type === 'origin'
-                    ? '生產地'
-                    : '功能'}
-              </label>
-              <button
-                className="btn btn-sm btn-outline-secondary"
-                onClick={() =>
-                  setShowSection({ ...showSection, [type]: !showSection[type] })
-                }
-              >
-                {showSection[type] ? '-' : '+'}
-              </button>
-            </div>
-            {showSection[type] && (
-              <div className="filter-button-group">
-                {getOptions(type).map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    className={`btn btn-outline-primary filter-btn ${filters[type].includes(option.value) ? 'active' : ''}`}
-                    onClick={() => toggleFilter(type, option.value)}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-
-        <div className="d-flex gap-2">
-          <button className="btn btn-secondary w-100" onClick={clearFilters}>
+        <div className="filter-footer d-flex gap-2">
+          <button className="btn btn-secondary w-50" onClick={clearFilters}>
             清除篩選
+          </button>
+          <button className="btn btn-dark w-50" onClick={applyFilters}>
+            套用篩選（共 {previewCount} 項結果）
           </button>
         </div>
       </div>
@@ -227,8 +313,8 @@ function getOptions(type) {
       { value: '水晶玻璃', label: '水晶玻璃' },
       { value: '不鏽鋼', label: '不鏽鋼' },
       { value: '青花瓷', label: '青花瓷' },
-      { value: '矽膠', label: '矽膠' },
-      { value: '天然竹', label: '天然竹' },
+      { value: '矽瓷', label: '矽瓷' },
+      { value: '花瓷', label: '花瓷' },
       { value: '電子書', label: '電子書' },
       { value: '紙本套', label: '紙本套' },
       { value: 'DVD', label: 'DVD' },
@@ -247,7 +333,7 @@ function getOptions(type) {
       { value: '餐具', label: '餐具' },
       { value: '書籍', label: '書籍' },
       { value: '影音光碟', label: '影音光碟' },
-      { value: '個人用品', label: '個人用品' },
+      { value: '個人用具', label: '個人用具' },
     ],
   }
   return all[type] || []

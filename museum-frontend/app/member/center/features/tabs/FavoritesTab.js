@@ -7,6 +7,7 @@ import FavoriteCard from './_components/FavoriteCard'
 import Loader from '@/app/_components/load'
 import styles from './_styles/favoritesTab.module.scss'
 import { FaReply } from 'react-icons/fa'
+import { useToast } from '@/app/_components/ToastManager'
 import FavoriteCourseRowCard from '@/app/course/_components/FavoriteCourseRowCard'
 
 
@@ -17,6 +18,7 @@ export default function FavoritesTab({ type = 'menu', setType }) {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [counts, setCounts] = useState({ product: 0, course: 0, exhibition: 0 })
+  const { showToast } = useToast()
 
   const fetchFavorites = async (targetType) => {
     if (!memberId || !targetType) return
@@ -56,8 +58,13 @@ export default function FavoritesTab({ type = 'menu', setType }) {
   }, [type, memberId, member])
 
   const handleRemove = async (itemId) => {
-    await removeFavoriteByType(type, memberId, itemId)
-    setData((prev) => prev.filter((item) => item.id !== itemId))
+    try {
+      await removeFavoriteByType(type, memberId, itemId)
+      setData((prev) => prev.filter((item) => item.id !== itemId))
+      showToast('success', '已移除收藏', 3000)
+    } catch (err) {
+      showToast('error', '移除失敗，請稍後再試', 3000)
+    }
   }
 
   const scrollToTop = () => {
@@ -137,16 +144,14 @@ export default function FavoritesTab({ type = 'menu', setType }) {
       ) : data.length > 0 ? (
         type === 'product' ? (
           <div className="table-responsive">
-            <table className="table align-middle">
-              <thead>
+            <table className={`table align-middle ${styles.favoriteTable}`}>
+              <thead className="text-start">
                 <tr>
                   <th>圖片</th>
                   <th>商品名稱</th>
                   <th>分類</th>
                   <th>子分類</th>
                   <th>價格</th>
-                  <th>材質</th>
-                  <th>產地</th>
                   <th>操作</th>
                 </tr>
               </thead>
@@ -166,23 +171,26 @@ export default function FavoritesTab({ type = 'menu', setType }) {
                     <td>{item.category_name}</td>
                     <td>{item.subcategory_name}</td>
                     <td>{`NT$${Math.round(item.price).toLocaleString()}`}</td>
-                    <td>{item.material_name}</td>
-                    <td>{item.origin_name}</td>
                     <td>
-                      <button
-                        className="btn btn-outline-secondary btn-sm me-2"
-                        onClick={() =>
-                          window.open(`/products/details/${item.id}`, '_blank')
-                        }
-                      >
-                        查看
-                      </button>
-                      <button
-                        className="btn btn-outline-danger btn-sm"
-                        onClick={() => handleRemove(item.id)}
-                      >
-                        移除
-                      </button>
+                      <div className={styles.actionGroup}>
+                        <button
+                          className="btn btn-outline-secondary btn-sm"
+                          onClick={() =>
+                            window.open(
+                              `/products/details/${item.id}`,
+                              '_blank'
+                            )
+                          }
+                        >
+                          查看
+                        </button>
+                        <button
+                          className="btn btn-outline-danger btn-sm"
+                          onClick={() => handleRemove(item.id)}
+                        >
+                          移除
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

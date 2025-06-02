@@ -1,0 +1,119 @@
+.review-form-container {
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 30px;
+  margin-top: 30px;
+
+  h4 {
+    font-size: 1.6em;
+    color: #333;
+    margin-bottom: 25px;
+    text-align: center;
+    position: relative;
+
+    &::after {
+      content: '';
+      display: block;
+      width: 150px;
+      height: 3px;
+      background-color: #e09300;
+      margin: 15px auto 0;
+      border-radius: 2px;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+
+    label {
+      display: block;
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1em;
+      transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+
+      &:focus {
+        border-color: #a0a0a0;
+        box-shadow: 0 0 0 0.25rem rgba(128, 128, 128, 0.25);
+        outline: none;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .star-rating-container {
+      margin-top: 5px;
+
+      .star-btn {
+        .on,
+        .off {
+          font-size: 1.8em;
+        }
+      }
+    }
+  }
+
+  //按鈕區塊：提交 + 取消
+  .d-flex {
+    gap: 12px;
+
+    .btn {
+      padding: 12px 20px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border-radius: 6px;
+      min-width: 120px;
+    }
+
+    .btn-primary {
+      flex: 1; //提交佔滿剩下空間
+      // background-color: #e09300;
+      color: white;
+      border: none;
+      transition:
+        background-color 0.3s ease,
+        transform 0.1s ease;
+
+      &:hover:not(:disabled) {
+        // background-color: #cc8400;
+        transform: translateY(-2px);
+      }
+
+      &:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+    }
+
+    .btn-secondary {
+      background-color: #cccccc;
+      color: #333;
+      border: none;
+      transition: background-color 0.3s ease;
+
+      &:hover:not(:disabled) {
+        background-color: #aaaaaa;
+      }
+
+      &:disabled {
+        background-color: #e0e0e0;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

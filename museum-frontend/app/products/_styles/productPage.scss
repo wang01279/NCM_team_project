@@ -1,21 +1,106 @@
+@use '../../_styles/foundation/palette' as *;
+
+:root {
+  --primary: #{$primary};
+  --secondary: #{$secondary};
+  --success: #{$success};
+  --danger: #{$danger};
+  --warning: #{$warning};
+  --info: #{$info};
+  --light: #{$light};
+  --dark: #{$dark};
+  --main-bg: #{$main-bg};
+  --sub-bg: #{$sub-bg};
+  --main-text: #{$main-text};
+  --sub-text: #{$sub-text};
+  --tertiary: #{$tertiary};
+}
+
 .pagination {
-    display: flex;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px; // 設定按鈕之間的間距
+  margin-top: 20px;
+  margin-bottom: 20px; // 增加底部間距，讓分頁下方有空間
+
+  button {
+    border: none;
+    padding: 8px 14px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+    color: var(--main-text); // 使用變數讓文字顏色與主題一致
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex; // 讓內容居中，尤其是箭頭圖示
+    align-items: center;
     justify-content: center;
-    margin-top: 24px;
-    gap: 8px;
-    flex-wrap: wrap;
-  
+
+    &:hover:not(:disabled) {
+      background-color: var(--secondary);
+      color: #fff; // hover 時文字變白
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &.active {
+      background-color: var(--secondary);
+      color: #fff;
+      font-weight: bold;
+      // 使用 palette 的變數作為陰影顏色，如果 palette 中有適合的顏色
+      // 這裡暫時保留原始顏色，因為 palette 沒有提供特定陰影顏色
+      box-shadow: 0 2px 10px rgba(199, 67, 17, 0.4);
+    }
+  }
+
+  .pagination-ellipsis {
+    padding: 8px 0; // 與按鈕垂直對齊
+    color: var(--sub-text); // 使用變數
+    margin: 0 4px; // 確保省略符號與按鈕之間有間距
+  }
+
+  // 手機版樣式 (最大寬度 768px)
+  @media (max-width: 768px) {
+    gap: 4px; // 手機版減少按鈕間距
+
     button {
-      background-color: #f8f9fa;
-      border: 1px solid #ccc;
-      padding: 6px 12px;
-      cursor: pointer;
-      border-radius: 6px;
-  
-      &.active {
-        background-color: #823b20;
-        color: white;
-        border-color: #823b20;
+      padding: 6px 10px; // 手機版按鈕縮小
+      font-size: 0.9em; // 字體稍微縮小
+
+      // 隱藏手機版的第一頁和最後一頁按鈕
+      // 注意：這裡使用屬性選擇器來選取，因為 JavaScript 中我給了 key
+      // 如果你沒有在 JavaScript 中給 key 而是給了特定的 class，這裡要改為 class
+      &[key='first'],
+      &[key='last'] {
+        display: none;
       }
     }
   }
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.product-card-wrap {
+  width: 100%;
+}
