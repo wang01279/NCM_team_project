@@ -1,4 +1,3 @@
-
 import './_styles/vendors/_bootstrap-override.scss'
 import './_styles/globals.scss'
 
@@ -14,6 +13,7 @@ import ChatSidebar from './_components/Chat/ChatSidebar'
 // import { AuthProvider } from './_components/Auth/AuthProvider'
 // import { AuthProvider } from '@/app/_components/Auth/AuthProvider'
 import { CartProvider } from '@/app/_context/CartContext'
+import GoToTopButton from './_components/GoToTopButton'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -40,6 +40,7 @@ export default function RootLayout({ children }) {
           </ToastProvider>
           {/* </AuthProvider> */}
         </CartProvider>
+        <GoToTopButton />
       </body>
     </html>
   )

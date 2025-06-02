@@ -1,18 +1,28 @@
 @use '../_styles/foundation/palette' as *;
 
-.couponTextColor {
-  color: #e8e6e1;
-}
+// .couponTextColor {
+//   color: #e8e6e1;
+// }
 
 .customCouponBtn {
   position: fixed;
-  top: 80px;
-  right: 0;
+  top: 180px;
+  left: 0;
   z-index: 33;
-  padding: 5px;
+  padding: 15px;
   margin: 0;
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+
+  @media (max-width: 796px) {
+    padding: 10px;
+  }
+
+  .couponBtnSize{
+    @media (max-width: 796px) {
+      font-size: 18px;
+    }
+  }
 }
 
 /////////// coupon card style /////////
@@ -27,6 +37,10 @@
   cursor: pointer;
   transition: transform 0.2s ease;
   position: relative; // ✅ 必加：給 overlay 定位參考
+
+  h3{
+    color: #ea580c;
+  }
 
   &:hover {
     cursor: pointer;
@@ -69,6 +83,38 @@
     width: 244px;
     color: $danger;
     z-index: 2;
+  }
+
+  @media (max-width: 1796px) {
+    h3{
+      font-size: 20px;
+      color: #ea580c;
+      padding-top: 0px;
+      padding-bottom: 0px;
+      margin-bottom: 0;
+    }
+    p{
+      font-size: 14px;
+    }
+  }
+}
+
+.glowText {
+  background: linear-gradient(90deg, #4E3629, #3C3A36, #4E3629);
+  background-size: 200% auto;
+  color: #fff;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; //讓文字變透明吃背景
+  animation: flowText 2s linear infinite;
+}
+
+@keyframes flowText {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 100% center;
   }
 }
 

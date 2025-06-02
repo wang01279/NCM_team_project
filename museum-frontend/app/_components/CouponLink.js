@@ -44,17 +44,17 @@ export default function CouponLink() {
   return (
     <>
       <Button variant="primary" onClick={handleShow} className={styles.customCouponBtn}>
-        <h6 className={`d-flex align-items-center p-0 m-0 ${styles.couponTextColor}`}>
-          <FaTicketAlt className='me-2' />coupon
-        </h6>
+        <h3 className={`d-flex align-items-center p-0 m-0 ${styles.couponBtnSize}`}>
+          <FaTicketAlt className={styles.glowText} />
+        </h3>
       </Button>
 
-      <Offcanvas show={show} onHide={handleClose} placement="end">
+      <Offcanvas show={show} onHide={handleClose} placement="start">
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title><strong>推薦優惠券</strong></Offcanvas.Title>
+          {/* <Offcanvas.Title className={`${styles.glowText}`}><strong>推薦優惠券</strong></Offcanvas.Title> */}
         </Offcanvas.Header>
         <Offcanvas.Body className='d-flex justify-content-center flex-column align-items-center'>
-
+          <h3><Offcanvas.Title className={`${styles.glowText}`}><strong>推薦優惠券</strong></Offcanvas.Title></h3>
           {couponList.map((coupon, idx) => (
             <div
               key={idx}
@@ -78,8 +78,8 @@ export default function CouponLink() {
                 </div>
               </div>
 
-              <div className={`p-3 ${styles.cardbody}`}>
-                <div className="text-end text-muted small">
+              <div className={`px-3 py-1 ${styles.cardbody}`}>
+                <div className="text-end text-muted small mt-0">
                   <Image
                     src="/images/logo-outline.png"
                     alt="Logo"
@@ -90,7 +90,7 @@ export default function CouponLink() {
                   />
                   {coupon.name}
                 </div>
-                <h3 className="fw-bold mt-0">{coupon.value}</h3>
+                <h3 className="fw-bold mt-0 py-2">{coupon.value}</h3>
                 <p className="mb-0 small text-dark">低消 {coupon.min}</p>
                 <p className="mb-0 small text-dark">領券期限：{coupon.endDate}</p>
               </div>

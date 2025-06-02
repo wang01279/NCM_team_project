@@ -9,7 +9,6 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 2rem;
-  padding: rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   
 }
@@ -18,13 +17,17 @@
 .tabs {
   display: flex;
   justify-content: space-around;
-  gap: 2rem;
+  // gap: 2rem;
   list-style: none;
   margin-bottom: 2rem;
   padding: 10px;
 }
 
 .tabItem {
+    max-width: 160px;
+      white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-decoration: none;
   color: $primary;
   font-weight: bold;
@@ -80,10 +83,21 @@
   position: relative;
   background-color: $light;
   overflow: hidden;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
   border-radius: 8px;
   transition: background-color 0.1s ease, box-shadow 0.1s ease;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  @media (max-width: 796px) {
+    margin-bottom: 25px;
+  }
+}
+.boxMargin{
+  margin-top: 50px;
+
+  @media (max-width: 796px) {
+    margin-top: 0;
+  }
 }
 
 .exhibitionCard:hover {
@@ -99,6 +113,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  
+  @media (max-width:796px) {  
+   height: 200px; 
+   width: 100%;
+  //  margin-bottom: ;
+  }
 }
 
 .exhibitionImg {

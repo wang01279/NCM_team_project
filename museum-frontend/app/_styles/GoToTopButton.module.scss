@@ -1,0 +1,27 @@
+// GoToTopButton.module.scss
+.goToTop {
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  background-color: #4e3629;
+  color: white;
+  border: none;
+  padding: .8rem 1.2rem;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  z-index: 999;
+  // transition: opacity .3s ease;
+
+  // &:hover {
+  //   background-color: #78716c;
+  // }
+
+  @media (max-width: 768px) {
+    bottom: 2px;
+    right: 2px;
+    font-size: .8rem;
+    padding: .5rem .8rem;
+  }
+}
