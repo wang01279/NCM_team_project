@@ -26,6 +26,7 @@ import productRoutes from "./routes/products/index.js";
 import orderRoutes from "./routes/orders/index.js";
 import shipmentRoutes from "./routes/cart/index.js";
 import ecpayTestInlyRoutes from "./routes/ecpay-test-only.js";
+import commentsRouter from './routes/comments.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -152,6 +153,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/cart", shipmentRoutes);
 app.use("/api/ecpay-test-only", ecpayTestInlyRoutes);
+app.use('/api/comments', commentsRouter)
 
 // Socket.IO 連接
 // io.use(async (socket, next) => {

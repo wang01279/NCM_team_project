@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import { FaRegCalendarPlus } from 'react-icons/fa'
 import Link from 'next/link'
+import styles from '../_styles/courseDetail.module.scss'
+
 
 export default function FavoriteCourseRowCard({ course, onRemove }) {
   return (

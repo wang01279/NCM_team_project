@@ -2,7 +2,11 @@ import pool from '../config/database.js';
 
 export async function fetchCourseById(id) {
   // 查詢課程主資料
-  const [courses] = await pool.query('SELECT * FROM courses WHERE id = ?', [id]);
+  const [courses] = await pool.query(`
+    SELECT c.*, v.name AS venue_name
+    FROM courses c
+    LEFT JOIN venues v ON c.venue_id = v.id
+    WHERE c.id = ?`, [id]);
   if (!courses.length) return null;
   const course = courses[0];
 

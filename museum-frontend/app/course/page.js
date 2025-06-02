@@ -7,13 +7,15 @@ import Link from 'next/link'
 import { useToast } from '@/app/_components/ToastManager'
 import Navbar from '@/app/_components/navbar'
 import '@/app/_styles/globals.scss'
-import styles from './_styles/CourseList.module.css'
-import { FaFilter, FaRegBookmark, FaBookmark, FaArrowLeft, FaRegCalendarPlus } from 'react-icons/fa'
+import styles from './_styles/CourseList.module.scss'
+import { FaFilter, FaRegBookmark, FaBookmark, FaArrowLeft, FaRegCalendarPlus, FaSearch, FaUserCircle } from 'react-icons/fa'
 import useFavorites from '@/app/_hooks/useFavorites'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 import CourseCard from './_components/CourseCard'
 import Footer from '../_components/footer3'
 import FilterSidebar from './_components/FilterSidebar'
+import CourseNotice from './_components/CourseNotice'
+import Loader from '@/app/_components/load'
 
 
 // Mock data
@@ -110,6 +112,18 @@ const fetchCategories = async () => {
   }
 }
 
+function useAllCourseComments() {
+  const [comments, setComments] = useState([])
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/comments?type=course`)
+      .then(res => setComments(res.data))
+      .catch(() => setComments([]))
+      .finally(() => setLoading(false))
+  }, [])
+  return { comments, loading }
+}
+
 export default function CourseListPage() {
   const [courses, setCourses] = useState(mockCourses)
   const [artists, setArtists] = useState([])
@@ -123,8 +137,6 @@ export default function CourseListPage() {
   const [isArtistHovered, setIsArtistHovered] = useState(false)
   const sidebarRef = useRef(null);
   const containerRef = useRef(null);
-  const teacherScrollRef = useRef(null);
-  const [isTeacherHovered, setIsTeacherHovered] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const { isFavorite, toggleFavorite } = useFavorites('course');
@@ -133,6 +145,7 @@ export default function CourseListPage() {
   const [selectedType, setSelectedType] = useState('all');
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedDate, setSelectedDate] = useState({ year: '', month: '', day: '' });
+  const [searchQuery, setSearchQuery] = useState('');
 
   // 1. 取得課程分類 API
   const [categories, setCategories] = useState([]);
@@ -145,6 +158,14 @@ export default function CourseListPage() {
 
   // 篩選邏輯
   const filteredCourses = courses.filter(course => {
+    // 搜尋關鍵字
+    const query = searchQuery.toLowerCase();
+    const searchMatch = !query ||
+      (course.title?.toLowerCase().includes(query)) ||
+      (course.artist?.name?.toLowerCase().includes(query)) ||
+      (course.description_intro?.toLowerCase().includes(query)) ||
+      (course.description_content?.toLowerCase().includes(query));
+
     // 講師類別
     let passType = true;
     if (selectedType === 'domestic') {
@@ -163,7 +184,8 @@ export default function CourseListPage() {
     if (selectedDate.year && d && d.getFullYear().toString() !== selectedDate.year) passDate = false;
     if (selectedDate.month && d && (d.getMonth() + 1).toString() !== selectedDate.month) passDate = false;
     if (selectedDate.day && d && d.getDate().toString() !== selectedDate.day) passDate = false;
-    return passType && passCategory && passDate;
+
+    return searchMatch && passType && passCategory && passDate;
   });
 
   // Banner iframe 自動切換
@@ -249,46 +271,6 @@ export default function CourseListPage() {
     fetchCategories().then(setCategories)
   }, [fetchData])
 
-  // 駐村藝術家無縫橫向自動滾動
-  useEffect(() => {
-    if (!artistScrollRef.current) return;
-    const scrollContainer = artistScrollRef.current;
-    let animationFrameId;
-    let speed = 1; // px per frame
-    function scrollStep() {
-      if (!isArtistHovered) {
-        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
-          scrollContainer.scrollLeft = 0;
-        } else {
-          scrollContainer.scrollLeft += speed;
-        }
-      }
-      animationFrameId = requestAnimationFrame(scrollStep);
-    }
-    animationFrameId = requestAnimationFrame(scrollStep);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isArtistHovered, artists]);
-
-  // 教師區塊自動橫向滾動
-  useEffect(() => {
-    if (!teacherScrollRef.current) return;
-    const scrollContainer = teacherScrollRef.current;
-    let animationFrameId;
-    let speed = 1;
-    function scrollStep() {
-      if (!isTeacherHovered) {
-        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
-          scrollContainer.scrollLeft = 0;
-        } else {
-          scrollContainer.scrollLeft += speed;
-        }
-      }
-      animationFrameId = requestAnimationFrame(scrollStep);
-    }
-    animationFrameId = requestAnimationFrame(scrollStep);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isTeacherHovered, artists]);
-
   const handleCategoryChange = (category) => {
     setActiveCategory(category)
     setCurrentPage(1)
@@ -332,13 +314,42 @@ export default function CourseListPage() {
     return `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`;
   }
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 400);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const { comments: allCourseComments, loading: commentsLoading } = useAllCourseComments();
+
+  const colorClasses = ['candyPink', 'candyBlue', 'candyYellow', 'candyGreen'];
+
+  const [noticeOpen, setNoticeOpen] = useState(false);
+
+  // 6rows only
+  const maxReviewRows = 6;
+
+
   if (loading) {
     return (
-      <div className="container py-5 text-center">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">載入中...</span>
-        </div>
-        <p className="mt-3">載入中...</p>
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: 'rgba(255,255,255,0.85)',
+          zIndex: 9999,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Loader />
       </div>
     )
   }
@@ -359,7 +370,7 @@ export default function CourseListPage() {
   return (
     <>
       <Navbar />
-      
+
       {/* Banner Section */}
       <section className={styles.bannerFullWidth}>
         <iframe
@@ -378,7 +389,7 @@ export default function CourseListPage() {
         <div className="row">
           <div className="col-12 col-lg-10 mx-auto">
             <section ref={containerRef} className={styles.classContainer}>
-              {/* Filter Sidebar */}
+              {/* Filter Sidebar (電腦版) */}
               <div ref={sidebarRef} className={styles.filterSidebarFixed}>
                 <button
                   id="filterToggleBtn"
@@ -405,10 +416,56 @@ export default function CourseListPage() {
                 />
               </div>
 
+
               {/* Course List Section */}
               <h3 className={styles.sectionTitle}>課程列表</h3>
+              <div className="col-12">
+                {/* 手機 Drawer 篩選 */}
+                {typeof window !== 'undefined' && window.innerWidth <= 400 && showFilter && (
+                  <>
+                    <div className={styles.mobileFilterOverlay} onClick={() => setShowFilter(false)} />
+                    <div className={styles.mobileFilterDrawer}>
+                      <FilterSidebar
+                        show={showFilter}
+                        onClose={() => setShowFilter(false)}
+                        selectedType={selectedType}
+                        onTypeChange={setSelectedType}
+                        selectedCategories={selectedCategories}
+                        onCategoriesChange={setSelectedCategories}
+                        selectedDate={selectedDate}
+                        onDateChange={setSelectedDate}
+                        categories={categories}
+                        years={years}
+                        months={months}
+                        days={days}
+                        selectWidth={{ year: 60, month: 45, day: 45 }}
+                      />
+                    </div>
+                  </>
+                )}
+                {/* Search Box */}
+                <div className={styles.searchContainer}>
+                  <button
+                    className={styles.mobileFilterBtn}
+                    type="button"
+                    onClick={() => setShowFilter(true)}
+                    aria-label="篩選"
+                  >
+                    <FaFilter />
+                  </button>
+                  <FaSearch className={styles.searchIcon} />
+                  <input
+                    type="text"
+                    className={styles.searchInput}
+                    placeholder="搜尋課程、講師或課程內容..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </div>
+
               <div className={styles.coursesGrid}>
-                {filteredCourses.slice((currentPage - 1) * COURSES_PER_PAGE, currentPage * COURSES_PER_PAGE).map((course) => (
+                {(isMobile ? filteredCourses : filteredCourses.slice((currentPage - 1) * COURSES_PER_PAGE, currentPage * COURSES_PER_PAGE)).map((course) => (
                   <CourseCard
                     key={course.id}
                     course={course}
@@ -423,16 +480,76 @@ export default function CourseListPage() {
               </div>
 
               {/* Pagination */}
-              <div className={styles.pagination}>
-                {Array.from({ length: Math.ceil(filteredCourses.length / COURSES_PER_PAGE) }, (_, i) => i + 1).map((page) => (
-                  <span
-                    key={page}
-                    className={`${styles.paginationDot} ${currentPage === page ? styles.active : ''}`}
-                    onClick={() => setCurrentPage(page)}
-                  />
-                ))}
+              {!isMobile && (
+                <div className={styles.pagination}>
+                  {Array.from({ length: Math.ceil(filteredCourses.length / COURSES_PER_PAGE) }, (_, i) => i + 1).map((page) => (
+                    <span
+                      key={page}
+                      className={`${styles.paginationDot} ${currentPage === page ? styles.active : ''}`}
+                      onClick={() => setCurrentPage(page)}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {/* 學員評價區塊 */}
+            <section className={`px-3 ${styles.commentBubbleSection} ${styles.classContainer}`}>
+              <h3 className={styles.sectionTitle}>學員評價</h3>
+              <div className={styles.commentBubbleList}>
+                {commentsLoading ? (
+                  <div className="text-center py-4">載入中...</div>
+                ) : allCourseComments.length === 0 ? (
+                  <div className="text-center py-4 text-muted">尚無評論</div>
+                ) : (
+                  // 6row only
+                  allCourseComments.slice(0, maxReviewRows).map((c) => {
+                    const alignClass = ['left', 'center', 'right'][Math.floor(Math.random() * 3)]
+                    const colorClass = colorClasses[Math.floor(Math.random() * colorClasses.length)]
+                    return (
+                      <div key={c.id} className={`${styles.commentBubble} ${styles[alignClass]} ${styles[colorClass]}`}>
+                        <div className={styles.commentBubbleHeader}>
+                          {c.member_avatar ? (
+                            <Image src={c.member_avatar} alt={c.member_name || '匿名'} width={40} height={40} className={styles.commentAvatar} />
+                          ) : (
+                            <FaUserCircle className={styles.commentAvatarDefault} />
+                          )}
+                          <span className={styles.commentBubbleName}>{c.member_name || c.member_email || '匿名'}</span>
+                        </div>
+                        <div className={styles.commentBubbleContent}>{c.content}</div>
+                      </div>
+                    )
+                  })
+                )}
               </div>
             </section>
+
+            {/* 駐村藝術家區塊 */}
+            <section className={styles.classContainer}>
+              <h3 className={styles.sectionTitle}>駐村藝術家</h3>
+              <section className={styles.artistWaveMinimalSection}>
+                <div className={styles.artistWaveIntroBox}>
+                  <TypingEffectText text="輸入中..." className={styles.artistWaveTyping} />
+                  <div className={styles.artistWaveIntroDesc}>
+                    與我們優秀的駐村藝術家一同譜寫生活的篇章
+                  </div>
+                </div>
+                {artists.map((artist, idx) => (
+                  <div className={styles.artistWaveBar} key={artist.id || idx}>
+                    <ArtistTypewriterName name={artist.name} />
+                    <img
+                      src={artist.avatar || '/default-avatar.jpg'}
+                      alt={artist.name}
+                      className={styles.artistWaveAvatar}
+                      draggable={false}
+                    />
+                  </div>
+                ))}
+              </section>
+            </section>
+
+            {/* 課程購買注意事項區塊（可折疊） */}
+            <CourseNotice />
 
             {/* Venue Map Section */}
             {/* <section>
@@ -445,35 +562,6 @@ export default function CourseListPage() {
                 className={styles.venueImg}
               />
             </section> */}
-
-            {/* Artists Section */}
-            <section className={styles.artistSection}>
-              <h3 className={styles.sectionTitle}>駐村藝術家</h3>
-              <div
-                className={styles.artistScrollWrapper}
-                ref={artistScrollRef}
-                onMouseEnter={() => setIsArtistHovered(true)}
-                onMouseLeave={() => setIsArtistHovered(false)}
-                style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
-              >
-                <div className={styles.artistRowScroll} style={{ display: 'flex' }}>
-                  {[...artists, ...artists].map((artist, idx) => (
-                    <div key={artist.id + '-' + idx} className={`p-5 ${styles.artistCardScroll}`}>
-                      <Image
-                        src={artist.avatar || '/default-avatar.jpg'}
-                        alt={artist.name}
-                        width={80}
-                        height={80}
-                        className={styles.artistAvatar}
-                      />
-                      <div className="card-body">
-                        <h5 className={styles.artistCardTitle}>{artist.name}</h5>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
           </div>
         </div>
       </main>
@@ -500,11 +588,79 @@ export default function CourseListPage() {
             >
               加入 Google 行事曆
             </button>
-            <button onClick={() => setModalOpen(false)} className="btn btn-secondary" style={{marginLeft: '1rem'}}>取消</button>
+            <button onClick={() => setModalOpen(false)} className="btn btn-secondary" style={{ marginLeft: '1rem' }}>取消</button>
           </div>
         </div>
       )}
       <Footer />
     </>
   )
+}
+
+function ArtistTypewriterName({ name }) {
+  const chars = name.split('');
+  const [visible, setVisible] = useState(Array(chars.length).fill(false));
+  const [cycle, setCycle] = useState(0);
+  useEffect(() => {
+    let timeouts = [];
+    // 產生每個字的隨機 delay（底部字先出現）
+    const delays = Array.from({ length: chars.length }, (_, i) => 80 + Math.random() * 220 + i * 30);
+    for (let i = chars.length - 1; i >= 0; i--) {
+      // i=chars.length-1 是最下方字
+      timeouts.push(
+        setTimeout(() => {
+          setVisible(v => {
+            const nv = [...v];
+            nv[i] = true;
+            return nv;
+          });
+        }, delays[chars.length - 1 - i])
+      );
+    }
+    const totalDelay = Math.max(...delays) + 1200;
+    timeouts.push(
+      setTimeout(() => {
+        setVisible(Array(chars.length).fill(false));
+        setCycle(c => c + 1);
+      }, totalDelay)
+    );
+    return () => timeouts.forEach(clearTimeout);
+  }, [name, cycle]);
+  return (
+    <div className={styles.artistWaveName}>
+      {chars.map((char, i) => (
+        <span
+          key={i}
+          className={styles.artistWaveChar}
+          style={{
+            opacity: visible[i] ? 1 : 0,
+            transition: 'opacity 0.18s',
+            color: '#111',
+          }}
+        >
+          {char}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function TypingEffectText({ text, className }) {
+  const [visibleCount, setVisibleCount] = useState(0);
+  useEffect(() => {
+    if (visibleCount < text.length) {
+      const timeout = setTimeout(() => setVisibleCount(visibleCount + 1), 120);
+      return () => clearTimeout(timeout);
+    } else {
+      // 打完後停 1.2 秒再重來
+      const timeout = setTimeout(() => setVisibleCount(0), 1200);
+      return () => clearTimeout(timeout);
+    }
+  }, [visibleCount, text]);
+  return (
+    <span className={className}>
+      {text.slice(0, visibleCount)}
+      <span className={styles.artistWaveTypingCursor}>|</span>
+    </span>
+  );
 } 

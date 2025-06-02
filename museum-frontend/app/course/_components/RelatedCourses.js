@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import styles from '../_styles/courseDetail.module.scss'
 
 const RelatedCourses = memo(function RelatedCourses({ courses }) {
   const router = useRouter()
@@ -12,9 +13,9 @@ const RelatedCourses = memo(function RelatedCourses({ courses }) {
   if (!courses?.length) return null
 
   return (
-    <section className="related-courses">
+    <section className={styles['related-courses']}>
       <div className="container">
-        <h2 className="section-title mb-5">您可能也會喜歡</h2>
+        <h2 className={`${styles['section-title']} mb-5`}>您可能也會喜歡</h2>
         <div className="row g-4">
           {courses.map((course, index) => (
             <div 
@@ -24,7 +25,7 @@ const RelatedCourses = memo(function RelatedCourses({ courses }) {
               data-aos-delay={index * 100}
             >
               <div 
-                className="course-card" 
+                className={styles['course-card']} 
                 onClick={() => handleCourseClick(course.id)}
                 role="button"
                 tabIndex={0}
@@ -34,21 +35,21 @@ const RelatedCourses = memo(function RelatedCourses({ courses }) {
                   }
                 }}
               >
-                <div className="course-image-wrapper">
+                <div className={styles['course-image-wrapper']}>
                   <Image
                     src={course.main_image || "/course-img/banner/banner-nom.png"}
                     alt={course.title}
                     width={400}
                     height={300}
-                    className="course-image"
+                    className={styles['course-image']}
                     style={{ objectFit: 'cover' }}
                     loading={index < 2 ? 'eager' : 'lazy'}
                   />
                 </div>
-                <div className="course-card-body">
+                <div className={styles['course-card-body']}>
                   <h5>{course.title}</h5>
                   <p className="text-muted">{course.shortDescription}</p>
-                  <div className="course-card-price">
+                  <div className={styles['course-card-price']}>
                     NT$ {course.price?.toLocaleString()}
                   </div>
                 </div>

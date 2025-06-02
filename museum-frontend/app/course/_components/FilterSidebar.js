@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
-import styles from '../_styles/CourseList.module.css';
+import styles from '../_styles/CourseList.module.scss';
 
 // 假設 fetchCategories, fetchYears, fetchMonths, fetchDays 會從 API 取得資料
 // 這裡先用 mock data，實際可傳入 props 或在父層 fetch
