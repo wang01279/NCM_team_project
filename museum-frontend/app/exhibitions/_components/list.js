@@ -27,28 +27,29 @@ export default function ExhibitionList({ state = 'current', year, page, pagesize
                 className="text-decoration-none"
               >
                 <div
-                  className={`${styles.exhibitionCard} row align-items-center overflow-hidden mb-0`}
+                  className={`${styles.exhibitionCard} row align-items-center overflow-hidden`}
                   style={{ cursor: 'pointer' }}
                 >
-                  <div className={`col-md-5 ${styles.imageContainer1}`}>
+                  <div className={`col-md-5 col-12 ${styles.imageContainer1}`}>
                     <div className={styles.imageOverlay}></div>
                     <Image
                       src={`/images/${ex.image}`}
                       alt={ex.title}
-                      width={600}
-                      height={250}
+                          fill
+                      // width={600}
+                      // height={250}
                       className="exhibitionImg"
                     />
                   </div>
                   <div className={`col-md-7 ${styles.infoContainer}`}>
                     <h5 className="fw-bold">{ex.title}</h5>
-                    <div className="mt-5">
+                    <div className={styles.boxMargin}>
                       <p className="text-muted mb-1">
                         展覽期間：{ex.startDate.slice(0, 10)} ~{' '}
                         {ex.endDate.slice(0, 10)}
                       </p>
-                      <p className="text-muted mb-2">展廳區域：{ex.venue_id}</p>
-                      <div className="d-flex justify-content-end">
+                      <p className="text-muted ">展廳區域：{ex.venue_id}</p>
+                      <div className="d-flex justify-content-end mb-3">
                         <button className={`btn btn-light`}>
                           <span>查看更多</span>
                           <svg width="18" height="18" viewBox="0 0 24 24">

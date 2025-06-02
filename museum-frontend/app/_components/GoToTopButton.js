@@ -1,12 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
+import styles from '../_styles/GoToTopButton.module.scss'
 
 export default function GoToTopButton() {
   const [showButton, setShowButton] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowButton(window.scrollY > 300) // 滾動超過 300px 才顯示按鈕
+      setShowButton(window.scrollY > 300)
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -21,12 +22,10 @@ export default function GoToTopButton() {
   }
 
   return (
-    <>
-      {showButton && (
-        <button className="go-to-top" onClick={scrollToTop}>
-          ⬆
-        </button>
-      )}
-    </>
+    showButton && (
+      <button className={`${styles.goToTop} ${showButton ? 'visible' : 'hidden'}`} onClick={scrollToTop} aria-label="Back to top">
+        ⬆
+      </button>
+    )
   )
 }

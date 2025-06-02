@@ -46,10 +46,10 @@ export default function ExhibitionDetailPage() {
           const googleCalendarUrl =
             exhibits?.startDate && exhibits?.endDate
               ? `https://calendar.google.com/calendar/render?action=TEMPLATE` +
-              `&text=${encodeURIComponent(exhibits.title)}` +
-              `&details=${encodeURIComponent(exhibits.intro?.slice(0, 100) || '')}` +
-              `&location=${encodeURIComponent(exhibits.venueId || '國立故瓷博物館')}` +
-              `&dates=${toUTCString(exhibits.startDate)}/${toUTCString(exhibits.endDate)}`
+                `&text=${encodeURIComponent(exhibits.title)}` +
+                `&details=${encodeURIComponent(exhibits.intro?.slice(0, 100) || '')}` +
+                `&location=${encodeURIComponent(exhibits.venueId || '國立故瓷博物館')}` +
+                `&dates=${toUTCString(exhibits.startDate)}/${toUTCString(exhibits.endDate)}`
               : '#'
 
           return (
@@ -93,9 +93,10 @@ export default function ExhibitionDetailPage() {
                     >
                       <FaRegCalendarPlus className="me-2" />
                       {/* <b>展期</b> */}
-
-                      {exhibits?.startDate?.slice(0, 10) || '未提供'} ~ {' '}
-                      {exhibits?.endDate?.slice(0, 10) || '未提供'}
+                      <div>
+                        {exhibits?.startDate?.slice(0, 10) || '未提供'} ~{' '}
+                        {exhibits?.endDate?.slice(0, 10) || '未提供'}
+                      </div>
                     </a>
                     <a
                       href="#"
@@ -104,15 +105,12 @@ export default function ExhibitionDetailPage() {
                       title="查看展區導引"
                       className={`${styles.customHover} d-flex align-items-center text-center text-dark fs-5 d-inline-block me-2 mb-0 text-decoration-none`}
                     >
-
                       <IoLocationSharp className="me-2" />
                       {/* <b>展區</b> */}
 
                       {exhibits?.venue_id || '未提供'}
                     </a>
-                    <div
-                      className="product-actions ms-1 mb-0 p-0 d-flex align-items-center"
-                    >
+                    <div className="product-actions ms-1 mb-0 p-0 d-flex align-items-center">
                       <AddToFavoritesButton
                         itemId={exhibits.id}
                         itemType="exhibition"
@@ -137,7 +135,6 @@ export default function ExhibitionDetailPage() {
                     {exhibits?.intro || '尚無展覽說明'}
                   </div>
                 </div>
-
 
                 <div className="container my-5 d-flex justify-content-center gap-3">
                   <Link

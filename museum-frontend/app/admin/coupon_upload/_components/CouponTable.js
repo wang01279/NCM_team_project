@@ -29,6 +29,7 @@ export default function CouponTable({
     return discount // fallback
   }
 
+
   return (
     <div className="table-responsive p-0">
       <table
@@ -58,7 +59,7 @@ export default function CouponTable({
                 <td>{coupon.code}</td>
                 <td>{coupon.category}</td>
                 <td>{formatDiscount(coupon.discount, coupon.type)}</td>
-                <td>{coupon.minSpend}</td>
+                <td>{coupon.minSpend.toLocaleString('en-US')}</td>
                 <td>{formatDate(coupon.endDate)}</td>
                 <td>{formatDate(coupon.expired_at)}</td>
                 <td>
@@ -71,14 +72,14 @@ export default function CouponTable({
                   )}
                 </td>
                 <td>
-                  <Link
-                    className="btn btn-outline-success me-1"
+                  {/* <Link
+                    className="btn-light me-1"
                     href={`/coupons/${coupon.id}`}
                   >
                     <FaEye />
-                  </Link>
+                  </Link> */}
                   <Link
-                    className="btn btn-outline-dark"
+                    // className=""
                     href={`/coupons/edit/${coupon.id}`}
                   >
                     <FaEdit />

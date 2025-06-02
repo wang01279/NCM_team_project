@@ -10,7 +10,13 @@ table.couponTable {
     vertical-align: middle;
     padding: 12px;
     border: 1px solid darken(#7b2d12, 10%);
+    
+    @media (max-width: 1000px) {
+      word-break: keep-all;
+      padding: 10px;
+    }
   }
+
 
   td {
     background-color: #f4f1ea;

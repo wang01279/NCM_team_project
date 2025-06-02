@@ -17,7 +17,7 @@ import {
 export default function CouponTable({
   coupons = [],
   isExpiredMode = false,
-  onActionSuccess = () => {},
+  onActionSuccess = () => { },
 }) {
   const [hasMounted, setHasMounted] = useState(false)
   const [sortField, setSortField] = useState(null)
@@ -100,7 +100,14 @@ export default function CouponTable({
   const renderTable = (data, typeName, icon) => (
     <div className="mb-5">
       <h5 className="fw-bold mb-3 d-flex align-items-center">
-        {icon} {typeName}優惠券
+        {icon}
+        <Link
+          href={typeName === '商品' ? '/products' : typeName === '課程' ? '/courses' : '#'}
+          className="ms-2 text-decoration-none text-dark"
+          title='去逛逛'
+        >
+          {typeName}優惠券
+        </Link>
       </h5>
       <div className="table-responsive">
         <table className={`table table-bordered ${styles.couponTable}`}>
@@ -145,8 +152,8 @@ export default function CouponTable({
               getSorted(data).map((c) => (
                 <tr key={c.uuid_code}>
                   <td data-label="名稱" className={
-                      isExpiredMode ? 'text-muted' : ' text-dark'
-                    }>{c.name}</td>
+                    isExpiredMode ? 'text-muted' : ' text-dark'
+                  }>{c.name}</td>
                   <td
                     data-label="折扣"
                     className={
@@ -158,14 +165,14 @@ export default function CouponTable({
                       : `${c.discount}%`}
                   </td>
                   <td data-label="最低消費" className={
-                      isExpiredMode ? 'text-muted' : ' text-dark'
-                    }>NT$ {formatNumber(c.minSpend)}</td>
+                    isExpiredMode ? 'text-muted' : ' text-dark'
+                  }>NT$ {formatNumber(c.minSpend)}</td>
                   <td data-label="使用期限" className={
-                      isExpiredMode ? 'text-muted' : ' text-dark'
-                    }>{c.expired_at?.slice(0, 10)}</td>
+                    isExpiredMode ? 'text-muted' : ' text-dark'
+                  }>{c.expired_at?.slice(0, 10)}</td>
                   <td data-label="剩餘天數" className={
-                      isExpiredMode ? 'text-muted' : 'text-dark'
-                    }>{getDaysLeft(c.expired_at)}</td>
+                    isExpiredMode ? 'text-muted' : 'text-dark'
+                  }>{getDaysLeft(c.expired_at)}</td>
                 </tr>
               ))
             )}

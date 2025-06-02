@@ -10,15 +10,22 @@ table.couponTable {
     vertical-align: middle;
     padding: 12px;
     border: 1px solid darken(#7b2d12, 10%);
+
+    @media (max-width:1200px) {
+      word-break: keep-all;
+    }
   }
 
   td {
     background-color: #f4f1ea;
-    text-align: center;
+    text-align: start;
     vertical-align: middle;
     padding: 12px;
     border: 1px solid #ddd;
-    
+      @media (max-width:1200px) {
+     font-size: smaller;
+     padding: 8px;
+    }
   }
 
   tbody tr:hover td {
