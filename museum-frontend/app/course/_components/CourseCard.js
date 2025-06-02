@@ -20,13 +20,21 @@ export default function CourseCard({
         className={styles.courseCardImg}
       />
       <div className={styles.courseCardBody}>
-        <div className={`btn-icon favorite-button ${styles.bookmarkBtn}`} >
+        <div
+          className="product-actions ms-1 mb-0 p-0 d-flex align-items-center"
+          style={{
+            position: 'absolute',
+            top: 20,
+            right: 20,
+            zIndex: 2,
+            gap: '15px'
+          }}
+        >
           <AddToFavoritesButton
             itemId={course.id}
             itemType="course"
             isFavorite={isFavorite(course.id)}
             onToggleFavorite={onToggleFavorite}
-            className="favorite-button"
           />
         </div>
         <div className={styles.courseCardBodyContent}>
@@ -44,25 +52,25 @@ export default function CourseCard({
           <div className={styles.coursePrice}>$ {course.price}</div>
           <div className={styles.divider}></div>
           <div className={styles.courseDateFooter}>
-          <p className={`col-6 ${styles.courseDateadd}`}>加入行事曆</p>
-          <p className={`col-6 ${styles.courseDate}`}
-          style={{ cursor: 'pointer' }}
-          title="加入 Google 行事曆"
-          onClick={e => {
-            e.stopPropagation();
-            onCalendarClick && onCalendarClick(course)
-          }}
-          >
-          <FaRegCalendarPlus /> {/* 加入行事曆 */}
-          {new Date(course.start_time).toLocaleDateString('zh-TW', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}
-        </p>
+            <p className={`col-6 ${styles.courseDateadd}`}>加入行事曆</p>
+            <p className={`col-6 ${styles.courseDate}`}
+              style={{ cursor: 'pointer' }}
+              title="加入 Google 行事曆"
+              onClick={e => {
+                e.stopPropagation();
+                onCalendarClick && onCalendarClick(course)
+              }}
+            >
+              <FaRegCalendarPlus /> {/* 加入行事曆 */}
+              {new Date(course.start_time).toLocaleDateString('zh-TW', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
     </div >
   )
 } 
