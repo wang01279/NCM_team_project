@@ -163,7 +163,7 @@ export default function HeroSlider() {
                     className="main-product-img"
                     alt={product.name_zh}
                   />
-                  <h4 className="fw-bold mt-3">{product.name_zh}</h4>
+                  <h4 className="fw-bold mt-2">{product.name_zh}</h4>
                   <p>{product.description}</p>
                 </div>
               </Link>

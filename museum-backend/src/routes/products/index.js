@@ -8,6 +8,7 @@ import {
   postReview,
   putReview,
   getReviewsByProductId,
+  getFilteredProductCount,
 } from "../../controllers/productController.js";
 
 import { authenticateToken } from "../../middleware/auth.js";
@@ -21,6 +22,7 @@ const injectMemberFromUser = (req, res, next) => {
   next();
 };
 
+router.get("/count", getFilteredProductCount); // 篩選
 router.get("/recommend/:id", getRecommendedProducts); // 推薦8筆
 router.get("/latest", getLatestProducts); // 最新商品
 router.get("/categories", getCategories); // 取得分類
@@ -29,7 +31,12 @@ router.get("/", getProducts); // 商店清單
 
 //提交評論、更新評論時加上轉接 req.member
 router.post("/reviews", authenticateToken, injectMemberFromUser, postReview);
-router.put("/reviews/:reviewId", authenticateToken, injectMemberFromUser, putReview);
+router.put(
+  "/reviews/:reviewId",
+  authenticateToken,
+  injectMemberFromUser,
+  putReview
+);
 
 //查評論不需登入
 router.get("/reviews/product/:productId", getReviewsByProductId);

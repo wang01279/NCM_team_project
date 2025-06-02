@@ -16,7 +16,7 @@ export default function ReviewForm({
   const [comment, setComment] = useState(existingReview?.comment || '')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { showToast } = useToast()
-  const { token } = useAuth() //使用 useAuth 拿 token
+  const { token } = useAuth()
 
   useEffect(() => {
     setRating(existingReview?.rating || 0)

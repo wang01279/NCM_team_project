@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Navbar from '@/app/_components/navbar'
 import CategoryMenu from '@/app/products/_components/CategoryMenu'
 import ProductDetail from './_components/ProductDetail'
+import ProductStorySection from './_components/ProductStorySection'
 import ProductTabs from './_components/ProductTabs'
 import ProductServiceTagline from './_components/ProductServiceTagline'
 import YouMightLike from './_components/YouMightLike'
@@ -20,7 +21,7 @@ export default function IdPage() {
   const router = useRouter()
   const [product, setProduct] = useState(null)
   const [relatedProducts, setRelatedProducts] = useState([])
-  const [reviews, setReviews] = useState([]) // 新增：用於儲存評論資料
+  const [reviews, setReviews] = useState([])
   const [categoryMap, setCategoryMap] = useState({})
   const [subcategoryMap, setSubcategoryMap] = useState({})
   const { favoriteIds, toggleFavorite, isFavorite } = useFavorites('product')
@@ -49,14 +50,21 @@ export default function IdPage() {
     const categoryId = category ? categoryMap[category] : null
     const subcategoryId = subcategory ? subcategoryMap[subcategory] : null
 
+    if (!categoryId && !subcategoryId) {
+      // 若為「全部商品」，設置 scroll flag
+      sessionStorage.setItem('scrollToCategoryMenu', '1')
+      router.push('/products#category-menu')
+      return
+    }
+
     const params = new URLSearchParams()
     if (categoryId) params.set('category', categoryId)
     if (subcategoryId) params.set('subcategory', subcategoryId)
 
-    router.push(`/products?${params.toString()}`)
+    router.push(`/products?${params.toString()}#category-menu`)
   }
 
-  // 新增：重新獲取評論的函數
+  //重新獲取評論的函數
   const fetchReviews = async () => {
     if (!id || isNaN(Number(id))) {
       console.warn('商品 ID 無效，略過 fetchReviews:', id)
@@ -67,6 +75,7 @@ export default function IdPage() {
       const response = await fetch(
         `http://localhost:3005/api/products/reviews/product/${id}`
       )
+      // console.log('目前頁面商品 ID:', id)
       if (!response.ok) {
         const error = await response.json()
         throw new Error(
@@ -87,16 +96,16 @@ export default function IdPage() {
     fetch(`http://localhost:3005/api/products/${id}`)
       .then((res) => res.json())
       .then((data) => setProduct(data))
-      .catch((error) => console.error('Error fetching product:', error)) // 加上錯誤處理
+      .catch((error) => console.error('Error fetching product:', error))
 
     fetch(`http://localhost:3005/api/products/recommend/${id}`)
       .then((res) => res.json())
       .then((data) => setRelatedProducts(data))
       .catch((error) =>
         console.error('Error fetching related products:', error)
-      ) // 加上錯誤處理
+      )
 
-    fetchReviews() // 初始加載時獲取評論
+    fetchReviews()
   }, [id]) // 當 id 改變時重新執行，確保評論也更新
 
   const handleAddToCart = (quantity = 1) => {
@@ -137,14 +146,19 @@ export default function IdPage() {
         isFavorite={isFavorite(product.id)}
         onToggleFavorite={toggleFavorite}
       />
+      {/* <section id="story" className="tab-section">
+        <ProductStorySection story={product?.story} />
+      </section> */}
+
       {/* 將 reviews 資料和 fetchReviews 函式傳遞給 ProductTabs */}
       <ProductTabs
         product={product}
         notes={product.notes || []}
         reviews={reviews} // 傳遞評論資料
         onReviewSubmitted={fetchReviews} // 傳遞重新獲取評論的函式
+        story={product.product_story}
       />
-      <ProductServiceTagline />
+      {/* <ProductServiceTagline /> */}
       {/* <div className="container">
         <Btn />
       </div>

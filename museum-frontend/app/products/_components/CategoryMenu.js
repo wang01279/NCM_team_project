@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import '../_styles/categoryMenu.scss'
 
 const categories = [
-  { name: '全部商品', sub: ['熱銷精選'] },
+  { name: '全部商品' },
   {
     name: '典藏精品',
     sub: ['陶瓷', '迷你陶瓷', '琉璃'],

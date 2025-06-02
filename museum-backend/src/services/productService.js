@@ -168,9 +168,111 @@ export async function fetchProducts({
       final_price: Math.round(row.discounted_price),
     })),
     total,
+    totalCount: total,
     page,
     totalPages: Math.ceil(total / limit),
   };
+}
+//篩選
+export async function countFilteredProducts({
+  category,
+  subcategory,
+  material,
+  origin,
+  functions,
+  search,
+  price_min,
+  price_max,
+}) {
+  const params = [];
+
+  if (typeof material === "string")
+    material = material.split(",").filter(Boolean);
+  if (typeof origin === "string") origin = origin.split(",").filter(Boolean);
+  if (typeof functions === "string")
+    functions = functions.split(",").filter(Boolean);
+
+  const parsedMinPrice = Number(price_min);
+  const parsedMaxPrice = Number(price_max);
+
+  if (material?.length) {
+    const [rows] = await db.query(
+      `SELECT id FROM product_materials WHERE name IN (${material
+        .map(() => "?")
+        .join(",")})`,
+      material
+    );
+    material = rows.map((r) => r.id);
+  }
+
+  if (origin?.length) {
+    const [rows] = await db.query(
+      `SELECT id FROM product_origins WHERE name IN (${origin
+        .map(() => "?")
+        .join(",")})`,
+      origin
+    );
+    origin = rows.map((r) => r.id);
+  }
+
+  if (functions?.length) {
+    const [rows] = await db.query(
+      `SELECT id FROM product_functions WHERE name IN (${functions
+        .map(() => "?")
+        .join(",")})`,
+      functions
+    );
+    functions = rows.map((r) => r.id);
+  }
+
+  let baseQuery = `FROM products WHERE deleted_at IS NULL`;
+
+  if (search) {
+    baseQuery += ` AND (name_zh LIKE ? OR name_en LIKE ?)`;
+    const keyword = `%${search}%`;
+    params.push(keyword, keyword);
+  }
+
+  if (category) {
+    baseQuery += ` AND category_id = ?`;
+    params.push(category);
+  }
+
+  if (subcategory) {
+    baseQuery += ` AND subcategory_id = ?`;
+    params.push(subcategory);
+  }
+
+  if (!isNaN(parsedMinPrice)) {
+    baseQuery += ` AND IF(discount_rate IS NOT NULL, price * (1 - discount_rate), price) >= ?`;
+    params.push(parsedMinPrice);
+  }
+
+  if (!isNaN(parsedMaxPrice)) {
+    baseQuery += ` AND IF(discount_rate IS NOT NULL, price * (1 - discount_rate), price) <= ?`;
+    params.push(parsedMaxPrice);
+  }
+
+  if (material?.length) {
+    baseQuery += ` AND material_id IN (${material.map(() => "?").join(",")})`;
+    params.push(...material);
+  }
+
+  if (origin?.length) {
+    baseQuery += ` AND origin_id IN (${origin.map(() => "?").join(",")})`;
+    params.push(...origin);
+  }
+
+  if (functions?.length) {
+    baseQuery += ` AND function_id IN (${functions.map(() => "?").join(",")})`;
+    params.push(...functions);
+  }
+
+  const [rows] = await db.query(
+    `SELECT COUNT(*) AS total ${baseQuery}`,
+    params
+  );
+  return rows[0].total || 0;
 }
 
 /* 取得最新商品*/
@@ -250,7 +352,7 @@ export async function fetchProductCategoryId(id) {
 export async function addReview({ product_id, member_id, rating, comment }) {
   try {
     const [existingReviews] = await db.query(
-      "SELECT id FROM reviews WHERE product_id = ? AND member_id = ?",
+      "SELECT review_id FROM reviews WHERE product_id = ? AND member_id = ?",
       [product_id, member_id]
     );
 
@@ -283,7 +385,7 @@ export async function updateReview(
 ) {
   try {
     const [result] = await db.query(
-      `UPDATE reviews SET rating = ?, comment = ? WHERE id = ? AND member_id = ?`,
+      `UPDATE reviews SET rating = ?, comment = ? WHERE review_id = ? AND member_id = ?`,
       [rating, comment, reviewId, memberIdFromAuth]
     );
 
@@ -308,22 +410,22 @@ export async function updateReview(
  */
 export async function fetchReviewsByProductId(productId) {
   try {
-    const [reviews] = await db.query(
-      `SELECT
-     r.id AS id,
-     r.product_id,
-     r.member_id,
-     r.rating,
-     r.comment,
-     r.created_at,
-     mp.name AS reviewer_name,
-     mp.avatar AS reviewer_avatar
-   FROM reviews r
-   LEFT JOIN member_profiles mp ON r.member_id = mp.member_id
-   WHERE r.product_id = ?
-   ORDER BY r.created_at DESC`,
-      [productId]
-    );
+const [reviews] = await db.query(
+  `SELECT
+    r.review_id AS id,
+    r.product_id,
+    r.member_id,
+    r.rating,
+    r.comment,
+    r.created_at,
+    COALESCE(mp.name, '匿名使用者') AS reviewer_name,
+    COALESCE(mp.avatar, '') AS reviewer_avatar
+  FROM reviews r
+  LEFT JOIN member_profiles mp ON r.member_id = mp.member_id
+  WHERE r.product_id = ?
+  ORDER BY r.created_at DESC`,
+  [productId]
+);
     return reviews;
   } catch (error) {
     console.error("從資料庫取得評論失敗:", error.message);

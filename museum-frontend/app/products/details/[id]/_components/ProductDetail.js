@@ -4,7 +4,9 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import '../_styles/ProductDetail.scss'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
+import { FaShoppingCart } from 'react-icons/fa'
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa'
+import { useRouter } from 'next/navigation'
 
 export default function ProductDetail({
   product,
@@ -16,6 +18,7 @@ export default function ProductDetail({
   const [mainImageSrc, setMainImageSrc] = useState('')
   const [currentThumbnailIndex, setCurrentThumbnailIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
+  const router = useRouter()
 
   // 初始化 thumbnails + 主圖
   useEffect(() => {
@@ -81,6 +84,15 @@ export default function ProductDetail({
   return (
     <section>
       <div className="container py-4">
+        {/* 🔙 返回按鈕 */}
+        <div className="mb-3">
+          <button
+            className="btn btn-outline-secondary"
+            onClick={() => router.push('/products#category-menu')}
+          >
+            ← 返回商品列表
+          </button>
+        </div>
         <div className="product-page">
           {/*主圖 + 縮圖區 */}
           <div className="product-left">
@@ -180,13 +192,25 @@ export default function ProductDetail({
                 onClick={() => onAddToCart(quantity)}
                 disabled={isOutOfStock}
               >
+                <FaShoppingCart className="me-1" />
                 加入購物車
               </button>
             </div>
 
             <div className="stock-info">剩餘數量：{product.stock} 件</div>
             <hr />
-            <div className="product-description">{product.description}</div>
+            <div className="product-story">
+              <h5 className="fw-bold">注意事項</h5>
+              {Array.isArray(product.notes) && product.notes.length > 0 ? (
+                <ul>
+                  {product.notes.map((note, index) => (
+                    <li key={index}>{note}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>目前無特別注意事項。</p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -220,6 +244,7 @@ export default function ProductDetail({
               className="add-to-cart btn btn-primary d-flex justify-content-center align-items-center flex-grow-1"
               disabled={isOutOfStock}
             >
+              <FaShoppingCart className="me-1" />
               加入購物車
             </button>
           </div>

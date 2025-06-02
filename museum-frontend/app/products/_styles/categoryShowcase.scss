@@ -4,7 +4,9 @@
 }
 
 .hover-card {
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
   cursor: pointer;
 }
 
@@ -15,34 +17,19 @@
   transition: transform 0.4s ease;
 }
 
+.hover-card h1,
 .hover-card h2 {
   position: relative;
   display: inline-block;
+  text-decoration: none;
+  border-bottom: none;
 }
 
-.hover-card h2::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -5px;
-  width: 0;
-  height: 2px;
-  background: currentColor;
-  transition: width 0.5s ease;
-}
-.animate-slidein h1{
-  font-size: 32px;
-}
 
-/* 電腦 hover 效果 */
-@media (hover: hover) and (pointer: fine) {
+@media (min-width: 768px) {
   .group:hover .group-hover-opacity-100 {
     opacity: 1;
   }
-
-  // .hover-card:hover {
-  //   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  // }
 
   .hover-card:hover img {
     transform: scale(1.1);
@@ -51,14 +38,9 @@
   .hover-card:hover .zoom-on-hover {
     transform: scale(1.8) translateX(35%);
   }
-
-  // .hover-card:hover h2::after {
-  //   width: 100%;
-  // }
 }
 
-/* 手機自動顯示動畫，不用 hover */
-@media (hover: none) and (pointer: coarse) {
+@media (max-width: 767.98px) {
   .group-hover-opacity-100 {
     opacity: 1;
   }
@@ -70,7 +52,13 @@
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   }
 
+  .hover-card h1::after,
   .hover-card h2::after {
-    width: 100%;
+    display: none !important;
+  }
+
+  .animate-slidein h1,
+  .animate-slidein h2 {
+    font-size: 2rem;
   }
 }

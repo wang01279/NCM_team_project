@@ -137,17 +137,49 @@
 .exhibitionBlock {
   background-color: var(--main-bg);
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0),rgba(255, 255, 255, 0.5)), url('/image/bg2.webp');
+    linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5)),
+    url('/image/bg2.webp');
 }
-
 .productBlock {
   background-color: var(--primary);
-
-
 }
 
 .courseBlock {
   background-color: var(--sub-text);
-
 }
 
+.favoriteTable {
+  border-collapse: separate !important;
+  border-spacing: 0;
+
+  thead {
+    background-color: var(--secondary);
+    position: relative;
+    z-index: 1;
+
+    th {
+      color: #fff;
+      padding: 16px;
+      background-color: var(--primary);
+      text-align: left;
+    }
+
+    th:first-child {
+      border-top-left-radius: 8px;
+    }
+
+    th:last-child {
+      border-top-right-radius: 8px;
+    }
+  }
+}
+
+.actionGroup {
+  display: flex;
+  gap: 0.5rem; // ✅ 間距設定
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}

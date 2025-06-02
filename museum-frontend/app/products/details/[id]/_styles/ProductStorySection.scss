@@ -1,0 +1,131 @@
+.product-story-section {
+  margin: 80px auto;
+  padding: 0 16px;
+  display: flex;
+  justify-content: center;
+
+  .outer-frame-wrap {
+    background-color: #f8f6f2;
+    padding: 20px;
+  }
+
+  .outer-frame-golden {
+    border: 4px solid transparent;
+    border-image: linear-gradient(to bottom right, #d5b56c, #fff8e5, #d5b56c) 1;
+    padding: 50px 20px;
+    background-color: #fff;
+    max-width: 700px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .story-inner {
+    width: 100%;
+  }
+
+  .story-border {
+    padding: 0;
+  }
+
+  .story-box {
+    position: relative;
+  }
+
+  .story-icon {
+    width: 40px;
+    height: auto;
+    margin: 0 auto 16px;
+  }
+
+  .story-heading {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #222;
+
+    .en {
+      color: #1e398d;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-right: 6px;
+    }
+  }
+
+  .divider {
+    width: 1px;
+    height: 100px; //調長分隔線
+    background: #999;
+    margin: 24px auto;
+  }
+
+  .story-paragraph {
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 2;
+    letter-spacing: 0.4px;
+    white-space: pre-line;
+    padding: 0 12px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+}
+.story-paragraph {
+  .story-line {
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 1.8;
+    margin-bottom: 0.6em;
+  }
+}
+/* 整合給放在 tab 內用的卡片故事區塊 */
+.story-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  .product-story-section {
+    width: 100%;
+
+    .outer-frame-wrap {
+      width: 100%;
+      max-width: 880px; // 控制最大寬度，避免太滿
+      margin: 0 auto;
+    }
+
+    .story-inner {
+      padding: 60px 30px;
+    }
+
+    .story-box {
+      width: 100%;
+      padding: 0 10px;
+    }
+  }
+}
+/* ✅ 解決故事卡片放在 tab 裡會變形的問題 */
+.story-in-tab {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  .product-story-section {
+    width: 100%;
+
+    .outer-frame-wrap {
+      width: 100%;
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .story-inner {
+      padding: 0;
+    }
+
+    .story-box {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+  }
+}
+

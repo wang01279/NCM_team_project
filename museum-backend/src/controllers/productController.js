@@ -8,6 +8,7 @@ import {
   addReview,
   updateReview,
   fetchReviewsByProductId,
+  countFilteredProducts,
 } from "../services/productService.js";
 
 /**
@@ -84,7 +85,6 @@ export async function getRecommendedProducts(req, res) {
   if (isNaN(id)) return res.status(400).json({ error: "商品 ID 不正確" });
 
   try {
-    // 先查該商品的 category_id
     const categoryId = await fetchProductCategoryId(id);
     if (!categoryId) {
       return res.status(404).json({ error: "找不到此商品或分類" });
@@ -96,6 +96,16 @@ export async function getRecommendedProducts(req, res) {
   } catch (err) {
     console.error("取得推薦商品失敗:", err);
     res.status(500).json({ error: "伺服器錯誤" });
+  }
+}
+//及時篩選套用
+export async function getFilteredProductCount(req, res) {
+  try {
+    const total = await countFilteredProducts(req.query);
+    res.json({ total });
+  } catch (err) {
+    console.error("即時計算商品數量錯誤:", err);
+    res.status(500).json({ error: "無法取得商品數量" });
   }
 }
 /**
@@ -132,7 +142,7 @@ export async function postReview(req, res) {
   try {
     const newReview = await addReview({
       product_id: product_id,
-      member_id: member_id_from_auth, 
+      member_id: member_id_from_auth,
       rating: rating,
       comment: comment,
     });

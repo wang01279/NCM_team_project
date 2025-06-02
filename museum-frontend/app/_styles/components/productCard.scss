@@ -274,3 +274,22 @@
     padding: 8px;
   }
 }
+.product-img {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+
+  .product-img-hover {
+    transition: transform 0.4s ease;
+  }
+
+  &:hover .product-img-hover {
+    transform: scale(1.2); // 圖片放大
+  }
+
+
+  .img-overlay {
+    display: none !important;
+  }
+}
