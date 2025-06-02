@@ -135,6 +135,22 @@ body {
     cursor: not-allowed;
   }
 }
+@media (max-width: 768px) {
+  .quantity-selector {
+    padding: 2px 2px !important;
+
+    button {
+      font-size: 16px;
+      width: 20px;
+      height: 20px;
+    }
+
+    span {
+      width: 20px;
+      font-size: 14px;
+    }
+  }
+}
 
 /* 按钮样式 */
 

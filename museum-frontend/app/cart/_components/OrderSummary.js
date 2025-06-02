@@ -48,10 +48,15 @@ export default function OrderSummary({
                 >
                   <option value="">請選擇商品優惠券</option>
                   {productCoupons.map((c) => (
-                    <option key={c.uuid_code} value={c.uuid_code}>
+                    <option
+                      key={c.uuid_code}
+                      value={c.uuid_code}
+                      disabled={!c.isAvailable}
+                    >
                       {c.type === '百分比'
                         ? `滿${c.minSpend} 享 ${c.discount}% 折`
                         : `滿${c.minSpend} 折 ${c.discount} 元`}
+                      {!c.isAvailable && `（${c.reason}）`}
                     </option>
                   ))}
                 </select>
@@ -73,10 +78,15 @@ export default function OrderSummary({
                 >
                   <option value="">請選擇課程優惠券</option>
                   {courseCoupons.map((c) => (
-                    <option key={c.uuid_code} value={c.uuid_code}>
+                    <option
+                      key={c.uuid_code}
+                      value={c.uuid_code}
+                      disabled={!c.isAvailable}
+                    >
                       {c.type === '百分比'
                         ? `滿${c.minSpend} 享 ${c.discount}% 折`
                         : `滿${c.minSpend} 折 ${c.discount} 元`}
+                      {!c.isAvailable && `（${c.reason}）`}
                     </option>
                   ))}
                 </select>

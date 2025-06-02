@@ -14,9 +14,11 @@ export default function OrderSummary2({
   const courseSubtotal = cartItems
     .filter((item) => item.type === 'course')
     .reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const totalSubtotal = productSubtotal + courseSubtotal
 
   const productDiscount = discountInfo?.productDiscount || 0
   const courseDiscount = discountInfo?.courseDiscount || 0
+  const totalDiscount = productDiscount + courseDiscount
 
   // ✅ 根據運送方式決定運費
   const shippingFee = shippingMethod === '超商' ? 45 : 50

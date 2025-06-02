@@ -47,36 +47,55 @@ export default function CartPage() {
 
   const totalPrice = productSubtotal + courseSubtotal
 
-  // 檢查是否登入
+  // 撈可用的優惠券
   useEffect(() => {
     const token = localStorage.getItem('token')
-    if (!token) setShowModal(true)
+    if (!token) {
+      setShowModal(true)
+      return
+    }
 
     fetch('http://localhost:3005/api/memberCoupons', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.status === 'success') {
-          const now = new Date()
-          const filtered = data.data.filter((c) => {
-            const notUsed = !c.is_used
-            const notExpired = !c.expired_at || new Date(c.expired_at) > now
-            const minSpendOk =
-              (c.category === '商品' && productSubtotal >= c.minSpend) ||
-              (c.category === '課程' && courseSubtotal >= c.minSpend)
-            return notUsed && notExpired && minSpendOk
-          })
+        console.log('領取優惠券:', data.data)
 
-          setAvailableProductCoupons(
-            filtered.filter((c) => c.category === '商品')
-          )
-          setAvailableCourseCoupons(
-            filtered.filter((c) => c.category === '課程')
-          )
-        }
+        const now = new Date()
+
+        const annotated = data.data.map((c) => {
+          const notUsed = !c.is_used
+          const notExpired = !c.expired_at || new Date(c.expired_at) > now
+          const minSpendOk =
+            (c.category === '商品' && productSubtotal >= c.minSpend) ||
+            (c.category === '課程' && courseSubtotal >= c.minSpend)
+
+          const result = {
+            ...c,
+            isAvailable: notUsed && notExpired && minSpendOk,
+            reason: !notUsed
+              ? '已使用'
+              : !notExpired
+                ? '已過期'
+                : !minSpendOk
+                  ? '未達最低金額'
+                  : '',
+          }
+
+          return result
+        })
+
+        console.log('可用優惠券:', annotated)
+
+        setAvailableProductCoupons(
+          annotated.filter((c) => c.category === '商品')
+        )
+        setAvailableCourseCoupons(
+          annotated.filter((c) => c.category === '課程')
+        )
       })
-  }, [totalPrice, productSubtotal, courseSubtotal])
+  }, [productSubtotal, courseSubtotal, totalPrice])
 
   // 撈謝旻祐的推薦商品
   useEffect(() => {
