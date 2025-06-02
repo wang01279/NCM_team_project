@@ -1,17 +1,128 @@
+// .loader {
+//   background-color: #9a3412;
+//   z-index: 9999999; // ✅ 確保在最上層
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   flex-direction: column;
+//   position: fixed;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   height: 100%;
+//   width: 100%;
+//   overflow: hidden;
+
+//   .loader-inner {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     flex-wrap: wrap;
+//     gap: 0;
+//     height: 200px;
+//     width: 200px;
+//   }
+
+//   .circle {
+//     height: 100px;
+//     width: 100px;
+//     background-color: #f5e3c3;
+//     border-radius: 50%;
+//     animation-duration: 2s;
+//     animation-iteration-count: infinite;
+//     animation-timing-function: ease-in-out;
+
+//     &.circle-1 {
+//       animation-name: morph1;
+//       animation-delay: 0s;
+//       border-radius: 80% 0;
+//       height: 95px;
+//       width: 95px;
+//     }
+
+//     &.circle-2 {
+//       animation: blink 2s ease-in-out infinite;
+//     }
+
+//     &.circle-3 {
+//       animation-name: morph3;
+//       animation-delay: 1s;
+//       border-radius: 0 80%;
+//       height: 95px;
+//       width: 95px;
+//     }
+
+//     // &.circle-4 {
+//     //   animation: blink 2s ease-in-out infinite;
+//     // }
+//   }
+
+//   .loader-text {
+//     color: #f2e4cd;
+//     font-size: 20px;
+//     font-weight: bold;
+//     text-align: center;
+//     animation: blink 2s ease-in-out infinite;
+//   }
+// }
+
+// // === Animations ===
+
+// @keyframes morph1 {
+//   0% {
+//     border-radius: 80% 0;
+//     height: 95px;
+//     width: 95px;
+//   }
+//   50%,
+//   75% {
+//     border-radius: 50%;
+//   }
+//   100% {
+//     border-radius: 80% 0;
+//     height: 95px;
+//     width: 95px;
+//   }
+// }
+
+// @keyframes morph3 {
+//   0% {
+//     border-radius: 50%;
+//   }
+//   50%,
+//   75% {
+//     border-radius: 0 80%;
+//     height: 95px;
+//     width: 95px;
+//   }
+//   100% {
+//     border-radius: 50%;
+//   }
+// }
+
+// @keyframes blink {
+//   0%,
+//   100% {
+//     opacity: 1;
+//   }
+//   50% {
+//     opacity: 0.3;
+//   }
+// }
+
+
 .loader {
-  background-color: #9a3412;
-  z-index: 9999999; // ✅ 確保在最上層
+  background-image: url(http://www.transparenttextures.com/patterns/asfalt-dark.png);
+  background-color: #F4F1EA;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
 
   .loader-inner {
     display: flex;
@@ -21,12 +132,14 @@
     gap: 0;
     height: 200px;
     width: 200px;
+    transform: scale(0.3);
   }
 
   .circle {
     height: 100px;
     width: 100px;
-    background-color: #f5e3c3;
+    
+    background-color: #7B2D12;
     border-radius: 50%;
     animation-duration: 2s;
     animation-iteration-count: infinite;
@@ -55,14 +168,6 @@
     // &.circle-4 {
     //   animation: blink 2s ease-in-out infinite;
     // }
-  }
-
-  .loader-text {
-    color: #f2e4cd;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    animation: blink 2s ease-in-out infinite;
   }
 }
 
