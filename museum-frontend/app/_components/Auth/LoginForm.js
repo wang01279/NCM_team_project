@@ -181,6 +181,10 @@ export default function LoginForm({
 
   return (
     <Form onSubmit={handleLogin}>
+      {/* Logo + 標題（由外層 modal 傳入時也可用） */}
+      {/* <div className="text-center mb-3">
+        <img src="/img/logo.png" alt="logo" className="auth-logo" />
+      </div> */}
       <FloatingField
         controlId="email"
         name="email"

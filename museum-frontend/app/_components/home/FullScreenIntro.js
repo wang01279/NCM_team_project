@@ -213,7 +213,7 @@ export default function FullScreenIntro({ scrollY = 0 }) {
             src="img/clouds/cloud2.png"
             style={{
               position: 'absolute',
-              left: `calc(55vw + ${cloudOffsets[1]}px)`,
+              left: `calc(65vw + ${cloudOffsets[1]}px)`,
               top: `calc(20vh + ${-scrollY * 0.25}px)`,
               width: '15vw',
               opacity: cloudIn ? 0.4 : 0,

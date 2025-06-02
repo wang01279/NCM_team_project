@@ -7,6 +7,19 @@ import { FaTimes, FaPaperPlane, FaImage } from 'react-icons/fa'
 import { Offcanvas, Button, Form, InputGroup } from 'react-bootstrap'
 import { useToast } from '@/app/_components/ToastManager'
 import './chat.scss'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
+// 保證台灣時間顯示正確，並加 log
+const fixDate = (dateStr) => {
+  if (!dateStr) return ''
+  // dayjs 測試 log
+  console.log('dayjs 測試:', dayjs.utc('2025-06-02T11:14:51.000Z').tz('Asia/Taipei').format('A h:mm:ss'))
+  return dayjs.utc(dateStr).tz('Asia/Taipei').format('A h:mm:ss')
+}
 
 const ChatSidebar = ({ isOpen, onClose, receiverId, isStaff = false }) => {
   const [messages, setMessages] = useState([])
@@ -191,6 +204,33 @@ const ChatSidebar = ({ isOpen, onClose, receiverId, isStaff = false }) => {
     }
   }, [isOpen, member?.id, token, receiverId, isStaff])
 
+  useEffect(() => {
+    if (isOpen && member?.id && receiverId && token) {
+      console.log('fetch history:', receiverId, token)
+      fetch(`http://localhost:3005/api/chat/history/${receiverId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log('history data:', data)
+          if (data.success) {
+            setMessages(data.messages)
+            // 自動標記未讀訊息為已讀
+            data.messages.forEach(msg => {
+              if (
+                msg.sender_id === receiverId &&
+                msg.status !== 'read' &&
+                socketRef.current
+              ) {
+                socketRef.current.emit('markAsRead', msg.id)
+              }
+            })
+          }
+        })
+        .catch(err => console.error('撈取歷史訊息失敗:', err))
+    }
+  }, [isOpen, member?.id, receiverId, token])
+
   const handleImageSelect = (event) => {
     const file = event.target.files[0]
     if (file) {
@@ -269,11 +309,20 @@ const ChatSidebar = ({ isOpen, onClose, receiverId, isStaff = false }) => {
   const handleInputChange = (e) => {
     setInputMessage(e.target.value)
     if (receiverId) {
+      console.log('emit typing', receiverId, Date.now())
       socketRef.current?.emit('typing', { to: receiverId })
       clearTimeout(typingTimeout.current)
       typingTimeout.current = setTimeout(() => {
+        console.log('emit stopTyping', receiverId, Date.now())
         socketRef.current?.emit('stopTyping', { to: receiverId })
-      }, 1500)
+      }, 2000)
+    }
+  }
+
+  const handleInputBlur = () => {
+    if (receiverId) {
+      console.log('emit stopTyping (blur)', receiverId, Date.now())
+      socketRef.current?.emit('stopTyping', { to: receiverId })
     }
   }
 
@@ -329,18 +378,41 @@ const ChatSidebar = ({ isOpen, onClose, receiverId, isStaff = false }) => {
     }
   }, [socketRef.current, isStaff])
 
-  // 監聽 typing 事件
+  // 監聽 typing 事件（即時顯示對方輸入中）
   useEffect(() => {
     if (!socketRef.current) return
-    const handleTyping = () => setOtherTyping(true)
-    const handleStopTyping = () => setOtherTyping(false)
+    const handleTyping = () => {
+      console.log('收到 typing', Date.now())
+      setOtherTyping(true)
+    }
+    const handleStopTyping = () => {
+      console.log('收到 stopTyping', Date.now())
+      setOtherTyping(false)
+    }
     socketRef.current.on('typing', handleTyping)
     socketRef.current.on('stopTyping', handleStopTyping)
     return () => {
       socketRef.current.off('typing', handleTyping)
       socketRef.current.off('stopTyping', handleStopTyping)
     }
-  }, [socketRef.current])
+  }, [connectionStatus, isOpen])
+
+  // 監聽 messageRead 事件（即時同步已讀）
+  useEffect(() => {
+    if (!socketRef.current) return
+    const handleMessageRead = ({ messageId }) => {
+      console.log('收到 messageRead', messageId)
+      setMessages(prev =>
+        prev.map(msg =>
+          msg.id === messageId ? { ...msg, status: 'read' } : msg
+        )
+      )
+    }
+    socketRef.current.on('messageRead', handleMessageRead)
+    return () => {
+      socketRef.current.off('messageRead', handleMessageRead)
+    }
+  }, [connectionStatus, isOpen])
 
   return (
     <Offcanvas
@@ -348,6 +420,7 @@ const ChatSidebar = ({ isOpen, onClose, receiverId, isStaff = false }) => {
       onHide={onClose}
       placement="start"
       className="chat-sidebar"
+      backdrop={false}
     >
       <Offcanvas.Header closeButton>
         <Offcanvas.Title>
@@ -414,7 +487,14 @@ const ChatSidebar = ({ isOpen, onClose, receiverId, isStaff = false }) => {
               className={`message ${message.sender_id === member?.id ? 'sent' : 'received'}`}
             >
               {message.sender_id !== member?.id && (
-                null // 暫時不顯示對方頭像與名字
+                <div className="message-sender">
+                  <img
+                    src={message.sender_avatar || '/img/default-avatar.png'}
+                    alt="avatar"
+                    className="message-avatar"
+                  />
+                  <span className="message-name">{message.sender_name || '會員'}</span>
+                </div>
               )}
               <div className="message-bubble">
                 {message.image && (
@@ -426,7 +506,7 @@ const ChatSidebar = ({ isOpen, onClose, receiverId, isStaff = false }) => {
                   <div className="message-content">{message.content}</div>
                 )}
                 <div className="message-time">
-                  {new Date(message.created_at).toLocaleTimeString()}
+                  {fixDate(message.created_at)}
                   {message.sender_id === member?.id && (
                     <span className={`message-status ${message.status}`}>
                       {message.status === 'read' ? '已讀' : '已發送'}
@@ -489,6 +569,7 @@ const ChatSidebar = ({ isOpen, onClose, receiverId, isStaff = false }) => {
               value={inputMessage}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
+              onBlur={handleInputBlur}
               placeholder={waitingForStaff ? "等待客服連線中..." : "輸入訊息..."}
               disabled={connectionStatus !== 'connected' || (!isStaff && waitingForStaff)}
             />

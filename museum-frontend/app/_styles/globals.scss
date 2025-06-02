@@ -441,60 +441,72 @@ $modal-backdrop-bg:             rgba(123,45,18,0.25);
 
 
 //modal
-.modal-content {
-  border-radius: $modal-border-radius !important;
-  background: $modal-content-bg !important;
-  backdrop-filter: blur(12px) saturate(140%);
-  box-shadow: $modal-box-shadow !important;
-  border: 2px solid $modal-border-color !important;
+// .modal-content {
+//   border-radius: $modal-border-radius !important;
+//   background: $modal-content-bg !important;
+//   backdrop-filter: blur(12px) saturate(140%);
+//   box-shadow: $modal-box-shadow !important;
+//   border: 2px solid $modal-border-color !important;
 
-  // text-align: center !important;
-}
+//   // text-align: center !important;
+// }
 
-.modal-header, .modal-footer {
-  background: rgba(248,235,216,0.9) !important;
-}
+// .modal-header, .modal-footer {
+//   background: rgba(248,235,216,0.9) !important;
+// }
 
-.modal-header {
-  border-bottom: 1.5px solid $modal-border-color !important;
-  color: $primary !important;
-  border-top-left-radius: $modal-border-radius !important;
-  border-top-right-radius: $modal-border-radius !important;
+// .modal-header {
+//   border-bottom: 1.5px solid $modal-border-color !important;
+//   color: $primary !important;
+//   border-top-left-radius: $modal-border-radius !important;
+//   border-top-right-radius: $modal-border-radius !important;
 
-  // text-align: center !important;
-}
+//   // text-align: center !important;
+// }
 
-.modal-footer {
-  border-top: 1.5px solid $modal-border-color !important;
-  border-bottom-left-radius: $modal-border-radius !important;
-  border-bottom-right-radius: $modal-border-radius !important;
-}
+// .modal-footer {
+//   border-top: 1.5px solid $modal-border-color !important;
+//   border-bottom-left-radius: $modal-border-radius !important;
+//   border-bottom-right-radius: $modal-border-radius !important;
+// }
 
-.modal-title {
-  color: $primary !important;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
+// .modal-title {
+//   color: $primary !important;
+//   font-weight: 700;
+//   letter-spacing: 1px;
+// }
 
-// Glassmorphism Backdrop
-// .modal-backdrop.show {
-//   background-color: rgba(255, 253, 250, 0.15) !important;
-//   backdrop-filter: blur(8px) !important;
+// // Glassmorphism Backdrop
+// // .modal-backdrop.show {
+// //   background-color: rgba(255, 253, 250, 0.15) !important;
+// //   backdrop-filter: blur(8px) !important;
+// // }
+
+
+// @keyframes backdrop-glass-in {
+//   from {
+//     background-color: rgba(255, 253, 250, .3);
+//     backdrop-filter: blur(0px);
+//   }
+//   to {
+//     background-color: rgba(98, 97, 96, 0.8);
+//     backdrop-filter: blur(10px);
+//   }
 // }
 
 
-@keyframes backdrop-glass-in {
-  from {
-    background-color: rgba(255, 253, 250, .3);
-    backdrop-filter: blur(0px);
-  }
-  to {
-    background-color: rgba(98, 97, 96, 0.8);
-    backdrop-filter: blur(10px);
-  }
-}
+// .modal-backdrop.show {
+//   animation: backdrop-glass-in 0.4s ease-out forwards !important;
+// }
 
 
-.modal-backdrop.show {
-  animation: backdrop-glass-in 0.4s ease-out forwards !important;
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #f7f3ef inset !important; /* 你想要的背景色 */
+  box-shadow: 0 0 0 1000px #f7f3ef inset !important;
+  -webkit-text-fill-color: #4b2e13 !important; /* 你想要的字色 */
+  transition: background-color 5000s ease-in-out 0s;
 }

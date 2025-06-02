@@ -65,12 +65,9 @@ export default function PasswordChangeModal({
 
   const renderError = (name) =>
     errors[name] && (
-      <div className="error-tooltip">
-        <div className="error-arrow"></div>
-        <div className="error-content">
-          <FaExclamationCircle className="error-icon text-danger" />
-          <div className="error-message">{errors[name]}</div>
-        </div>
+      <div className="invalid-feedback d-block" style={{ marginTop: '0.4rem' }}>
+        <FaExclamationCircle className="me-1" />
+        {errors[name]}
       </div>
     )
 
@@ -84,7 +81,7 @@ export default function PasswordChangeModal({
 
   return (
     <Modal show={show} onHide={onHide} centered>
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title>修改密碼</Modal.Title>
       </Modal.Header>
       <Modal.Body>

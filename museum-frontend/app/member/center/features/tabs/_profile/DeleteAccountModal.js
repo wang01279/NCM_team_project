@@ -14,7 +14,7 @@ export default function DeleteAccountModal({
 }) {
   return (
     <Modal show={show} onHide={onHide} centered>
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title>刪除帳號</Modal.Title>
       </Modal.Header>
       <Modal.Body>

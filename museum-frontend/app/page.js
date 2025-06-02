@@ -19,12 +19,20 @@ import RippleCanvas from '@/app/_components/home/RippleCanvas'
 
 // import waveButton from '@/app/_styles/components/waveButton.scss'
 
+// const ceramicColors = [
+//   '#F8F1E3', // 0% 淺 - 陶胎米白
+//   '#CBAE93', // 25% 深 - 焙燒橘
+//   '#EADFD4', // 50% 淺 - 陶粉霧白（釉回彈）
+//   '#8A4B30', // 75% 深 - 紅陶棕
+//   '#4B2A1E', // 100% 最深 - 古陶深棕（窯變釉）
+// ]
+
 const ceramicColors = [
-  '#F8F1E3', // 0% 米白
-  '#E4D5C2', // 30% 淡陶粉（比奶茶色更明顯一點）
-  '#D8CFC0', // 60%
-  '#CBAE93', // 80%
-  '#8A4B30', // 100%
+  '#F8F1E3', // 0% 陶胎米白（初胚）
+  '#EADFD2', // 25% 奶茶陶粉（乾燥陶土）
+  '#EFE8DD', // 50% 淡霧米灰（霧釉）
+  '#E3D2C4', // 75% 焙燒淺棕（柴燒溫潤色）
+  '#D6C5B6', // 100% 柔霧陶粉灰（古意柔色）
 ]
 
 const colorStops = [0, 0.3, 0.6, 0.8, 1]
@@ -91,27 +99,16 @@ export default function AppPage() {
   return (
     <>
       {/* 紋理層 */}
-      <div
+      {/* <div
         style={{
           position: 'fixed',
           inset: 0,
-          zIndex: 100,
+          zIndex: 0,
           pointerEvents: 'none',
           opacity: 0.18,
           background: "url('/img/crackle-texture.png') center/cover repeat",
         }}
-      />
-      {/* 動態漸層背景層 */}
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 1,
-          pointerEvents: 'none',
-          background: bgColor,
-          transition: 'background 0.5s',
-        }}
-      />
+      /> */}
       {/* RippleCanvas 水波層 */}
       <RippleCanvas />
       {/* 內容層 */}
@@ -119,32 +116,32 @@ export default function AppPage() {
         <Navbar sticky={true} />
 
         {/* 導航按鈕 */}
-        <div className={styles.pageNav}>
-          <button
+        {/* <div className={styles.pageNav}> */}
+          {/* <button
             className={activeSection === 'home' ? styles.active : ''}
             onClick={() => scrollToSection('home')}
-          >
+          > */}
             {/* 首頁 */}
-          </button>
+          {/* </button>
           <button
             className={activeSection === 'video' ? styles.active : ''}
             onClick={() => scrollToSection('video')}
-          >
+          > */}
             {/* 影片導覽 */}
-          </button>
+          {/* </button>
           <button
             className={activeSection === 'exhibitions' ? styles.active : ''}
             onClick={() => scrollToSection('exhibitions')}
-          >
+          > */}
             {/* 展覽資訊 */}
-          </button>
+          {/* </button>
           <button
             className={activeSection === 'brands' ? styles.active : ''}
             onClick={() => scrollToSection('brands')}
-          >
+          > */}
             {/* 合作品牌 */}
-          </button>
-        </div>
+          {/* </button>
+        </div> */}
 
         {/* 第一個區塊就是3D動畫 */}
         <section id="home" className={styles.homeSection}>

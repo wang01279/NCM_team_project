@@ -11,6 +11,11 @@ const db = await mysql.createPool({
   user: process.env.DB_USER || "admin",
   password: process.env.DB_PASSWORD || "12345",
   database: process.env.DB_NAME || "museum_db",
+
+  // 下面這行是關鍵：告訴 MySQL 「所有 TIMESTAMP 欄位都當成 +08:00 來操作」
+  timezone: "+08:00",
+
+  
   waitForConnections: true,
   connectionLimit: 5,
   queueLimit: 0,
