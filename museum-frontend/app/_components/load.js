@@ -13,9 +13,9 @@ export default function Loader() {
         <div className="circle circle-4"></div>
       </div>
 
-      <div className="loader-text">
+      {/* <div className="loader-text">
         <h1>Loading...</h1>
-      </div>
+      </div> */}
     </div>
   )
 }

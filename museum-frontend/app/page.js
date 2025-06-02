@@ -16,6 +16,10 @@ import styles from '@/app/_styles/home.module.scss'
 
 import Footer from '@/app/_components/footer3'
 import RippleCanvas from '@/app/_components/home/RippleCanvas'
+import Loader from '@/app/_components/load'
+
+
+import CouponLink from '@/app/_components/CouponLink.js'
 
 // import waveButton from '@/app/_styles/components/waveButton.scss'
 
@@ -59,6 +63,13 @@ export default function AppPage() {
   const [activeSection, setActiveSection] = useState('home')
   const [scrollY, setScrollY] = useState(0)
   const [bgColor, setBgColor] = useState(ceramicColors[0])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // 模擬首頁 loading 狀態
+    const timer = setTimeout(() => setLoading(false), 1200)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     const onScroll = () => {
@@ -94,6 +105,10 @@ export default function AppPage() {
       element.scrollIntoView({ behavior: 'smooth' })
       setActiveSection(sectionId)
     }
+  }
+
+  if (loading) {
+    return <Loader />
   }
 
   return (
@@ -142,6 +157,8 @@ export default function AppPage() {
             {/* 合作品牌 */}
           {/* </button>
         </div> */}
+        
+        <CouponLink />
 
         {/* 第一個區塊就是3D動畫 */}
         <section id="home" className={styles.homeSection}>

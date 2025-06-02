@@ -187,47 +187,7 @@ export default function MemberCenter() {
     }
   }
 
-  // 更新會員資料
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault()
-  //   try {
-  //     console.log('Token:', token) // 檢查 token 是否存在
-  //     console.log('發送更新請求:', formData)
 
-  //     const response = await fetch(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/api/members/profile`,
-  //       {
-  //         method: 'PUT',
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify({
-  //           ...formData,
-  //           avatar: member.avatar, // 添加 avatar 欄位
-  //         }),
-  //       }
-  //     )
-
-  //     console.log('Response status:', response.status) // 檢查響應狀態
-  //     const data = await response.json()
-  //     console.log('收到回應:', data)
-
-  //     if (!response.ok) {
-  //       throw new Error(data.message || '更新失敗')
-  //     }
-
-  //     updateMember({
-  //       ...member,
-  //       ...data.data,
-  //     })
-
-  //     showToast('success', '資料更新成功')
-  //   } catch (error) {
-  //     console.error('更新失敗:', error)
-  //     showToast('error', error.message || '更新失敗')
-  //   }
-  // }
 
   const handleSubmit = async (formData) => {
     try {
