@@ -30,11 +30,10 @@ const OrderSchema = z
         type: z.enum(["product", "course"]),
         price: z.number(),
         quantity: z.number(),
+        image: z.string().optional(),
       })
     ),
   })
-
-  // ✅ 驗證信用卡資訊
   .refine(
     (data) => {
       if (data.paymentMethod === "credit") {
@@ -52,8 +51,6 @@ const OrderSchema = z
       path: ["cardNumber"],
     }
   )
-
-  // ✅ 驗證宅配地址
   .refine(
     (data) => {
       if (data.shippingMethod === "宅配") {
@@ -65,11 +62,9 @@ const OrderSchema = z
     },
     {
       message: "請填寫完整收件地址",
-      path: ["city"], // 可選擇指向某欄位顯示錯誤
+      path: ["city"],
     }
   )
-
-  // ✅ 驗證超商門市名稱
   .refine(
     (data) => {
       if (data.shippingMethod === "超商") {
@@ -85,20 +80,16 @@ const OrderSchema = z
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-//建立訂單 路由
 router.post("/", async (req, res) => {
-  // 🔐 從 header 中取得 token
   const authHeader = req.headers.authorization || "";
   const token = authHeader.replace("Bearer ", "");
 
   let memberId = null;
   let conn;
   try {
-    // 1️⃣ 驗證 JWT
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    memberId = decoded.id; // ✅ 假設你簽發的 token 裡有 id
+    memberId = decoded.id;
 
-    // 2️⃣ 驗證表單資料
     const result = OrderSchema.safeParse(req.body);
     if (!result.success) {
       return res.status(400).json({
@@ -123,27 +114,24 @@ router.post("/", async (req, res) => {
       discount,
       cartItems,
     } = result.data;
-    // console.log('✅ 後端 Zod 驗證通過的資料：', result.data)
 
     const totalPrice = cartItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
 
-    // 3️⃣ 產生訂單編號
     const todayStr = dayjs().format("YYYYMMDD");
     const [[{ count }]] = await conn.query(
       `SELECT COUNT(*) AS count FROM member_orders WHERE DATE(created_at) = CURDATE()`
     );
     const orderNumber = `ORD${todayStr}-${String(count + 1).padStart(3, "0")}`;
 
-    // 4️⃣ 插入訂單主檔
     const fullAddress = `${city}${district}${address}`;
     const [orderResult] = await conn.execute(
       `INSERT INTO member_orders(
-        member_id, order_number, recipient_name, recipient_phone, recipient_email,
-        shipping_method, recipient_address, payment_method, shipping_fee, total_price, discount
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    member_id, order_number, recipient_name, recipient_phone, recipient_email,
+    shipping_method, recipient_address, payment_method, shipping_fee, total_price, discount, status
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         memberId,
         orderNumber,
@@ -155,13 +143,13 @@ router.post("/", async (req, res) => {
         paymentMethod,
         shippingFee,
         totalPrice,
-        discount ?? 0, // 如果沒有折扣就設為 0
+        discount ?? 0,
+        "處理中",
       ]
     );
 
     const orderId = orderResult.insertId;
 
-    // 5️⃣ 建立訂單明細
     for (const item of cartItems) {
       await conn.execute(
         `INSERT INTO order_item 
@@ -171,8 +159,8 @@ router.post("/", async (req, res) => {
           orderId,
           item.type,
           item.id,
-          item.name ?? null, // 如果是 undefined 就轉成 null
-          item.image_url ?? null, // 同上
+          item.name ?? null,
+          item.image ?? null,
           item.price,
           item.quantity,
         ]
@@ -194,40 +182,35 @@ router.post("/", async (req, res) => {
       success: false,
       message: "伺服器錯誤，訂單未建立",
     });
-    console.error("建立訂單失敗:", err.message, err.stack);
   } finally {
     if (conn) conn.release();
   }
 });
 
-// 會員查詢所有訂單（含主檔 + 明細）
 router.get("/:memberId", async (req, res) => {
   const { memberId } = req.params;
 
   try {
-    // 查詢訂單主檔
     const [member_orders] = await db.execute(
       `SELECT id, member_id, order_number, recipient_name, recipient_phone, recipient_email,
-          recipient_address, shipping_method, payment_method, shipping_fee, discount, created_at, total_price
+    recipient_address, shipping_method, payment_method, shipping_fee, discount,
+    created_at, total_price, status
    FROM member_orders
    WHERE member_id = ?
    ORDER BY created_at DESC`,
       [memberId]
     );
 
-    // 如果沒訂單，直接回傳空陣列
     if (!member_orders.length) {
       return res.json({ success: true, orders: [] });
     }
 
-    // 查詢所有訂單的明細（一次查全部）
     const orderIds = member_orders.map((o) => o.id);
     const [items] = await db.query(
       `SELECT * FROM order_item WHERE order_id IN (?)`,
       [orderIds]
     );
 
-    // 將明細依照訂單 id 分組
     const groupedItems = {};
     for (const item of items) {
       if (!groupedItems[item.order_id]) {
@@ -236,12 +219,18 @@ router.get("/:memberId", async (req, res) => {
       groupedItems[item.order_id].push(item);
     }
 
-    // 將明細加回每一筆主檔中
+    const paymentMap = {
+      credit: "信用卡",
+      linepay: "綠界付款",
+    };
+
     const result = member_orders.map((order) => ({
       ...order,
       items: groupedItems[order.id] || [],
       finalAmount:
         order.total_price - (order.discount || 0) + (order.shipping_fee || 0),
+      payment_method_name:
+        paymentMap[order.payment_method] || order.payment_method,
     }));
 
     res.json({ success: true, orders: result });

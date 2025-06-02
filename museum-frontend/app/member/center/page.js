@@ -27,9 +27,6 @@ import EditProfileModal from './features/tabs/_profile/EditProfileModal'
 import PasswordChangeModal from './features/tabs/_profile/PasswordChangeModal'
 import DeleteAccountModal from './features/tabs/_profile/DeleteAccountModal'
 
-
-
-
 export default function MemberCenter() {
   const router = useRouter()
   const { showToast } = useToast()
@@ -60,6 +57,8 @@ export default function MemberCenter() {
 
   // 新增 couponFilter 狀態
   const [couponFilter, setCouponFilter] = useState('available') // 'available' or 'expired'
+  // 新增 ordersFilter 狀態
+  const [ordersFilter, setOrdersFilter] = useState('processing') // 'processing' or 'completed'
   // 新增 favoriteType 狀態
   const [favoriteType, setFavoriteType] = useState('menu') // 'menu' | 'exhibition' | 'product' | 'course'
 
@@ -310,10 +309,10 @@ export default function MemberCenter() {
             onAvatarUpload={handleAvatarUpload}
           />
         )
-      case 'orders':
-        return <OrdersTab />
       case 'coupons':
         return <CouponsTab filter={couponFilter} />
+      case 'orders':
+        return <OrdersTab filter={ordersFilter} />
       case 'favorites':
         return <FavoritesTab type={favoriteType} setType={setFavoriteType} />
       default:
@@ -332,10 +331,8 @@ export default function MemberCenter() {
   //   )
   // }
 
-    if (authLoading) {
-    return (
-      <Loader />
-    )
+  if (authLoading) {
+    return <Loader />
   }
 
   // 未登入
@@ -360,6 +357,8 @@ export default function MemberCenter() {
           onShowDeleteModal={() => setShowDeleteModal(true)}
           couponFilter={couponFilter}
           setCouponFilter={setCouponFilter}
+          ordersFilter={ordersFilter}
+          setOrdersFilter={setOrdersFilter}
           favoriteFilter={favoriteType}
           setFavoriteFilter={setFavoriteType}
         />

@@ -67,19 +67,19 @@ export default function CartSuccessPage() {
 
             <div className="row justify-content-center mt-4 mb-4">
               <div className="col-md-6 text-center mt-4 mb-4">
-                <h5>感謝您的訂購!</h5>
-                <p>我們會盡快處理您的訂單，並發送確認郵件給您。</p>
+                <p>感謝您的訂購!</p>
+                <p>我們會盡快處理您的訂單。</p>
                 <p>如果您有任何問題，請隨時聯繫我們的客服團隊。</p>
                 <p>祝您有美好的一天!</p>
                 <div className="mt-4 text-center">
                   <button
-                    className="btn btn-block m-1"
+                    className="btn btn-primary m-1"
                     onClick={handleViewOrders}
                   >
                     查看訂單
                   </button>
                   <button
-                    className="btn btn-block m-1"
+                    className="btn btn-outline-primary m-1"
                     onClick={handleBackHome}
                   >
                     返回首頁

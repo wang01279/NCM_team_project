@@ -1,28 +1,43 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { CiShoppingTag } from 'react-icons/ci'
+import { AnimatePresence, motion } from 'framer-motion'
+import {
+  MdKeyboardDoubleArrowLeft,
+  MdKeyboardDoubleArrowRight,
+} from 'react-icons/md'
+
 import styles from './_style/memOrders.module.scss'
 
-export default function OrdersTab() {
+export default function OrdersTab({ filter = 'processing' }) {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
-  const [filterStatus, setFilterStatus] = useState('處理中') // 狀態切換
+  const [expandedOrderId, setExpandedOrderId] = useState(null)
+  const [sortOrder, setSortOrder] = useState('desc')
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 5
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem('token')
         const member = JSON.parse(localStorage.getItem('member') || '{}')
+
         const res = await fetch(
-          `http://localhost:3005/api/orders/${member.id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${member.id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         )
+
         const data = await res.json()
-        if (data.success) setOrders(data.orders)
-        else alert(data.message || '載入訂單失敗')
+        if (data.success) {
+          setOrders(data.orders)
+        } else {
+          alert(data.message || '載入訂單失敗')
+        }
       } catch (err) {
         console.error('訂單獲取失敗:', err)
       } finally {
@@ -32,98 +47,233 @@ export default function OrdersTab() {
 
     fetchOrders()
   }, [])
+  useEffect(() => {
+    const container = document.querySelector('.container')
+    if (container) {
+      container.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [currentPage])
 
-  // 假狀態分類邏輯：id 為奇數 => 處理中；偶數 => 已完成
-  const filteredOrders = orders.filter((order) => {
-    return filterStatus === '處理中' ? order.id % 2 === 1 : order.id % 2 === 0
-  })
+  const filteredSortedOrders = [...orders]
+    .filter((order) => {
+      if (filter === 'processing')
+        return order.status === '處理中' || order.status === 'processing'
+      if (filter === 'completed')
+        return order.status === '已完成' || order.status === 'completed'
+      return true
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.created_at)
+      const dateB = new Date(b.created_at)
+      return sortOrder === 'desc' ? dateB - dateA : dateA - dateB
+    })
+
+  const totalPages = Math.ceil(filteredSortedOrders.length / itemsPerPage)
+  const paginatedOrders = filteredSortedOrders.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+
+  const getVisiblePages = () => {
+    if (totalPages <= 3)
+      return Array.from({ length: totalPages }, (_, i) => i + 1)
+    if (currentPage === 1) return [1, 2, 3]
+    if (currentPage === totalPages)
+      return [totalPages - 2, totalPages - 1, totalPages]
+    return [currentPage - 1, currentPage, currentPage + 1]
+  }
 
   return (
-    <div className="container mt-4">
-      <h5 className="fw-bold mb-4 d-flex align-items-center">
-        <CiShoppingTag className="me-2" />
-        我的訂單
-      </h5>
-
-      {/* 狀態切換按鈕 */}
-      <div className="mb-4">
-        <button
-          className={`btn me-2 ${
-            filterStatus === '處理中' ? 'btn-primary' : 'btn-outline-primary'
-          }`}
-          onClick={() => setFilterStatus('處理中')}
+    <div className="container">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h5 className="fw-bold d-flex align-items-center">
+          <CiShoppingTag className="me-2" />
+          我的訂單
+        </h5>
+        <select
+          className="form-select w-auto"
+          value={sortOrder}
+          onChange={(e) => {
+            setSortOrder(e.target.value)
+            setCurrentPage(1)
+          }}
         >
-          處理中
-        </button>
-        <button
-          className={`btn ${
-            filterStatus === '已完成' ? 'btn-primary' : 'btn-outline-primary'
-          }`}
-          onClick={() => setFilterStatus('已完成')}
-        >
-          已完成
-        </button>
+          <option value="desc">日期：從近到遠</option>
+          <option value="asc">日期：從遠到近</option>
+        </select>
       </div>
 
-      {/* 訂單清單 */}
       {loading ? (
         <p>載入中...</p>
-      ) : filteredOrders.length === 0 ? (
-        <p className="text-muted">尚無{filterStatus}訂單紀錄</p>
+      ) : filteredSortedOrders.length === 0 ? (
+        <p className="text-muted">
+          尚無{filter === 'processing' ? '處理中' : '已完成'}訂單紀錄
+        </p>
       ) : (
-        filteredOrders.map((order) => {
+        paginatedOrders.map((order) => {
           const total = Number(order.total_price || 0)
           const discount = Number(order.discount || 0)
           const shipping = Number(order.shipping_fee || 0)
-          const date = new Date(order.created_at).toLocaleDateString()
+          const date = new Date(order.created_at).toLocaleString('zh-TW')
 
           return (
             <div
               key={order.id}
-              className={`mb-4 p-4 rounded shadow-sm ${styles.orderCard}`}
+              className={`mb-4 p-4 rounded shadow-sm border ${styles.orderCard}`}
             >
-              <div className="d-flex justify-content-between align-items-center mb-2">
-                <h6 className="mb-0">訂單編號：{order.order_number}</h6>
-                <span className="badge bg-secondary">{filterStatus}</span>
+              <div className="d-flex justify-content-between">
+                <div>
+                  <div className="fw-bold">訂單編號：{order.order_number}</div>
+                  <div className="text-muted">訂購日期：{date}</div>
+                  <div className="text-muted">
+                    付款方式：{order.payment_method_name}
+                  </div>
+                  <div className="text-muted">
+                    運送方式：{order.shipping_method}
+                  </div>
+                </div>
+
+                <div
+                  className="d-flex flex-column justify-content-between align-items-end"
+                  style={{ minHeight: '100px' }}
+                >
+                  <span className="badge bg-secondary">{order.status}</span>
+                  <button
+                    className="btn btn-primary btn-sm mt-2"
+                    onClick={() =>
+                      setExpandedOrderId(
+                        expandedOrderId === order.id ? null : order.id
+                      )
+                    }
+                  >
+                    {expandedOrderId === order.id ? '收合明細 ▲' : '查看明細 ▼'}
+                  </button>
+                </div>
               </div>
 
-              <p className="text-muted mb-2">下單日期：{date}</p>
+              <AnimatePresence>
+                {expandedOrderId === order.id && (
+                  <motion.div
+                    className="mt-3"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="mb-3">
+                      <div> 購買人：{order.recipient_name}</div>
+                      <div> 電話：{order.recipient_phone}</div>
+                      <div> 信箱：{order.recipient_email}</div>
+                      {order.shipping_method === '宅配' && (
+                        <div> 收件地址：{order.recipient_address}</div>
+                      )}
+                      {order.shipping_method === '超商' && (
+                        <div> 取貨門市：{order.recipient_address}</div>
+                      )}
+                    </div>
 
-              <div className="mb-2">
-                <strong>付款方式：</strong>
-                {order.payment_method}
-                <br />
-                <strong>取件方式：</strong>
-                {order.shipping_method}
-              </div>
+                    <ul className="list-unstyled">
+                      {order.items?.map((item, idx) => (
+                        <li
+                          key={idx}
+                          className="d-flex border-bottom py-2 gap-3 align-items-center"
+                        >
+                          <div
+                            style={{
+                              width: '60px',
+                              height: '60px',
+                              position: 'relative',
+                              borderRadius: '6px',
+                              overflow: 'hidden',
+                              flexShrink: 0,
+                              background: '#eee',
+                            }}
+                          >
+                            <Image
+                              src={
+                                item.image_url || '/images/default-course.jpg'
+                              }
+                              alt={item.name}
+                              width={60}
+                              height={60}
+                              style={{ objectFit: 'cover' }}
+                            />
+                          </div>
+                          <div className="flex-grow-1">
+                            <div>
+                              {item.item_type === 'product'
+                                ? '🛒 商品'
+                                : '🎓 課程'}
+                              ：{item.name}
+                            </div>
+                            <div className="text-muted small">
+                              金額：NT${item.price.toLocaleString()}｜數量：
+                              {item.quantity}｜小計：NT$
+                              {(item.price * item.quantity).toLocaleString()}
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
 
-              <div className="mb-2">
-                <strong>訂購項目：</strong>
-                <ul className="list-unstyled mt-2 ps-3">
-                  {order.items.map((item, idx) => (
-                    <li
-                      key={idx}
-                      className="d-flex flex-wrap justify-content-between align-items-center border-bottom py-2"
-                    >
-                      <span>
-                        {item.item_type === 'product' ? '🛒 商品' : '🎓 課程'}：
-                        {item.name}
-                      </span>
-                      <div className="ms-3 d-flex flex-column flex-md-row gap-2 text-end">
-                        <span>金額：NT${item.price.toLocaleString()}</span>
-                        <span>數量：{item.quantity}</span>
-                        <span>
-                          小計：NT$
-                          {(item.price * item.quantity).toLocaleString()}
-                        </span>
+                    <div className="text-end mt-3">
+                      <div>總金額：NT${total.toLocaleString()}</div>
+                      <div>運費：NT${shipping.toLocaleString()}</div>
+                      <div>優惠折扣：-NT${discount.toLocaleString()}</div>
+                      <div className="fw-bold">
+                        應付金額： NT$
+                        {(total - discount + shipping).toLocaleString()}
                       </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           )
         })
+      )}
+
+      {/* 分頁按鈕 */}
+      {/* 分頁按鈕 */}
+      {totalPages > 1 && (
+        <div className="d-flex justify-content-center mt-4 gap-2">
+          <button
+            className="btn border px-2"
+            onClick={() => {
+              setCurrentPage(1)
+              setExpandedOrderId(null)
+            }}
+          >
+            <MdKeyboardDoubleArrowLeft />
+          </button>
+
+          {getVisiblePages().map((page) => (
+            <button
+              key={page}
+              className={`border rounded px-3 py-1 ${
+                page === currentPage
+                  ? 'btn btn-primary text-white'
+                  : 'btn border'
+              }`}
+              onClick={() => {
+                setCurrentPage(page)
+                setExpandedOrderId(null)
+              }}
+            >
+              {page}
+            </button>
+          ))}
+
+          <button
+            className="btn border px-2"
+            onClick={() => {
+              setCurrentPage(totalPages)
+              setExpandedOrderId(null)
+            }}
+          >
+            <MdKeyboardDoubleArrowRight />
+          </button>
+        </div>
       )}
     </div>
   )
