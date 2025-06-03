@@ -5,7 +5,7 @@ import Image from 'next/image'
 import '../_styles/ProductDetail.scss'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 import { FaShoppingCart } from 'react-icons/fa'
-import { FaChevronRight, FaChevronLeft } from 'react-icons/fa'
+import { FaChevronRight, FaChevronLeft, FaReply } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
 
 export default function ProductDetail({
@@ -84,13 +84,14 @@ export default function ProductDetail({
   return (
     <section>
       <div className="container py-4">
-        {/* 🔙 返回按鈕 */}
+        {/*返回按鈕 */}
         <div className="mb-3">
           <button
-            className="btn btn-outline-secondary"
+            className="btn btn-secondary"
             onClick={() => router.push('/products#category-menu')}
           >
-            ← 返回商品列表
+            <FaReply className="me-2" />
+            返回商品列表
           </button>
         </div>
         <div className="product-page">

@@ -36,6 +36,7 @@ export default function ProductPage() {
   const [subcategoryNameMap, setSubcategoryNameMap] = useState({})
   const searchParams = useSearchParams()
   const { toggleFavorite, isFavorite } = useFavorites('product')
+  const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
     material: [],
     origin: [],
@@ -46,7 +47,6 @@ export default function ProductPage() {
     sort: '',
   })
   const [activeFilters, setActiveFilters] = useState([])
-  const [loading, setLoading] = useState(true)
   const [hasInitialized, setHasInitialized] = useState(false)
 
   const labelMap = {
@@ -334,12 +334,6 @@ export default function ProductPage() {
       quantity: 1,
     })
 
-    }
-    const existing = JSON.parse(localStorage.getItem('cartItems')) || []
-    const index = existing.findIndex((item) => item.id === cartItem.id)
-    if (index > -1) existing[index].quantity += 1
-    else existing.push(cartItem)
-    localStorage.setItem('cartItems', JSON.stringify(existing))
     showToast('success', '已加入購物車', 3000)
   }
 
@@ -357,7 +351,6 @@ export default function ProductPage() {
             <CategoryMenu onCategoryClick={handleCategoryClick} />
           </div>
           <ProductFilter
-          
             filters={filters}
             setFilters={updateFilters}
             totalCount={products.length}
@@ -421,4 +414,4 @@ export default function ProductPage() {
       )}
     </>
   )
-
+}
