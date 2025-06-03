@@ -74,3 +74,17 @@
     }
   }
 
+.customHover {
+  color: #1f1f1f;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #7B2D12 !important; // 磚紅
+    
+  }
+}
+.customHover:hover svg {
+  color: #7B2D12;
+  transform: scale(1.2);
+  transition: transform 0.2s ease, color 0.2s ease;
+}

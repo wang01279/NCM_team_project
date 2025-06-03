@@ -46,10 +46,10 @@ export default function ExhibitionDetailPage() {
           const googleCalendarUrl =
             exhibits?.startDate && exhibits?.endDate
               ? `https://calendar.google.com/calendar/render?action=TEMPLATE` +
-                `&text=${encodeURIComponent(exhibits.title)}` +
-                `&details=${encodeURIComponent(exhibits.intro?.slice(0, 100) || '')}` +
-                `&location=${encodeURIComponent(exhibits.venueId || '國立故瓷博物館')}` +
-                `&dates=${toUTCString(exhibits.startDate)}/${toUTCString(exhibits.endDate)}`
+              `&text=${encodeURIComponent(exhibits.title)}` +
+              `&details=${encodeURIComponent(exhibits.intro?.slice(0, 100) || '')}` +
+              `&location=${encodeURIComponent(exhibits.venueId || '國立故瓷博物館')}` +
+              `&dates=${toUTCString(exhibits.startDate)}/${toUTCString(exhibits.endDate)}`
               : '#'
 
           return (
@@ -82,7 +82,7 @@ export default function ExhibitionDetailPage() {
                   </div>
                 </div>
 
-                <div className="container d-flex justify-content-center ">
+                <div className="container d-flex flex-column justify-content-center ">
                   <div className="d-flex flex-row justify-content-center align-items-center gap-4">
                     <a
                       href={googleCalendarUrl}
@@ -98,12 +98,15 @@ export default function ExhibitionDetailPage() {
                         {exhibits?.endDate?.slice(0, 10) || '未提供'}
                       </div>
                     </a>
+
+                  </div>
+                  <div className='d-flex justify-content-center'>
                     <a
                       href="#"
                       target="_blank"
                       rel="noopener noreferrer"
                       title="查看展區導引"
-                      className={`${styles.customHover} d-flex align-items-center text-center text-dark fs-5 d-inline-block me-2 mb-0 text-decoration-none`}
+                      className={`${styles.customHover} d-flex align-items-center text-center text-dark fs-5 d-inline-block me-5 mb-0 text-decoration-none`}
                     >
                       <IoLocationSharp className="me-2" />
                       {/* <b>展區</b> */}
@@ -124,6 +127,7 @@ export default function ExhibitionDetailPage() {
                       />
                     </div>
                   </div>
+
                 </div>
                 <div className="container py-4">
                   <h4 className={`${styles.subEx} fw-bold mb-3`}>展覽概述</h4>

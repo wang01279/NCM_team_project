@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Offcanvas, Button } from 'react-bootstrap'
 import { FaTicketAlt } from "react-icons/fa"
 import styles from '../_styles/CouponLink.module.scss'
@@ -9,6 +9,17 @@ import { useRouter } from 'next/navigation'
 export default function CouponLink() {
   const [show, setShow] = useState(false)
   const router = useRouter()
+  const [showButton, setShowButton] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowButton(window.scrollY > 900) // 滾超過 300px 顯示按鈕
+    }
+
+    handleScroll() // 初始化檢查
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
@@ -43,11 +54,23 @@ export default function CouponLink() {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow} className={styles.customCouponBtn}>
-        <h3 className={`d-flex align-items-center p-0 m-0 ${styles.couponBtnSize}`}>
-          <FaTicketAlt className={styles.glowText} />
-        </h3>
-      </Button>
+      {showButton && (
+        <Button
+          variant="primary"
+          onClick={handleShow}
+          className={styles.customCouponBtn}
+          style={{
+            position: 'fixed',
+            bottom: '40px',
+            right: '20px',
+            zIndex: 990,
+          }}
+        >
+          <h3 className={`d-flex align-items-center p-0 m-0 ${styles.couponBtnSize}`}>
+            <FaTicketAlt className={styles.glowText} />
+          </h3>
+        </Button>
+      )}
 
       <Offcanvas show={show} onHide={handleClose} placement="start">
         <Offcanvas.Header closeButton>
