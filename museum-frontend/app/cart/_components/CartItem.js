@@ -39,6 +39,7 @@ export default function CartItem({
             <button
               className="btn decrease d-flex justify-content-center align-items-center"
               onClick={() => updateQuantity(id, type, quantity - 1)}
+              disabled={type === 'course'}
             >
               −
             </button>
@@ -46,6 +47,7 @@ export default function CartItem({
             <button
               className="btn increase d-flex justify-content-center align-items-center"
               onClick={() => updateQuantity(id, type, quantity + 1)}
+              disabled={type === 'course'}
             >
               +
             </button>
@@ -104,7 +106,7 @@ export default function CartItem({
           <div className="">{`NT$${subtotal.toLocaleString()}`}</div>
 
           {/* 數量控制器：靠右、對齊底部 */}
-          <div className="mt-auto">
+          <div className="">
             <div className="quantity-selector  align-items-center">
               <button
                 className="btn btn-sm px-2"

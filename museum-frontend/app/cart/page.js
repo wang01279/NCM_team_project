@@ -15,6 +15,7 @@ import ConfirmDeleteModal from './_components/ConfirmDeleteModal'
 import { useToast } from '@/app/_components/ToastManager'
 import { useCart } from '@/app/_context/CartContext'
 import useFavorites from '@/app/_hooks/useFavorites'
+import Loader from '../_components/load'
 
 import './cart.scss'
 
@@ -26,6 +27,7 @@ export default function CartPage() {
   const [showModal, setShowModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   const [productDiscount, setProductDiscount] = useState(0)
   const [courseDiscount, setCourseDiscount] = useState(0)
@@ -113,6 +115,9 @@ export default function CartPage() {
       .catch(() => {
         if (isMounted) setRelatedProducts([])
       })
+      .finally(() => {
+        if (isMounted) setLoading(false) // ← 加這一行解決問題
+      })
 
     return () => {
       isMounted = false
@@ -189,108 +194,123 @@ export default function CartPage() {
         onConfirm={() => handleDelete(true)}
         onCancel={() => handleDelete(false)}
       />
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <Navbar />
 
-      <Navbar />
-
-      <div className="container mt-5 mb-5">
-        <div className="row justify-content-center">
-          <div className="col-12">
-            <div className="crumbs">
-              <ul>
-                <li>
-                  <div className="active">
-                    <FaShoppingCart /> 購物車
-                  </div>
-                </li>
-                <li>
-                  <div>
-                    <MdOutlinePayment /> 付款資訊
-                  </div>
-                </li>
-                <li>
-                  <div>
-                    <AiOutlineTruck /> 完成訂單
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-            <h3 className="mb-4 py-3 myCart">我的購物車</h3>
-
-            <div className="row">
-              {cartItems.length === 0 ? (
-                <div className="col-12 text-center text-muted py-5">
-                  <FaShoppingCart size={60} className="mb-3" />
-                  <h4 className="fst-italic">您的購物車是空的</h4>
-                  <p>請前往商品頁挑選商品或課程。</p>
-                  <button
-                    className="btn btn-primary mt-3"
-                    onClick={() => router.push('/products')}
-                  >
-                    前往選購商品
-                  </button>
+          <div className="container mt-5 mb-5">
+            <div className="row justify-content-center">
+              <div className="col-12">
+                <div className="crumbs">
+                  <ul>
+                    <li>
+                      <div className="active">
+                        <FaShoppingCart /> 購物車
+                      </div>
+                    </li>
+                    <li>
+                      <div>
+                        <MdOutlinePayment /> 付款資訊
+                      </div>
+                    </li>
+                    <li>
+                      <div>
+                        <AiOutlineTruck /> 完成訂單
+                      </div>
+                    </li>
+                  </ul>
                 </div>
-              ) : (
-                <>
-                  <CartItems
-                    onQuantityChange={(id, type, newQty) =>
-                      updateQuantity(id, type, newQty)
-                    }
-                    onDelete={confirmDeleteItem}
-                  />
 
-                  <OrderSummary
-                    items={cartItems}
-                    productCoupons={availableProductCoupons}
-                    courseCoupons={availableCourseCoupons}
-                    productDiscount={productDiscount}
-                    courseDiscount={courseDiscount}
-                    onProductCouponChange={(coupon) => {
-                      setSelectedProductCoupon(coupon)
-                      if (coupon) {
-                        const d =
-                          coupon.type === '百分比'
-                            ? Math.floor(
-                                (productSubtotal * Number(coupon.discount)) /
-                                  100
-                              )
-                            : Number(coupon.discount)
-                        setProductDiscount(d)
-                      } else {
-                        setProductDiscount(0)
-                      }
-                    }}
-                    onCourseCouponChange={(coupon) => {
-                      setSelectedCourseCoupon(coupon)
-                      if (coupon) {
-                        const d =
-                          coupon.type === '百分比'
-                            ? Math.floor(
-                                (courseSubtotal * Number(coupon.discount)) / 100
-                              )
-                            : Number(coupon.discount)
-                        setCourseDiscount(d)
-                      } else {
-                        setCourseDiscount(0)
-                      }
-                    }}
-                  />
-                </>
-              )}
+                <h3 className="mb-4 py-3 myCart">我的購物車</h3>
+
+                {cartItems.length === 0 ? (
+                  <div className="col-12 text-center text-muted py-5">
+                    <FaShoppingCart size={60} className="mb-3" />
+                    <h4 className="fst-italic">您的購物車是空的</h4>
+                    <p>請前往商品頁挑選商品或課程。</p>
+                    <button
+                      className="btn btn-primary mt-3"
+                      onClick={() => router.push('/products')}
+                    >
+                      前往選購商品
+                    </button>
+                  </div>
+                ) : (
+                  <div className="row">
+                    {/* 左側 CartItems */}
+                    <div className="col-md-8 col-12 mb-4">
+                      <CartItems
+                        onQuantityChange={(id, type, newQty) =>
+                          updateQuantity(id, type, newQty)
+                        }
+                        onDelete={confirmDeleteItem}
+                      />
+                    </div>
+
+                    {/* 右側 OrderSummary + sticky */}
+                    <div className="col-md-4 col-12 mb-4">
+                      <div className="order-summary-sticky">
+                        <OrderSummary
+                          items={cartItems}
+                          productCoupons={availableProductCoupons}
+                          courseCoupons={availableCourseCoupons}
+                          productDiscount={productDiscount}
+                          courseDiscount={courseDiscount}
+                          onProductCouponChange={(coupon) => {
+                            setSelectedProductCoupon(coupon)
+                            if (coupon) {
+                              const d =
+                                coupon.type === '百分比'
+                                  ? Math.floor(
+                                      (productSubtotal *
+                                        Number(coupon.discount)) /
+                                        100
+                                    )
+                                  : Number(coupon.discount)
+                              setProductDiscount(d)
+                            } else {
+                              setProductDiscount(0)
+                            }
+                          }}
+                          onCourseCouponChange={(coupon) => {
+                            setSelectedCourseCoupon(coupon)
+                            if (coupon) {
+                              const d =
+                                coupon.type === '百分比'
+                                  ? Math.floor(
+                                      (courseSubtotal *
+                                        Number(coupon.discount)) /
+                                        100
+                                    )
+                                  : Number(coupon.discount)
+                              setCourseDiscount(d)
+                            } else {
+                              setCourseDiscount(0)
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {Array.isArray(relatedProducts) &&
+                  relatedProducts.length > 0 && (
+                    <YouMightLike
+                      products={relatedProducts}
+                      favoriteProductIds={favoriteIds}
+                      onToggleFavorite={toggleFavorite}
+                    />
+                  )}
+              </div>
             </div>
-
-            {Array.isArray(relatedProducts) && relatedProducts.length > 0 && (
-              <YouMightLike
-                products={relatedProducts}
-                favoriteProductIds={favoriteIds}
-                onToggleFavorite={toggleFavorite}
-              />
-            )}
           </div>
-        </div>
-      </div>
 
-      <Footer3 />
+          <Footer3 />
+        </>
+      )}
     </>
   )
 }

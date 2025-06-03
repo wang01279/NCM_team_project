@@ -31,7 +31,7 @@ export default function OrderSummary2({
     shippingFee
 
   return (
-    <div className="col-md-4 col-12 mb-4">
+    <div className="col-12 mb-4">
       <div
         className="card sticky-top p-3 order-bg"
         style={{ position: 'sticky', top: '66px', zIndex: 10 }}

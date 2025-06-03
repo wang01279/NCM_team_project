@@ -2,7 +2,7 @@
 // @use '../../_styles/foundation/mixins' as *;
 
 body {
-  margin-top: 100px;
+  padding-top: 80px;
 }
 
 .myOrder {
@@ -87,34 +87,77 @@ body {
 }
 
 .crumbs {
-  overflow-x: auto;
-  white-space: nowrap;
-  padding: 10px 0;
-  margin-bottom: 2rem;
+  text-align: center;
 
   ul {
-    display: flex;
-    gap: 1rem;
-    padding: 0;
     list-style: none;
+    display: inline-table;
+    padding: 0;
     margin: 0;
 
     li {
-      flex-shrink: 0;
+      display: inline;
 
       div {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 6px 12px;
-        border-radius: 20px;
-        background: #f2f2f2;
-        white-space: nowrap;
+        display: block;
+        float: left;
+        height: 50px;
+        background: #fff;
+        text-align: center;
+        padding: 10px 50px 0 60px;
+        position: relative;
+        margin: 0 10px 0 0;
+        font-size: 20px;
+        text-decoration: none;
+        color: inherit;
+
+        &:after {
+          content: '';
+          border-top: 25px solid transparent;
+          border-bottom: 25px solid transparent;
+          border-left: 30px solid #fff;
+          position: absolute;
+          right: -30px;
+          top: 0;
+          z-index: 1;
+        }
+
+        &:before {
+          content: '';
+          border-top: 25px solid transparent;
+          border-bottom: 25px solid transparent;
+          border-left: 30px solid #f8f1e3;
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+      }
+
+      &:first-child div {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+
+        &:before {
+          display: none;
+        }
+      }
+
+      &:last-child div {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+
+        &:after {
+          display: none;
+        }
       }
 
       .active {
-        background-color: #7b2d12;
-        color: white;
+        background: #9a3412;
+        color: #f8f1e3;
+
+        &:after {
+          border-left-color: #9a3412;
+        }
       }
     }
   }
@@ -193,4 +236,13 @@ body {
   background-color: #fff;
   border-radius: 6px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+.order-summary2-sticky {
+  position: sticky;
+  top: 100px;
+  z-index: 1;
+
+  @media (max-width: 767.98px) {
+    position: static;
+  }
 }
