@@ -87,11 +87,11 @@ export default function ProductDetail({
         {/*返回按鈕 */}
         <div className="mb-3">
           <button
-            className="btn btn-secondary"
+            className="btn btn-outline-secondary"
             onClick={() => router.push('/products#category-menu')}
           >
             <FaReply className="me-2" />
-            返回商品列表
+            返回
           </button>
         </div>
         <div className="product-page">

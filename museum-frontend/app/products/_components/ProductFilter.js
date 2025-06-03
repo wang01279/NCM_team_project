@@ -269,7 +269,7 @@ export default function ProductFilter({
                     <button
                       key={option.value}
                       type="button"
-                      className={`btn btn-secondary filter-btn ${tempFilters[type].includes(option.value) ? 'active' : ''}`}
+                      className={`btn btn-outline-primary filter-btn ${tempFilters[type].includes(option.value) ? 'active' : ''}`}
                       onClick={() => toggleFilter(type, option.value)}
                     >
                       {option.label}
@@ -285,7 +285,7 @@ export default function ProductFilter({
           <button className="btn btn-secondary w-50" onClick={clearFilters}>
             清除篩選
           </button>
-          <button className="btn btn-dark w-50" onClick={applyFilters}>
+          <button className="btn btn-primary w-50" onClick={applyFilters}>
             套用篩選（共 {previewCount} 項結果）
           </button>
         </div>
