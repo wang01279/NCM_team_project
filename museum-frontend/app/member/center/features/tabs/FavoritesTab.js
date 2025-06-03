@@ -131,7 +131,7 @@ export default function FavoritesTab({ type = 'menu', setType }) {
     <div className={`container-fluid ${styles.favoritesTabContainer}`}>
       <button
         onClick={() => setType('menu')}
-        className={`btn btn-outline-secondary ${styles.backButton}`}
+        className={`btn btn-secondary ${styles.backButton}`}
       >
         <div className="d-flex align-items-center">
           <FaReply className="me-2" />
@@ -174,7 +174,7 @@ export default function FavoritesTab({ type = 'menu', setType }) {
                     <td>
                       <div className={styles.actionGroup}>
                         <button
-                          className="btn btn-outline-secondary btn-sm"
+                          className="btn btn-dark btn-sm"
                           onClick={() =>
                             window.open(
                               `/products/details/${item.id}`,
@@ -185,7 +185,7 @@ export default function FavoritesTab({ type = 'menu', setType }) {
                           查看
                         </button>
                         <button
-                          className="btn btn-outline-danger btn-sm"
+                          className="btn btn-danger btn-sm"
                           onClick={() => handleRemove(item.id)}
                         >
                           移除
