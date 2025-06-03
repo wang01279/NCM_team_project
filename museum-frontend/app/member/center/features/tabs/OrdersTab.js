@@ -4,10 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { CiShoppingTag } from 'react-icons/ci'
 import { AnimatePresence, motion } from 'framer-motion'
-import {
-  MdKeyboardDoubleArrowLeft,
-  MdKeyboardDoubleArrowRight,
-} from 'react-icons/md'
+import Pagination from './_components/Pagination'
 
 import styles from './_style/memOrders.module.scss'
 
@@ -47,12 +44,6 @@ export default function OrdersTab({ filter = 'processing' }) {
 
     fetchOrders()
   }, [])
-  useEffect(() => {
-    const container = document.querySelector('.container')
-    if (container) {
-      container.scrollIntoView({ behavior: 'smooth' })
-    }
-  }, [currentPage])
 
   const filteredSortedOrders = [...orders]
     .filter((order) => {
@@ -73,15 +64,14 @@ export default function OrdersTab({ filter = 'processing' }) {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   )
+  const [isMobile, setIsMobile] = useState(false)
 
-  const getVisiblePages = () => {
-    if (totalPages <= 3)
-      return Array.from({ length: totalPages }, (_, i) => i + 1)
-    if (currentPage === 1) return [1, 2, 3]
-    if (currentPage === totalPages)
-      return [totalPages - 2, totalPages - 1, totalPages]
-    return [currentPage - 1, currentPage, currentPage + 1]
-  }
+  useEffect(() => {
+    const checkScreen = () => setIsMobile(window.innerWidth <= 768)
+    checkScreen()
+    window.addEventListener('resize', checkScreen)
+    return () => window.removeEventListener('resize', checkScreen)
+  }, [])
 
   return (
     <div className="container">
@@ -234,46 +224,14 @@ export default function OrdersTab({ filter = 'processing' }) {
       )}
 
       {/* 分頁按鈕 */}
-      {/* 分頁按鈕 */}
+
       {totalPages > 1 && (
-        <div className="d-flex justify-content-center mt-4 gap-2">
-          <button
-            className="btn border px-2"
-            onClick={() => {
-              setCurrentPage(1)
-              setExpandedOrderId(null)
-            }}
-          >
-            <MdKeyboardDoubleArrowLeft />
-          </button>
-
-          {getVisiblePages().map((page) => (
-            <button
-              key={page}
-              className={`border rounded px-3 py-1 ${
-                page === currentPage
-                  ? 'btn btn-primary text-white'
-                  : 'btn border'
-              }`}
-              onClick={() => {
-                setCurrentPage(page)
-                setExpandedOrderId(null)
-              }}
-            >
-              {page}
-            </button>
-          ))}
-
-          <button
-            className="btn border px-2"
-            onClick={() => {
-              setCurrentPage(totalPages)
-              setExpandedOrderId(null)
-            }}
-          >
-            <MdKeyboardDoubleArrowRight />
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+          isMobile={isMobile}
+        />
       )}
     </div>
   )

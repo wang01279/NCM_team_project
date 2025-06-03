@@ -168,6 +168,7 @@ export default function CheckoutPage() {
       <div className="container mt-5 mb-5">
         <div className="row justify-content-center">
           <div className="col-12">
+            {/* 頂部流程指示條 */}
             <div className="crumbs">
               <ul>
                 <li>
@@ -188,14 +189,15 @@ export default function CheckoutPage() {
               </ul>
             </div>
 
-            <div className="row">
-              <div>
-                <h3 className="mb-4 py-3 myOrder">付款資訊</h3>
-              </div>
+            {/* 表單 + Order Summary RWD 版面 */}
+            <div className="row flex-column flex-md-row">
+              {/* 左側：購買人、運送、付款 */}
+              <div className="col-md-8 col-12 order-2 order-md-1">
+                <h3 className="mb-4 py-3 myOrder text-center text-md-start">
+                  付款資訊
+                </h3>
+                <h4 className="mb-4">購買人資訊*</h4>
 
-              <h4 className="mb-4">購買人資訊*</h4>
-
-              <div className="col-md-8 col-12">
                 <form onSubmit={handleSubmit}>
                   <div className="row g-3 mb-4">
                     <BuyerInfo value={buyer} onChange={setBuyer} />
@@ -208,13 +210,16 @@ export default function CheckoutPage() {
                     <Payment value={payment} onChange={setPayment} />
                   </div>
 
-                  <div className="col-12 d-flex justify-content-between mt-4">
-                    <a href="/cart" className="btn btn-dark px-5">
+                  <div className="col-12 d-flex flex-column flex-md-row justify-content-between mt-4 gap-3">
+                    <a
+                      href="/cart"
+                      className="btn btn-dark w-100 w-md-auto px-5"
+                    >
                       回到上一步
                     </a>
                     <button
                       id="orderBtn"
-                      className="btn px-5"
+                      className="btn px-5 w-100 w-md-auto"
                       style={{ backgroundColor: '#7b2d12', color: 'white' }}
                       type="submit"
                     >
@@ -224,11 +229,14 @@ export default function CheckoutPage() {
                 </form>
               </div>
 
-              <OrderSummary2
-                cartItems={cartItems}
-                discountInfo={discountInfo}
-                shippingMethod={shipping.shippingMethod}
-              />
+              {/* 右側：訂單摘要 */}
+              <div className="col-md-4 col-12 order-1 order-md-2 mb-4 mb-md-0">
+                <OrderSummary2
+                  cartItems={cartItems}
+                  discountInfo={discountInfo}
+                  shippingMethod={shipping.shippingMethod}
+                />
+              </div>
             </div>
           </div>
         </div>
