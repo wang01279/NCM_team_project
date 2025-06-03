@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { FaFilter, FaSearch } from 'react-icons/fa'
+import { FaFilter, FaSearch, FaMinus, FaPlus } from 'react-icons/fa'
+import Select from 'react-select'
 import '../_styles/productFilter.scss'
 
 export default function ProductFilter({
@@ -131,6 +132,11 @@ export default function ProductFilter({
       scrollContainer?.removeEventListener('scroll', handleScroll)
     }
   }, [isFilterOpen])
+  const sortOptions = [
+    { value: 'newest', label: '最新上架' },
+    { value: 'price_asc', label: '價格低到高' },
+    { value: 'price_desc', label: '價格高到低' },
+  ]
 
   return (
     <div className="container py-2">
@@ -155,22 +161,20 @@ export default function ProductFilter({
           </div>
         </div>
         <div className="col-12 col-md-3">
-          <select
-            className="form-select"
-            value={tempFilters.sort}
-            onChange={(e) => {
-              const newValue = e.target.value
+          <Select
+            className="react-select-container"
+            classNamePrefix="react-select"
+            options={sortOptions}
+            placeholder="請選擇排序方式"
+            value={sortOptions.find((o) => o.value === tempFilters.sort)}
+            onChange={(selected) => {
+              const newValue = selected?.value || ''
               setTempFilters({ ...tempFilters, sort: newValue })
               setFilters({ ...tempFilters, sort: newValue })
             }}
-          >
-            <option value="" disabled hidden>
-              請選擇排序方式
-            </option>
-            <option value="newest">最新上架</option>
-            <option value="price_asc">價格低到高</option>
-            <option value="price_desc">價格高到低</option>
-          </select>
+            isClearable
+            isSearchable={false}
+          />
         </div>
         <div className="col-12 col-md-3">
           <button className="btn-add btn btn-primary" onClick={openFilterPanel}>
@@ -252,7 +256,7 @@ export default function ProductFilter({
                       : '功能'}
                 </label>
                 <button
-                  className="btn btn-sm btn-outline-secondary"
+                  className="btn btn-sm btn-dray"
                   onClick={() =>
                     setShowSection({
                       ...showSection,
@@ -260,7 +264,7 @@ export default function ProductFilter({
                     })
                   }
                 >
-                  {showSection[type] ? '-' : '+'}
+                  {showSection[type] ? <FaMinus /> : <FaPlus />}
                 </button>
               </div>
               {showSection[type] && (

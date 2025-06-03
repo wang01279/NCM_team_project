@@ -200,7 +200,7 @@ export default function ProductDetail({
 
             <div className="stock-info">剩餘數量：{product.stock} 件</div>
             <hr />
-            <div className="product-story">
+            <div className="product-note">
               <h5 className="fw-bold">注意事項</h5>
               {Array.isArray(product.notes) && product.notes.length > 0 ? (
                 <ul>

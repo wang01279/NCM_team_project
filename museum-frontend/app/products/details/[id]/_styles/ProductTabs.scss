@@ -32,6 +32,7 @@ html {
   flex-direction: column;
 
   .tab-button {
+    max-width: 120px;
     display: inline-block;
     background: none;
     border: none;
@@ -284,6 +285,9 @@ html {
   .tab-nav {
     flex-direction: column;
     align-items: flex-start;
+    .tab-button {
+      max-width: 120px;
+    }
   }
 }
 

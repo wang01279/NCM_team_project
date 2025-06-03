@@ -7,10 +7,11 @@ import StarRating from './StarRating'
 import ReviewForm from './ReviewForm'
 import '../_styles/ProductTabs.scss'
 import { useAuth } from '@/app/_hooks/useAuth'
+import { FaBookOpen, FaScroll, FaLightbulb, FaCommentAlt } from 'react-icons/fa'
+import { GiPorcelainVase } from 'react-icons/gi'
 
 export default function ProductTabs({
   product,
-  notes = [],
   reviews = [],
   onReviewSubmitted,
   story = '',
@@ -66,18 +67,23 @@ export default function ProductTabs({
         <div className="col-12 col-md-2 mb-4 mb-md-0 tab-left sticky-nav">
           <div className="tab-nav">
             <a href="#story" className="tab-button">
+              <FaBookOpen className="me-2" />
               商品故事
             </a>
             <a href="#desc" className="tab-button">
+              <FaScroll className="me-2" />
               商品說明
             </a>
             <a href="#gallery" className="tab-button">
+              <GiPorcelainVase className="me-2" />
               商品藝廊
             </a>
             <a href="#note" className="tab-button">
+              <FaLightbulb className="me-2" />
               貼心提醒
             </a>
             <a href="#reviews" className="tab-button">
+              <FaCommentAlt className="me-2" />
               商品評價 ({reviews.length})
             </a>
           </div>
@@ -102,7 +108,7 @@ export default function ProductTabs({
                         className="story-icon"
                       />
                       <h3 className="story-heading">
-                        <span className="en">Story</span> <span>商品故事</span>
+                        <span className="en fs-6">Story</span> <span>商品故事</span>
                       </h3>
                       <div className="divider"></div>
                       <div className="story-paragraph">
