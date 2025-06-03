@@ -10,11 +10,11 @@ import { FaReply } from 'react-icons/fa'
 import { useToast } from '@/app/_components/ToastManager'
 import FavoriteCourseRowCard from '@/app/course/_components/FavoriteCourseRowCard'
 
-export default function FavoritesTab() {
+export default function FavoritesTab({ type = 'menu', setType }) {
   const { member } = useAuth()
   const memberId = member?.id
 
-  const [type, setType] = useState('menu') // 'menu' 或 'product' / 'course' / 'exhibition'
+  // const [type, setType] = useState('menu') // 'menu' 或 'product' / 'course' / 'exhibition'
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [counts, setCounts] = useState({ product: 0, course: 0, exhibition: 0 })

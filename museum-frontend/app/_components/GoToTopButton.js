@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import styles from '../_styles/GoToTopButton.module.scss'
+import { FaChevronUp } from "react-icons/fa";
 
 export default function GoToTopButton() {
   const [showButton, setShowButton] = useState(false)
@@ -24,7 +25,7 @@ export default function GoToTopButton() {
   return (
     showButton && (
       <button className={`${styles.goToTop} ${showButton ? 'visible' : 'hidden'}`} onClick={scrollToTop} aria-label="Back to top">
-        ⬆
+        <FaChevronUp />
       </button>
     )
   )

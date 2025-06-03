@@ -6,7 +6,7 @@ import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 export default function FavoriteCard({ item, type, onRemove }) {
   const detailPath = {
     product: `/products/${item.id}`,
-    course: `/course/${item.id}`,
+    course: `/courses/${item.id}`,
     exhibition: `/exhibitions/${item.id}`,
   }
 

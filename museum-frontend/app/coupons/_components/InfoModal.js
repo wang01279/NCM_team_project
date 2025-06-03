@@ -38,7 +38,7 @@ export default function InfoModal({
       backdrop="static"
       keyboard={false}
     >
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title className='d-flex align-items-center'>
           <FaLightbulb className='me-1 mb-1'/>
           {title}
