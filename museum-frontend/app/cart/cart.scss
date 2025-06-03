@@ -1,7 +1,7 @@
 // @use 'foundation/palette' as *;
 
 body {
-  margin-top: 100px;
+  padding-top: 80px;
 }
 
 .myCart {
@@ -240,4 +240,13 @@ body {
   background-color: #faebdd9a;
 
   box-shadow: #383b3a5f 0px 0px 3px;
+}
+.order-summary-sticky {
+  position: sticky;
+  top: 100px;
+  z-index: 1;
+
+  @media (max-width: 767.98px) {
+    position: static;
+  }
 }

@@ -12,10 +12,11 @@ export default function CartSuccessPage() {
   useEffect(() => {
     localStorage.removeItem('cartItems')
     localStorage.removeItem('store711')
+    localStorage.removeItem('cartDiscount')
   }, [])
 
   const handleViewOrders = () => {
-    router.push('/member/center')
+    router.push('/member/center?tab=orders')
     // router.push('/member/center#orders')
   }
 

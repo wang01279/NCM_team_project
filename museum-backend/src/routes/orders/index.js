@@ -23,6 +23,7 @@ const OrderSchema = z
     cardHolder: z.string().optional(),
     shippingFee: z.number().min(0, "請提供運費"),
     discount: z.number().min(0).optional().default(0),
+    store: z.string().optional(),
     cartItems: z.array(
       z.object({
         id: z.number(),
@@ -112,6 +113,7 @@ router.post("/", async (req, res) => {
       paymentMethod,
       shippingFee,
       discount,
+      store,
       cartItems,
     } = result.data;
 
@@ -130,8 +132,8 @@ router.post("/", async (req, res) => {
     const [orderResult] = await conn.execute(
       `INSERT INTO member_orders(
     member_id, order_number, recipient_name, recipient_phone, recipient_email,
-    shipping_method, recipient_address, payment_method, shipping_fee, total_price, discount, status
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    shipping_method, recipient_address, payment_method, shipping_fee, total_price, discount, status, store_name
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         memberId,
         orderNumber,
@@ -145,6 +147,7 @@ router.post("/", async (req, res) => {
         totalPrice,
         discount ?? 0,
         "處理中",
+        shippingMethod === "超商" ? store : null, 
       ]
     );
 
@@ -194,7 +197,7 @@ router.get("/:memberId", async (req, res) => {
     const [member_orders] = await db.execute(
       `SELECT id, member_id, order_number, recipient_name, recipient_phone, recipient_email,
     recipient_address, shipping_method, payment_method, shipping_fee, discount,
-    created_at, total_price, status
+    created_at, total_price, status, store_name
    FROM member_orders
    WHERE member_id = ?
    ORDER BY created_at DESC`,

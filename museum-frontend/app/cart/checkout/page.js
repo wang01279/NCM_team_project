@@ -23,7 +23,7 @@ import './checkout.scss'
 
 export default function CheckoutPage() {
   const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const { cartItems, clearCart } = useCart()
 
   const { store711, openWindow } = useShip711StoreOpener(`${apiUrl}/cart/711`, {
@@ -78,9 +78,12 @@ export default function CheckoutPage() {
     }
   }, [])
 
+  useEffect(() => {
+    setLoading(false)
+  }, [])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsLoading(true)
 
     const result = OrderSchema.safeParse({
       ...buyer,
@@ -109,6 +112,9 @@ export default function CheckoutPage() {
       usedProductCoupon: discountInfo.selectedProductCoupon?.uuid_code || null,
       usedCourseCoupon: discountInfo.selectedCourseCoupon?.uuid_code || null,
       shippingFee,
+      discount:
+        (discountInfo.productDiscount || 0) +
+        (discountInfo.courseDiscount || 0),
     }
 
     const token = localStorage.getItem('token')
@@ -152,96 +158,100 @@ export default function CheckoutPage() {
       } else {
         alert(`訂單建立失敗：${res.message}`)
       }
-      setIsLoading(false)
     } catch (err) {
       console.error('fetch 錯誤:', err)
       alert('網路錯誤，請稍後再試')
-      setIsLoading(false)
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
     <>
-      {isLoading && <Loader />}
       <Navbar />
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <div className="container mt-5 mb-5">
+            <div className="row justify-content-center">
+              <div className="col-12">
+                {/* 頂部流程指示條 */}
+                <div className="crumbs">
+                  <ul>
+                    <li>
+                      <div>
+                        <FaShoppingCart /> 購物車
+                      </div>
+                    </li>
+                    <li>
+                      <div className="active">
+                        <MdOutlinePayment /> 付款資訊
+                      </div>
+                    </li>
+                    <li>
+                      <div>
+                        <AiOutlineTruck /> 完成訂單
+                      </div>
+                    </li>
+                  </ul>
+                </div>
 
-      <div className="container mt-5 mb-5">
-        <div className="row justify-content-center">
-          <div className="col-12">
-            {/* 頂部流程指示條 */}
-            <div className="crumbs">
-              <ul>
-                <li>
-                  <div>
-                    <FaShoppingCart /> 購物車
-                  </div>
-                </li>
-                <li>
-                  <div className="active">
-                    <MdOutlinePayment /> 付款資訊
-                  </div>
-                </li>
-                <li>
-                  <div>
-                    <AiOutlineTruck /> 完成訂單
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-            {/* 表單 + Order Summary RWD 版面 */}
-            <div className="row flex-column flex-md-row">
-              {/* 左側：購買人、運送、付款 */}
-              <div className="col-md-8 col-12 order-2 order-md-1">
                 <h3 className="mb-4 py-3 myOrder text-center text-md-start">
                   付款資訊
                 </h3>
-                <h4 className="mb-4">購買人資訊*</h4>
+                {/* 表單 + Order Summary RWD 版面 */}
+                <div className="row flex-column flex-md-row">
+                  <h4 className="mb-4">購買人資訊*</h4>
+                  {/* 左側：購買人、運送、付款 */}
+                  <div className="col-md-8 col-12 mb-4">
+                    <form onSubmit={handleSubmit}>
+                      <div className="row g-3 mb-4">
+                        <BuyerInfo value={buyer} onChange={setBuyer} />
+                        <Shipping
+                          value={shipping}
+                          onChange={setShipping}
+                          store711={store711}
+                          openWindow={openWindow}
+                        />
+                        <Payment value={payment} onChange={setPayment} />
+                      </div>
 
-                <form onSubmit={handleSubmit}>
-                  <div className="row g-3 mb-4">
-                    <BuyerInfo value={buyer} onChange={setBuyer} />
-                    <Shipping
-                      value={shipping}
-                      onChange={setShipping}
-                      store711={store711}
-                      openWindow={openWindow}
-                    />
-                    <Payment value={payment} onChange={setPayment} />
+                      <div className="col-12 d-flex flex-column flex-md-row justify-content-between mt-4 gap-3">
+                        <a
+                          href="/cart"
+                          className="btn btn-dark w-100 w-md-auto px-5"
+                        >
+                          回到上一步
+                        </a>
+                        <button
+                          id="orderBtn"
+                          className="btn px-5 w-100 w-md-auto"
+                          style={{ backgroundColor: '#7b2d12', color: 'white' }}
+                          type="submit"
+                        >
+                          前往付款
+                        </button>
+                      </div>
+                    </form>
                   </div>
 
-                  <div className="col-12 d-flex flex-column flex-md-row justify-content-between mt-4 gap-3">
-                    <a
-                      href="/cart"
-                      className="btn btn-dark w-100 w-md-auto px-5"
-                    >
-                      回到上一步
-                    </a>
-                    <button
-                      id="orderBtn"
-                      className="btn px-5 w-100 w-md-auto"
-                      style={{ backgroundColor: '#7b2d12', color: 'white' }}
-                      type="submit"
-                    >
-                      前往付款
-                    </button>
+                  {/* 右側：訂單摘要 */}
+                  <div className="col-md-4 col-12 order-2 d-flex flex-column">
+                    <div className="order-summary2-sticky align-self-md-end w-100">
+                      <OrderSummary2
+                        cartItems={cartItems}
+                        discountInfo={discountInfo}
+                        shippingMethod={shipping.shippingMethod}
+                      />
+                    </div>
                   </div>
-                </form>
-              </div>
-
-              {/* 右側：訂單摘要 */}
-              <div className="col-md-4 col-12 order-1 order-md-2 mb-4 mb-md-0">
-                <OrderSummary2
-                  cartItems={cartItems}
-                  discountInfo={discountInfo}
-                  shippingMethod={shipping.shippingMethod}
-                />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
+        </>
+      )}
       <Footer3 />
     </>
   )
