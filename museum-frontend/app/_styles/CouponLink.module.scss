@@ -13,12 +13,23 @@
   margin: 0;
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+    max-width: fit-content;
+  width: auto;           
+  max-height: 50px;
+  display: inline-flex;   
+  align-items: center;    
+
+
+  &:hover {
+    transform: scale(1.05);
+  }
 
   @media (max-width: 796px) {
     padding: 10px;
   }
 
-  .couponBtnSize{
+  .couponBtnSize {
     @media (max-width: 796px) {
       font-size: 18px;
     }

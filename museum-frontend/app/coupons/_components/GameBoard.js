@@ -156,8 +156,11 @@ export default function GameBoard({ memberId, token, scrollToGame }) {
           showToast('warning', res.data.message || '優惠券發送失敗')
         }
       } catch (err) {
-        console.error('❌ 發送失敗:', err)
-        showToast('danger', '挑戰成功，但發送優惠券時發生錯誤')
+        if (err.response?.status === 409) {
+          showToast('warning', err.response.data.message || '今日已領取過')
+        } else {
+          showToast('danger', '發送優惠券時發生錯誤')
+        }
       }
     }
     if (matchedCount === 4 && timeLeft > 0 && !gameEnded) {
@@ -199,7 +202,7 @@ export default function GameBoard({ memberId, token, scrollToGame }) {
                 <RiPokerClubsFill className="mb-1 me-1" />
                 <b>遊戲規則：</b>
               </h5>
-              <h5 style={{lineHeight: '1.5'}}>
+              <h5 style={{ lineHeight: '1.5' }}>
                 限時 <span style={{ color: 'red' }}>20 秒</span>{' '}
                 內完成所有卡片配對，
                 <br />
@@ -222,9 +225,8 @@ export default function GameBoard({ memberId, token, scrollToGame }) {
                 <h4 className="m-0">倒數：</h4>
                 <h1
                   key={timeLeft}
-                  className={`${styles.countdown} ${
-                    timeLeft <= 5 ? styles.warning : ''
-                  } me-2`}
+                  className={`${styles.countdown} ${timeLeft <= 5 ? styles.warning : ''
+                    } me-2`}
                 >
                   {timeLeft}
                 </h1>

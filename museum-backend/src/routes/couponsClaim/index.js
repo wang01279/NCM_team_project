@@ -22,7 +22,7 @@ router.post('/claim', authenticateToken, async (req, res) => {
     }
 
     const [[coupon]] = await db.query(
-      'SELECT name, minSpend, endDate, category, type FROM coupons WHERE id = ?',
+      'SELECT name, minSpend, endDate, category, type, source FROM coupons WHERE id = ?',
       [couponId]
     )
     if (!coupon) return res.status(404).json({ status: 'error', message: '查無此優惠券' })
@@ -87,7 +87,7 @@ router.post('/claim-multiple', authenticateToken, async (req, res) => {
 
     const placeholders2 = toClaim.map(() => '?').join(',')
     const [couponDataRows] = await db.query(
-      `SELECT id, name, minSpend, endDate, category, type FROM coupons WHERE id IN (${placeholders2})`,
+      `SELECT id, name, minSpend, endDate, category, type, source FROM coupons WHERE id IN (${placeholders2})`,
       [...toClaim]
     )
 
@@ -102,10 +102,11 @@ router.post('/claim-multiple', authenticateToken, async (req, res) => {
       coupon.minSpend,
       coupon.category,
       coupon.type,
+      coupon.source,
     ])
 
     await db.query(
-      'INSERT INTO member_coupons (member_id, coupon_id, uuid_code, claimed_at, expired_at, name, minSpend, category, type) VALUES ?',
+      'INSERT INTO member_coupons (member_id, coupon_id, uuid_code, claimed_at, expired_at, name, minSpend, category, type, source) VALUES ?',
       [values]
     )
 
@@ -113,6 +114,10 @@ router.post('/claim-multiple', authenticateToken, async (req, res) => {
       status: 'success',
       claimed: values.map(([_, id, uuid]) => ({ couponId: id, uuid_code: uuid })),
       skipped: alreadyClaimedIds,
+    })
+    return res.status(409).json({
+      status: 'error',
+      message: '今日已經領取過此優惠券'
     })
   } catch (err) {
     console.error('❌ 一鍵領取錯誤:', err)
