@@ -16,7 +16,7 @@ export default function MuseumTicket() {
           <p className={styles.museumTicketDesc}>購買門票，探索陶瓷之美</p>
           <div className={styles.museumTicketTime}>
             <FaClock className={styles.museumTicketIcon} />
-            開館時間｜09:00 - 17:00（週一休館）
+          開館時間｜09:00 - 17:00（週一休館）
           </div>
           <div className={styles.museumTicketPrice}>全票 $250｜優待票 $150</div>
           <button className={styles.museumTicketBtn}>目前僅提供現場購票</button>
