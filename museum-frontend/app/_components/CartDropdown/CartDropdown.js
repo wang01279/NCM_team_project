@@ -5,16 +5,7 @@ import Image from 'next/image'
 
 export default function CartDropdown({ cartItems }) {
   return (
-    <div
-      className="cart-dropdown bg-white text-dark p-3 rounded shadow"
-      style={{
-        position: 'absolute',
-        top: '120%',
-        right: 0,
-        width: '320px',
-        zIndex: 999,
-      }}
-    >
+    <div className="cart-dropdown">
       <div className="user-profile-header mb-2">
         <div className="user-profile-info">
           <div className="user-profile-name">購物車</div>
