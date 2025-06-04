@@ -27,7 +27,7 @@ export default function CartSuccessPage() {
   return (
     <>
       <Navbar />
-      <div className="container mt-5 mb-5">
+      <div className="container mt-5 py-5">
         <div className="row justify-content-center">
           <div className="col-12">
             {/* 購買流程 */}

@@ -24,7 +24,7 @@ import './checkout.scss'
 export default function CheckoutPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
-  const { cartItems, clearCart } = useCart()
+  const { cartItems } = useCart()
 
   const { store711, openWindow } = useShip711StoreOpener(`${apiUrl}/cart/711`, {
     autoCloseMins: 3,
@@ -139,8 +139,6 @@ export default function CheckoutPage() {
       const res = await response.json()
 
       if (res.success) {
-        clearCart()
-
         if (payment.paymentMethod === 'credit') {
           router.push('/cart/order-success')
         } else if (payment.paymentMethod === 'linepay') {
@@ -173,7 +171,7 @@ export default function CheckoutPage() {
         <Loader />
       ) : (
         <>
-          <div className="container mt-5 mb-5">
+          <div className="container mt-5 py-5">
             <div className="row justify-content-center">
               <div className="col-12">
                 {/* 頂部流程指示條 */}

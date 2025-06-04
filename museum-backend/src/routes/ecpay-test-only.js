@@ -11,7 +11,7 @@ router.get("/", function (req, res) {
   const items = req.query.items || "";
 
   const itemName =
-    items.split(",").length > 1
+    items.split(",").length > 0
       ? items.split(",").join("#")
       : "線上商店購買一批";
 
