@@ -1,5 +1,6 @@
 'use client'
 
+import '@/app/_styles/components/productCard.scss'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import axios from 'axios'
 import Image from 'next/image'
@@ -385,7 +386,7 @@ export default function CourseListPage() {
         />
       </section>
 
-      <main className="container mb-5 position-relative">
+      <section className="container mb-5 position-relative">
         <div className="row">
           <div className="col-12 col-lg-10 mx-auto">
             <section ref={containerRef} className={styles.classContainer}>
@@ -564,7 +565,7 @@ export default function CourseListPage() {
             </section> */}
           </div>
         </div>
-      </main>
+      </section>
 
       {/* Modal 彈窗 */}
       {modalOpen && selectedCourse && (
