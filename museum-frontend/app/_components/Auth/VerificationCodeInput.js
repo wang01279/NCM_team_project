@@ -10,38 +10,7 @@ export default function VerificationCodeInput({
 }) {
   const inputs = useRef([])
 
-  //   const handleChange = (e, index) => {
-  //     const val = e.target.value.replace(/[^0-9]/g, '') // 限制只能數字
-  //     if (!val) return
-  //     const newValue = value.split('')
-  //     newValue[index] = val
-  //     onChange(newValue.join('').slice(0, 6))
-  //     if (index < 5) {
-  //       inputs.current[index + 1]?.focus()
-  //     }
-  //   }
-
-  // ✅ 改這裡：傳出一個模擬 DOM 的 event 給外部用
-  //   const handleChange = (e, index) => {
-  //     const val = e.target.value.replace(/[^0-9]/g, '') // 限制只能數字
-  //     if (!val) return
-
-  //     const newValue = value.split('')
-  //     newValue[index] = val
-
-  //     // ✅ 改這裡：傳出一個模擬 DOM 的 event 給外部用
-  //     onChange({
-  //       target: {
-  //         name: 'verificationCode',
-  //         value: newValue.join('').slice(0, 6),
-  //       },
-  //     })
-
-  //     if (index < 5) {
-  //       inputs.current[index + 1]?.focus()
-  //     }
-  //   }
-
+ 
   const handleChange = (e, index) => {
     const val = e.target.value.replace(/[^0-9]/g, '')
     const newValue = value.split('')
