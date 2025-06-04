@@ -1,5 +1,6 @@
 'use client'
 
+import '@/app/_styles/components/productCard.scss'
 import { useEffect, useState, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import axios from 'axios'
