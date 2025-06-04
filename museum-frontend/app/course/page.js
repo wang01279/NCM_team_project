@@ -386,7 +386,7 @@ export default function CourseListPage() {
         />
       </section>
 
-      <section className="container mb-5 position-relative">
+      <main className="container mb-5 position-relative">
         <div className="row">
           <div className="col-12 col-lg-10 mx-auto">
             <section ref={containerRef} className={styles.classContainer}>
@@ -565,7 +565,7 @@ export default function CourseListPage() {
             </section> */}
           </div>
         </div>
-      </section>
+      </main>
 
       {/* Modal 彈窗 */}
       {modalOpen && selectedCourse && (
