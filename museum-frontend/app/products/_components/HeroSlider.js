@@ -13,7 +13,7 @@ export default function HeroSlider() {
     '/image/b2-bg.png',
     '/image/b3-bg.png',
     '/image/b4-bg.png',
-    '/image/b4-bg.png',
+    '/image/b5-bg.png',
   ]
 
   const INTERVAL = 6000

@@ -375,7 +375,7 @@ export default function ProductPage() {
                 {activeFilters.map((f, idx) => (
                   <span
                     key={idx}
-                    className="badge bg-light border text-dark d-flex align-items-center"
+                    className="badge bg-light border text-dark d-flex align-items-center p-2"
                   >
                     {f.label}
                     <span
@@ -409,7 +409,9 @@ export default function ProductPage() {
             </div>
             {totalPages > 1 && renderPaginationButtons()}
           </div>
-          <Footer />
+          <div className="mt-5">
+            <Footer />
+          </div>
         </>
       )}
     </>

@@ -6,7 +6,8 @@ import { getFavoritesByType, removeFavoriteByType } from '@/app/api/favorites'
 import FavoriteCard from './_components/FavoriteCard'
 import Loader from '@/app/_components/load'
 import styles from './_styles/favoritesTab.module.scss'
-import { FaReply } from 'react-icons/fa'
+import { FaReply, FaTrashAlt } from 'react-icons/fa'
+import { FaEye } from "react-icons/fa6";
 import { useToast } from '@/app/_components/ToastManager'
 import FavoriteCourseRowCard from '@/app/course/_components/FavoriteCourseRowCard'
 
@@ -61,7 +62,7 @@ export default function FavoritesTab({ type = 'menu', setType }) {
     try {
       await removeFavoriteByType(type, memberId, itemId)
       setData((prev) => prev.filter((item) => item.id !== itemId))
-      showToast('success', '已移除收藏', 3000)
+      showToast('warning', '已移除收藏', 3000)
     } catch (err) {
       showToast('error', '移除失敗，請稍後再試', 3000)
     }
@@ -83,7 +84,7 @@ export default function FavoritesTab({ type = 'menu', setType }) {
       <div>
         <p>{description}</p>
         <button
-          className="btn btn-outline-dark"
+          className="btn btn-outline-light"
           onClick={() => {
             setType(blockType)
             scrollToTop()
@@ -131,7 +132,7 @@ export default function FavoritesTab({ type = 'menu', setType }) {
     <div className={`container-fluid ${styles.favoritesTabContainer}`}>
       <button
         onClick={() => setType('menu')}
-        className={`btn btn-secondary ${styles.backButton}`}
+        className={`btn btn-outline-secondary ${styles.backButton}`}
       >
         <div className="d-flex align-items-center">
           <FaReply className="me-2" />
@@ -182,13 +183,13 @@ export default function FavoritesTab({ type = 'menu', setType }) {
                             )
                           }
                         >
-                          查看
+                          <FaEye />
                         </button>
                         <button
                           className="btn btn-danger btn-sm"
                           onClick={() => handleRemove(item.id)}
                         >
-                          移除
+                          <FaTrashAlt />
                         </button>
                       </div>
                     </td>

@@ -32,6 +32,7 @@ html {
   flex-direction: column;
 
   .tab-button {
+    max-width: 120px;
     display: inline-block;
     background: none;
     border: none;
@@ -135,8 +136,8 @@ html {
 
 .divider {
   width: 1px;
-  height: 120px;
-  background-color: #999;
+  height: 180px;
+  background-color: $primary;
   margin: 20px auto;
 }
 
@@ -284,7 +285,16 @@ html {
   .tab-nav {
     flex-direction: column;
     align-items: flex-start;
+    .tab-button {
+      max-width: 120px;
+    }
   }
+  .divider {
+  width: 1px;
+  height: 160px;
+  background-color: $primary;
+  margin: 20px auto;
+}
 }
 
 /* 手機板樣式 */
@@ -306,9 +316,13 @@ html {
 
   .tab-button {
     border-bottom: 2px solid transparent;
-    flex: 0 0 calc(33.33% - 10px);
+    flex: 0 0 calc(33.33% - 10px); // 維持這個寬度
     text-align: center;
     padding: 10px 0;
+    font-size: 0.9rem;
+    white-space: nowrap; // 防止文字換行
+    overflow: hidden;
+    text-overflow: ellipsis; // 超出部分顯示省略號
   }
 
   .tab-button.active {
@@ -334,6 +348,12 @@ html {
   .gallery-image {
     flex: 1 1 50%;
   }
+  .divider {
+  width: 1px;
+  height: 140px;
+  background-color: $primary;
+  margin: 20px auto;
+}
 }
 
 @media (max-width: 480px) {

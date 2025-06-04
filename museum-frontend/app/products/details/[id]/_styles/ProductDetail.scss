@@ -20,7 +20,7 @@
   max-width: 1200px;
   margin: 50 auto;
   gap: 100px;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* 確保在空間不足時換行 */
 }
 
 .product-left {
@@ -85,6 +85,8 @@
 
 .product-right {
   flex: 1;
+  // 在桌面版可以保留 max-width 來限制整體寬度
+  // max-width: 550px; /* 這個值你可能需要根據整體佈局調整 */
 }
 
 .product-header-row {
@@ -301,9 +303,94 @@ hr {
   }
 }
 
+// 注意事項區塊的樣式調整
+.product-note {
+  h5 {
+    font-weight: bold;
+  }
+
+  .note-paragraph {
+    line-height: 1.8; 
+    font-size: 15px;
+    color: #444;
+    margin-bottom: 10px;
+    word-break: break-word;
+    text-align: left;
+
+    @media (max-width: 768px) {
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+      padding: 0 15px;
+      box-sizing: border-box;
+    }
+  }
+}
+
 @media (min-width: 768px) {
   .mobile-fixed-bar {
     display: none;
   }
+  .product-right {
+    max-width: 550px;
+  }
+}
 
+/* 手機板樣式 */
+@media (max-width: 768px) {
+  .product-tab {
+    margin: 20px auto;
+  }
+
+  .tab-content {
+    min-height: 550px;
+  }
+
+  .tab-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .tab-button {
+    border-bottom: 2px solid transparent;
+    flex: 0 0 calc(33.33% - 10px);
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.9rem; /* 縮小字體大小 */
+    white-space: nowrap; /* 防止文字換行 */
+    overflow: hidden; /* 隱藏溢出內容 */
+    text-overflow: ellipsis; /* 超出部分顯示省略號 */
+  }
+
+  .tab-button.active {
+    border-bottom: 2px solid #000;
+  }
+
+  .sticky-nav {
+    position: static;
+  }
+
+  .story-frame-container {
+    padding: 20px;
+  }
+
+  .story-card {
+    padding: 30px 20px;
+  }
+
+  .story-heading {
+    font-size: 1.8rem;
+  }
+
+  .gallery-image {
+    flex: 1 1 50%;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-image {
+    flex: 1 1 100%;
+  }
 }
