@@ -49,7 +49,7 @@ export default function CartDropdown({ cartItems }) {
       )}
       <Link
         href="/cart"
-        className="btn btn-primary w-100 mt-2 justify-content-center"
+        className="btn btn-primary w-100 mt-2 justify-content-center no-hover-style"
         style={{ color: 'white' }}
       >
         前往結帳
