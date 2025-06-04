@@ -1,8 +1,4 @@
-// museum-frontend/app/member/center/page.jsx
 'use client'
-
-// import '@/app/_styles/globals.scss';
-// import '@/app/_styles/vendors/_bootstrap-override.scss';
 
 import React, { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
@@ -187,8 +183,6 @@ export default function MemberCenter() {
     }
   }
 
-
-
   const handleSubmit = async (formData) => {
     try {
       console.log('Token:', token)
@@ -279,17 +273,6 @@ export default function MemberCenter() {
         return <div>找不到此頁面</div>
     }
   }
-
-  // 載入中
-  // if (authLoading) {
-  //   return (
-  //     <div className="loading-container">
-  //       <div className="spinner-border text-primary" role="status">
-  //         <span className="visually-hidden">載入中...</span>
-  //       </div>
-  //     </div>
-  //   )
-  // }
 
   if (authLoading) {
     return <Loader />

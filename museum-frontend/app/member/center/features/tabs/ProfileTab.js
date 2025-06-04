@@ -107,13 +107,13 @@ export default function ProfileTab({ member, formData, onEdit, onCancel, onSubmi
     setIsLoading(true)
 
     if (passwordData.newPassword.length < 8) {
-      showToast('error', '新密碼長度至少需要8個字符')
+      showToast('warning', '新密碼長度至少需要8個字符')
       setIsLoading(false)
       return
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      showToast('error', '兩次輸入的新密碼不一致')
+      showToast('warning', '兩次輸入的新密碼不一致')
       setIsLoading(false)
       return
     }
@@ -148,7 +148,7 @@ export default function ProfileTab({ member, formData, onEdit, onCancel, onSubmi
       })
     } catch (error) {
       console.error('修改密碼錯誤:', error)
-      showToast('error', error.message || '修改密碼失敗')
+      showToast('warning', error.message || '修改密碼失敗')
     } finally {
       setIsLoading(false)
     }
@@ -207,7 +207,7 @@ export default function ProfileTab({ member, formData, onEdit, onCancel, onSubmi
         stack: error.stack,
         name: error.name,
       })
-      showToast('error', error.message || '刪除帳號失敗')
+      showToast('warning', error.message || '刪除帳號失敗')
     } finally {
       setIsLoading(false)
     }

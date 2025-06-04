@@ -7,8 +7,8 @@ export default function MuseumVideo() {
       <div className={styles.museumVideoCard}>
         <div className={styles.museumVideoLeft}>
           <div className={styles.museumVideoTag}>線上展覽</div>
-          <h2 className={styles.museumVideoTitle}>360°互動式展覽</h2>
-          <p className={styles.museumVideoDesc}>來自國立故瓷博物館</p>
+          <h2 className={styles.museumVideoTitle}>360°互動式線上展覽</h2>
+          <p className={styles.museumVideoDesc}>滑動畫面，逐格品味陶光</p>
           <button className={styles.museumVideoBtn}>瞭解詳情</button>
         </div>
         <div className={styles.museumVideoRight}>
