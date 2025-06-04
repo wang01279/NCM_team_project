@@ -3,6 +3,8 @@ import Link from 'next/link'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 import styles from '../_styles/CourseList.module.scss'
 import { FaRegCalendarPlus } from 'react-icons/fa'
+import '@/app/_styles/components/productCard.scss'
+
 
 export default function CourseCard({
   course,

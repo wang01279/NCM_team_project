@@ -2,7 +2,7 @@ import React from 'react'
 import styles from '../_styles/courseDetail.module.scss'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 import CouponLink from '@/app/_components/CouponLink'
-import '@/app/_styles/components/productCard.scss'
+// import '@/app/_styles/components/productCard.scss'
 
 export default function EnrollmentSection({ course, onAddToCart, isEnrolled, isFavorite, onFavorite }) {
   const { price, original_price, maxStudents, materials_included } = course

@@ -261,7 +261,7 @@ body :focus {
   align-items: center;
   font-size: 1.25rem;
   font-family: 'Noto Serif TC', serif;
-  font-weight: 700;
+  font-weight: 500;
   color: #7B2D12;
   letter-spacing: 0.1em;
   margin-bottom: 0.2rem;
@@ -314,7 +314,7 @@ body :focus {
 
 .artistWaveTyping {
   font-family: 'Noto Serif TC', serif;
-  color: #b0b0b0;
+  color: #959595;
   font-size: 1.05rem;
   letter-spacing: 0.08em;
   font-weight: 500;
@@ -364,8 +364,8 @@ body :focus {
 .filterIconBtn {
   width: 56px;
   height: 56px;
-  border-top-right-radius: 16px;
-  border-bottom-right-radius: 16px;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   display: none;
