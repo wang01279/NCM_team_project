@@ -13,7 +13,7 @@ export default function CouponLink() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowButton(window.scrollY > 900) // 滾超過 300px 顯示按鈕
+      setShowButton(window.scrollY > 600) // 滾超過 300px 顯示按鈕
     }
 
     handleScroll() // 初始化檢查

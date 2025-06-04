@@ -20,8 +20,8 @@
 .customNavlink {
   font-size: 1rem;
   color: #F5E3C3;
-  transition: all 0.3s ease;
-  font-family: 'Courier New', Courier, monospace;
+  transition: background-color 0.3s ease;
+  // font-family: 'Courier New', Courier, monospace;
 
   &:hover {
     background: #9a3412d9;
@@ -33,7 +33,7 @@
     background: #9A3412;
     border-radius: 6px;
     font-weight: bold;
-    // transform: scale(1.1);
+    transform: scale(1.1);
   }
 }
 
@@ -50,3 +50,12 @@
 .customNavlink.active .iconWrapper {
     color: #9A3412;
 }
+
+// .submenu {
+//   overflow: hidden;
+//   max-height: 0;
+//   transition: max-height 0.3s ease;
+// }
+// .submenu.open {
+//   max-height: 500px; // 調整成符合你 submenu 的最大高度
+// }

@@ -6,8 +6,7 @@
   font-size: 24px;
 }
 .borderCustom {
-  // border: 1px solid $sub-text;
-  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+  min-height: 60vh;
 }
 
 .tabMenu {
@@ -16,7 +15,7 @@
   justify-content: center;
   gap: 2rem;
   // padding: rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .tabs {

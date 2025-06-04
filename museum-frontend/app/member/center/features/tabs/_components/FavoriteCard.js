@@ -1,7 +1,7 @@
 // app/member/center/features/tabs/favorites/_components/FavoriteCard.js
 
-import Link from 'next/link'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
+import '@/app/_styles/components/productCard.scss' //favoriteBtn style
 
 export default function FavoriteCard({ item, type, onRemove }) {
   const detailPath = {
@@ -15,7 +15,7 @@ export default function FavoriteCard({ item, type, onRemove }) {
       <div className="card position-relative">
         {/* 收藏按鈕獨立於 Link 外 */}
         <div
-          className="position-absolute top-0 end-0 m-2 z-3"
+          className="product-actions position-absolute top-0 end-0 m-2 z-3"
           onClick={(e) => e.stopPropagation()}
         >
           <AddToFavoritesButton
