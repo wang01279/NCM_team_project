@@ -175,7 +175,7 @@ export default function FavoritesTab() {
                     <td>
                       <div className={styles.actionGroup}>
                         <button
-                          className="btn btn-dark btn-sm"
+                          className="btn btn-outline-primary btn-sm"
                           onClick={() =>
                             window.open(
                               `/products/details/${item.id}`,
@@ -186,7 +186,7 @@ export default function FavoritesTab() {
                           <FaEye />
                         </button>
                         <button
-                          className="btn btn-danger btn-sm"
+                          className="btn btn-outline-danger btn-sm"
                           onClick={() => handleRemove(item.id)}
                         >
                           <FaTrashAlt />
