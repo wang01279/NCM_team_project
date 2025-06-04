@@ -85,35 +85,79 @@ export default function AdminSidebar({ children }) {
     <div className="d-flex">
       {/* Sidebar */}
       <div
-        className="sidebar text-white p-3 d-flex flex-column justify-content-center align-items-center"
+        className="sidebar text-white p-3 d-flex flex-column align-items-center"
         style={{
           position: 'fixed',
           width: '250px',
-          height: '95%',
+          height: '95vh',
           top: 20,
           left: 20,
           zIndex: 333,
           transition: 'width 0.3s ease',
           borderRadius: '18px',
           backgroundColor: '#2D2D2D',
+          overflowY: 'auto'
         }}
       >
-        {/* Logo + 返回 */}
-        <div className="w-100 d-flex flex-column justify-content-center align-items-center mb-4">
-          <Image
-            src="/admin-logo-img/logo10.png"
-            alt="Logo"
-            width={180}
-            height={180}
-            style={{
-              borderRadius: '50%',
-              objectFit: 'cover',
-              transition: 'all 0.3s ease',
-            }}
-          />
+
+        <div className=' flex-grow-1'>
+          {/* Logo*/}
+          <div className="w-100 d-flex flex-column justify-content-center align-items-center mb-4">
+            <Image
+              src="/admin-logo-img/logo10.png"
+              alt="Logo"
+              width={180}
+              height={180}
+              style={{
+                borderRadius: '50%',
+                objectFit: 'cover',
+                transition: 'all 0.3s ease',
+              }}
+            />
+          </div>
+          {/* 選單區塊 */}
+          <nav className="nav d-flex flex-column justify-content-center w-100">
+            {sidebarItems.map((item, index) => (
+              <div key={index}>
+                {/* Dropdown Toggle */}
+                <div
+                  className={`nav-link ${styles.customNavlink} text-white d-flex align-items-center justify-content-center text-decoration-none`}
+                  onClick={() =>
+                    setOpenSubmenu(prev => ({
+                      ...prev,
+                      [index]: !prev[index],
+                    }))
+                  }
+                  style={{ cursor: 'pointer' }}
+                  title={item.label}
+                >
+                  <div className={styles.iconWrapper}>{item.icon}</div>
+                  <span className="pt-2 ms-2">{item.label}</span>
+                </div>
+
+                {/* Dropdown Items */}
+                {openSubmenu[index] && (
+                  <div className="d-flex flex-column justify-content-center align-items-start ps-3">
+                    {item.children.map((sub, subIndex) => (
+                      <Link
+                        key={subIndex}
+                        href={sub.href}
+                        className={`nav-link ${styles.customNavlink} text-white d-flex align-items-center text-decoration-none ${pathname === sub.href ? styles.active : ''}`}
+                      >
+                        <span className="ms-4">{sub.label}</span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
+        </div>
+
+        <div className='d-flex justify-content-center align-items-center flex-column'>
           <Link href="/">
             <button
-              className="btn btn-info d-flex align-items-center justify-content-center mt-2"
+              className="btn btn-outline-light d-flex align-items-center justify-content-center mb-3"
               style={{
                 width: '180px',
                 transition: 'width 0.3s ease',
@@ -124,59 +168,20 @@ export default function AdminSidebar({ children }) {
               <span>返回前台網站</span>
             </button>
           </Link>
+          {/* 登出按鈕 */}
+          <div className="mt-auto w-100 text-center">
+            <Link
+              href="/logout"
+              className="btn btn-primary w-100 d-flex align-items-center justify-content-center text-decoration-none"
+              title="登出"
+            >
+              <FaSignOutAlt />
+              <span className="ms-2">登出</span>
+            </Link>
+          </div>
+
         </div>
 
-        <hr />
-
-        {/* 選單區塊 */}
-        <nav className="nav d-flex flex-column justify-content-center w-100 mt-4">
-          {sidebarItems.map((item, index) => (
-            <div key={index}>
-              {/* Dropdown Toggle */}
-              <div
-                className={`nav-link ${styles.customNavlink} text-white d-flex align-items-center justify-content-center text-decoration-none`}
-                onClick={() =>
-                  setOpenSubmenu(prev => ({
-                    ...prev,
-                    [index]: !prev[index],
-                  }))
-                }
-                style={{ cursor: 'pointer' }}
-                title={item.label}
-              >
-                <div className={styles.iconWrapper}>{item.icon}</div>
-                <span className="pt-2 ms-2">{item.label}</span>
-              </div>
-
-              {/* Dropdown Items */}
-              {openSubmenu[index] && (
-                <div className="d-flex flex-column justify-content-center align-items-start ps-3">
-                  {item.children.map((sub, subIndex) => (
-                    <Link
-                      key={subIndex}
-                      href={sub.href}
-                      className={`nav-link ${styles.customNavlink} text-white d-flex align-items-center text-decoration-none ${pathname === sub.href ? styles.active : ''}`}
-                    >
-                      <span className="ms-4">{sub.label}</span>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </nav>
-
-        {/* 登出按鈕 */}
-        <div className="mt-auto w-100 text-center">
-          <Link
-            href="/logout"
-            className="btn btn-primary w-100 d-flex align-items-center justify-content-center text-decoration-none"
-            title="登出"
-          >
-            <FaSignOutAlt />
-            <span className="ms-2">登出</span>
-          </Link>
-        </div>
       </div>
 
       {/* Main Content */}

@@ -7,25 +7,24 @@ import Tabs from './_components/tabs'
 import Navbar from '../_components/navbar'
 import Carousel from './_components/carousel'
 import Menu from './_components/menu'
-import styles from '../exhibitions/_styles/ex-page.module.scss'
-// import CouponLink from '@/app/_components/CouponLink.js'
 import Footer from '../_components/footer3'
+import styles from '../exhibitions/_styles/ex-page.module.scss'
+
+// ✅ 引入動畫
+import { motion, AnimatePresence } from 'framer-motion'
 
 export default function ExhibitionPage() {
   const searchParams = useSearchParams()
   const state = searchParams.get('state') || 'current'
   const year = searchParams.get('year') || ''
-    // 對過去展覽篩選年份
+
   const [selectedYear, setSelectedYear] = useState(year)
   const [currentPage, setCurrentPage] = useState(1)
-  const pageSize = 6  // 每頁 6 筆
+  const pageSize = 6
 
-  // 切換 tab 或篩選年份時，重置回第 1 頁
   useEffect(() => {
     setCurrentPage(1)
   }, [state, selectedYear])
-
-
 
   useEffect(() => {
     setSelectedYear(year)
@@ -34,29 +33,33 @@ export default function ExhibitionPage() {
   return (
     <>
       <Navbar />
-
-      <main className="container">
-        <div className={styles.customMargin}>
-          <div className="d-flex justify-content-center align-items-center flex-column fw-bold">
-            <h3 className="mb-0 pb-0 fw-bold" style={{ letterSpacing: '5px' }}>
-              展覽
-            </h3>
-            <h6 className="mt-2 pt-0 m-0 fw-bold">Exhibition</h6>
-          </div>
-          {/* <CouponLink /> */}
-          <Tabs />
+      <div className={styles.customMargin} style={{ paddingBottom: '20px' }}>
+        <div className="d-flex justify-content-center align-items-center flex-column fw-bold">
+          <h1 className="mb-0 pb-0 fw-bolder" style={{ letterSpacing: '5px' }}>
+            展覽
+          </h1>
+          <h6 className="mt-2 pt-0 fw-bolder">Exhibition</h6>
         </div>
-        <div>
-          {/* 當期展覽專屬：輪播區塊 */}
+        <Tabs />
+      </div>
+
+      {/* ✅ 將變動內容用 AnimatePresence 包起來 */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={state + selectedYear}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           {state === 'current' && (
-            <section className="my-4 d-flex justify-content-center">
+            <section className="d-flex justify-content-center">
               <Carousel />
             </section>
           )}
 
-          {/* 過去展覽專屬：年份篩選 */}
           {state === 'past' && (
-            <section className="my-3">
+            <section className="mt-5 mb-1">
               <Menu selectedYear={year} />
             </section>
           )}
@@ -67,26 +70,9 @@ export default function ExhibitionPage() {
             page={currentPage}
             pageSize={pageSize}
           />
-        </div>
-        {/* <div className="d-flex justify-content-center my-4">
-          <button
-            className="btn btn-outline-secondary me-2"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((prev) => prev - 1)}
-          >
-            上一頁
-          </button>
-          <span className="mx-2 align-self-center">第 {currentPage} 頁</span>
-          <button
-            className="btn btn-outline-secondary ms-2"
-            // 若你已知總頁數 totalPages，也可加入 disabled 限制
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-          >
-            下一頁
-          </button>
-        </div> */}
+        </motion.div>
+      </AnimatePresence>
 
-      </main>
       <Footer />
     </>
   )

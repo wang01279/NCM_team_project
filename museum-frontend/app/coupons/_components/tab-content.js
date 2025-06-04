@@ -106,7 +106,7 @@ export default function TabCoupons({ category, coupons = [], token, memberId }) 
             </h5>
             {isLoggedIn && (
               <button
-                className="btn btn-secondary ms-0 ms-sm-4"
+                className="btn btn-outline-secondary ms-0 ms-sm-4"
                 onClick={handleOneClickClaim}
               >
                 <LuMousePointer2 className="me-2" />
@@ -137,6 +137,7 @@ export default function TabCoupons({ category, coupons = [], token, memberId }) 
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            marginTop: '20px'
           }}
         >
           <Loader />

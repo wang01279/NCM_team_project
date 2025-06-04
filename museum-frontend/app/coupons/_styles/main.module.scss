@@ -23,7 +23,6 @@
 
 .scrollAnchor {
   position: relative;
-  // top: -290px; // 抵消 gameSection 的 margin-top
 }
 
 .gameSection {
@@ -45,19 +44,16 @@
     content: '';
     position: absolute;
     inset: 0;
-    background-image: 
-      url('/images/porcelain-2.png'),
-      url('/images/porcelain-1.png'),
-      url('/images/porcelain-3.png'),
-      url('/images/porcelain-4.png');
+    background-image:
+      url('/images/porcelain-2.png'), url('/images/porcelain-1.png'),
+      url('/images/porcelain-3.png'), url('/images/porcelain-4.png');
     background-repeat: no-repeat;
     background-size: 280px, 280px, 280px, 280px;
-// background-position:
-//   bottom 20px left 120px,
-//   bottom 20px left 100px,
-//   bottom 20px right 200px,
-//   bottom 20px right 20px;
-    background-position: top left, bottom right, top right, bottom left;
+    background-position:
+      top left,
+      bottom right,
+      top right,
+      bottom left;
     opacity: 0.47; // ✅ 只影響背景圖片
     z-index: 0;
 
@@ -68,7 +64,7 @@
 
     // 📱 手機寬度以下：2欄
     @media (max-width: 378px) {
-     background-size: 80px, 80px, 80px, 80px;
+      background-size: 80px, 80px, 80px, 80px;
     }
   }
 
@@ -79,3 +75,41 @@
   }
 }
 
+.titleCover {
+  background-image:
+    linear-gradient(to bottom, #F8F1E3 50%, #F8F1E3),
+    // url('../../../public/images/coupon_bg_transparent.png'); // 背景剪影圖案
+    url('../../../public/images/dust_only_transparent.png');
+  background-size: contain;
+  background-position: right;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply;
+  height: 130px;
+  padding-top: 20px;
+  color: #1f1f1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.button {
+  h5 {
+    font-size: 14px;
+  }
+}
+
+.scrollPrompt {
+  position: fixed;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  // z-index: 1;
+
+  // 可選：加點陰影、背景等視覺強化
+  .btn {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 30px;
+  }
+}

@@ -1,7 +1,10 @@
 @use '../../../app/_styles/foundation/palette' as *;
 
 .customMargin {
-  margin-top: 100px;
+  margin-top: 80px;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.6)),
+    url(../../../public/images/e_bg.png);
 }
 
 .tab-menu {
@@ -9,35 +12,33 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 2rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  
+  // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  margin-bottom: 0px;
 }
-
 
 .tabs {
   display: flex;
   justify-content: space-around;
   // gap: 2rem;
   list-style: none;
-  margin-bottom: 2rem;
   padding: 10px;
 }
 
 .tabItem {
-    max-width: 160px;
-      white-space: nowrap;
+  max-width: 160px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-decoration: none;
-  color: $primary;
+  color: $info;
   font-weight: bold;
-  font-size:16px;
+  font-size: 24px;
   position: relative;
   transition: color 0.3s ease;
 }
 
 .tabItem:hover {
-  color: $secondary;
+  color: $sidebar-active;
   text-decoration: none;
 }
 
@@ -48,15 +49,14 @@
   left: 50%;
   width: 0;
   height: 2px;
-  background-color: $secondary ; 
-  transform: translateX(-50%) ;
+  background-color: $sidebar-active;
+  transform: translateX(-50%);
   transition: width 0.3s ease;
-  
 }
 
 .tabItem {
   &:focus {
-    color: $secondary;
+    color: $sidebar-active;
     outline: none;
     box-shadow: none;
   }
@@ -64,16 +64,15 @@
 
 .tabItem:hover::after,
 .active::after {
-  width: 60%;
+  width: 100%;
   text-decoration: none !important;
 }
 
 .active {
-  color: $secondary;
+  color: $sidebar-active;
   text-decoration: none !important;
   // border: 0px solid !important;
 }
-
 
 /* ---------------- 輪播區(保留BS-5樣式) ---------------- */
 
@@ -85,14 +84,16 @@
   overflow: hidden;
   margin-bottom: 0;
   border-radius: 8px;
-  transition: background-color 0.1s ease, box-shadow 0.1s ease;
+  transition:
+    background-color 0.1s ease,
+    box-shadow 0.1s ease;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 
   @media (max-width: 796px) {
     margin-bottom: 25px;
   }
 }
-.boxMargin{
+.boxMargin {
   margin-top: 50px;
 
   @media (max-width: 796px) {
@@ -114,11 +115,10 @@
   align-items: center;
   justify-content: center;
 
-  
-  @media (max-width:796px) {  
-   height: 200px; 
-   width: 100%;
-  //  margin-bottom: ;
+  @media (max-width: 796px) {
+    height: 200px;
+    width: 100%;
+    //  margin-bottom: ;
   }
 }
 
@@ -155,7 +155,7 @@
 
   h5,
   p {
-transition:
+    transition:
       transform 1s ease,
       color 0.4s ease;
     transform: scale(1); // 預設大小
@@ -165,11 +165,10 @@ transition:
 .exhibitionCard:hover .infoContainer {
   h5,
   p {
-    transform:  scale(1.01); // 平移＋微放大
+    transform: scale(1.01); // 平移＋微放大
     color: $primary;
   }
 }
-
 
 /* ---------------- 自訂按鈕 hover 效果 ---------------- */
 .customBtn {
@@ -187,23 +186,23 @@ transition:
 /* ---------------- 頁碼 ---------------- */
 
 .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 24px;
-    gap: 8px;
-    flex-wrap: wrap;
-  
-    button {
-      background-color: #f8f9fa;
-      border: 1px solid #ccc;
-      padding: 6px 12px;
-      cursor: pointer;
-      border-radius: 6px;
-  
-      &.active {
-        background-color: #823b20;
-        color: white;
-        border-color: #823b20;
-      }
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  button {
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+
+    &.active {
+      background-color: #823b20;
+      color: white;
+      border-color: #823b20;
     }
   }
+}

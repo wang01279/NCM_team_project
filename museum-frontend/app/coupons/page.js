@@ -11,7 +11,7 @@ import { GiClick } from 'react-icons/gi'
 import { useAuth } from '@/app/_hooks/useAuth'
 
 export default function CouponPage() {
-  const { member, token, isLoggedIn } = useAuth()
+  const { member, token } = useAuth()
   const memberId = member?.id
   const gameRef = useRef(null)
 
@@ -29,35 +29,33 @@ export default function CouponPage() {
         showByDefault={true}
       />
 
-      <div className="container">
-        <div
-          className="d-flex justify-content-center align-items-center flex-column"
-          style={{ marginTop: '120px' }}
-        >
-          <h3 className="mb-0 pb-0 fw-bold" style={{ letterSpacing: '2px' }}>
-            優惠券領取專區
-          </h3>
-          <h6 className="mt-2 pt-0 m-0 fw-bold">Coupon Redemption Area</h6>
+      <div className={styles.titleCover} style={{ marginTop: '80px' }}>
+        <h3 className="mb-0 pb-0 fw-bold text-center" style={{ letterSpacing: '2px' }}>
+          優惠券領取專區
+        </h3>
+        <h6 className="mt-2 pt-0 m-0 fw-bold text-center">Coupon Redemption Area</h6>
 
-          <div className={`${styles.scrollPrompt} mt-5 mb-0 text-end`}>
-            <button className="btn btn-warning" onClick={scrollToGame}>
-              <h5 className="m-0 p-0">
-                開始領券挑戰 <GiClick className="ms-1 p-0 my-0" />
-              </h5>
-            </button>
-          </div>
+      </div>
+
+      <div className="container">
+        <div className={`${styles.scrollPrompt}`}>
+          <button className={`btn btn-outline-primary ${styles.button}`} onClick={scrollToGame}>
+            <h5 className="m-0 p-0">
+              開始領券挑戰 <GiClick className="ms-1 p-0 my-0" />
+            </h5>
+          </button>
         </div>
 
         {/* ✅ 傳入 token 和 memberId */}
         <CouTab token={token} memberId={memberId} />
       </div>
+
       {/* // ✅ 改成這樣（ref 直接設在遊戲區塊根容器上） */}
       <section
         ref={gameRef}
         className={`d-flex flex-column align-items-center justify-content-center ${styles.gameSection}`}
       >
-        
-        <GameBoard token={token} memberId={memberId} scrollToGame={scrollToGame}/>
+        <GameBoard token={token} memberId={memberId} scrollToGame={scrollToGame} />
       </section>
 
       <Footer />
