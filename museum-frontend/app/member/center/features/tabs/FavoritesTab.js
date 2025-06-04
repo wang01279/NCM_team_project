@@ -84,7 +84,7 @@ export default function FavoritesTab() {
       <div>
         <p>{description}</p>
         <button
-          className="btn btn-outline-black"
+          className="btn btn-outline-light"
           onClick={() => {
             setType(blockType)
             scrollToTop()

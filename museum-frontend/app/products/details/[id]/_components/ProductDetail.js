@@ -202,12 +202,14 @@ export default function ProductDetail({
             <hr />
             <div className="product-note">
               <h5 className="fw-bold">注意事項</h5>
+              {/* 修改為使用 <p> 標籤顯示 */}
               {Array.isArray(product.notes) && product.notes.length > 0 ? (
-                <ul>
-                  {product.notes.map((note, index) => (
-                    <li key={index}>{note}</li>
-                  ))}
-                </ul>
+                // 將每個 note 項目用 <p> 顯示
+                product.notes.map((note, index) => (
+                  <p key={index} className="note-paragraph">
+                    {note}
+                  </p>
+                ))
               ) : (
                 <p>目前無特別注意事項。</p>
               )}
@@ -215,7 +217,7 @@ export default function ProductDetail({
           </div>
         </div>
 
-        {/* 📱 手機底部加入購物車 */}
+        {/*手機底部加入購物車 */}
         <div className="mobile-fixed-bar d-md-none">
           <div className="container d-flex justify-content-between align-items-center gap-2">
             <div className="quantity-control">

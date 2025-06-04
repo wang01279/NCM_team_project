@@ -1,6 +1,13 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { FaFilter, FaSearch, FaMinus, FaPlus } from 'react-icons/fa'
+import {
+  FaFilter,
+  FaSearch,
+  FaMinus,
+  FaPlus,
+  FaCaretUp,
+  FaCaretDown,
+} from 'react-icons/fa'
 import Select from 'react-select'
 import '../_styles/productFilter.scss'
 
@@ -195,7 +202,7 @@ export default function ProductFilter({
 
           <div className="mb-4">
             <label className="form-label">價格範圍</label>
-            <div className="d-flex gap-2 align-items-center mb-2">
+            <div className="d-flex gap-2 align-items-center mb-2 p-2">
               <input
                 type="number"
                 value={tempFilters.minPrice}
@@ -214,7 +221,7 @@ export default function ProductFilter({
                 className="form-control"
               />
             </div>
-            <div className="range-container">
+            <div className="range-container m-2">
               <div className="range-track"></div>
               <div className="range-selected" style={rangePercent()}></div>
               <input
@@ -247,7 +254,7 @@ export default function ProductFilter({
 
           {['material', 'origin', 'function'].map((type) => (
             <div className="mb-4" key={type}>
-              <div className="d-flex justify-content-between align-items-center mb-2">
+              <div className="d-flex justify-content-between align-items-center">
                 <label className="form-label mb-0">
                   {type === 'material'
                     ? '材質'
@@ -256,7 +263,7 @@ export default function ProductFilter({
                       : '功能'}
                 </label>
                 <button
-                  className="btn btn-sm btn-dray"
+                  className="btn  btn-dray"
                   onClick={() =>
                     setShowSection({
                       ...showSection,
@@ -264,7 +271,11 @@ export default function ProductFilter({
                     })
                   }
                 >
-                  {showSection[type] ? <FaMinus /> : <FaPlus />}
+                  {showSection[type] ? (
+                    <FaCaretDown className="fs-5" />
+                  ) : (
+                    <FaCaretUp className="fs-5" />
+                  )}
                 </button>
               </div>
               {showSection[type] && (

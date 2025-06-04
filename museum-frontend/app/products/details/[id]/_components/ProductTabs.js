@@ -44,14 +44,14 @@ export default function ProductTabs({
       : 0
 
   const storyRef = useRef(null)
-  const inView = useInView(storyRef, { once: false, amount: 0.5 })
+  const inView = useInView(storyRef, { once: false, amount: 0.3 })
 
   const lineVariants = {
     hidden: { opacity: 0, y: 40 },
     show: (i) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: i * 0.2, duration: 0.6, ease: 'easeOut' },
+      transition: { delay: i * 0.3, duration: 0.6, ease: 'easeOut' },
     }),
   }
 
