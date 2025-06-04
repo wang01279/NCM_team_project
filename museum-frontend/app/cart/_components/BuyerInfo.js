@@ -1,7 +1,6 @@
 import React from 'react'
 import { FloatingLabel, Form } from 'react-bootstrap'
-import { MdDriveFileRenameOutline } from 'react-icons/md'
-import { FaEnvelope, FaPhoneAlt } from 'react-icons/fa'
+import { FaEnvelope, FaPhoneAlt, FaUser } from 'react-icons/fa'
 
 export default function BuyerInfo({ value, onChange }) {
   const handleChange = (e) => {
@@ -19,7 +18,7 @@ export default function BuyerInfo({ value, onChange }) {
           controlId="name"
           label={
             <>
-              <MdDriveFileRenameOutline className="me-1" />
+              <FaUser className="me-1" />
               姓名
             </>
           }
