@@ -41,7 +41,9 @@ export default function CartDropdown({ cartItems }) {
 
               {/* 單價 */}
               <div className="text-end" style={{ minWidth: '60px' }}>
-                <small className="text-muted">${item.price}</small>
+                <small className="text-muted">
+                  ${item.price * item.quantity}
+                </small>
               </div>
             </li>
           ))}
