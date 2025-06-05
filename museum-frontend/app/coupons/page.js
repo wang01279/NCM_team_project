@@ -39,8 +39,8 @@ export default function CouponPage() {
 
       <div className="container">
         <div className={`${styles.scrollPrompt}`}>
-          <button className={`btn btn-outline-primary ${styles.button}`} onClick={scrollToGame}>
-            <h5 className="m-0 p-0">
+          <button className={`btn btn-primary ${styles.button}`} onClick={scrollToGame}>
+            <h5 className={`m-auto p-1 ${styles.gradientText}`}>
               開始領券挑戰 <GiClick className="ms-1 p-0 my-0" />
             </h5>
           </button>
