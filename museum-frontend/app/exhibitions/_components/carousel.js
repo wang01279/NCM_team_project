@@ -47,13 +47,13 @@ export default function Carousel() {
             key={e.id}
             className={`carousel-item ${index === 0 ? 'active' : ''} `}
           >
-            <div className="ratio ratio-16x9" style={{ maxHeight: '620px' }}>
+            <div className="ratio ratio-16x9" style={{ maxHeight: '800px' }}>
               <Image
                 src={`/images/${e.image}`}
                 alt={e.title}
                 width={1000}
-                height={500}
-                className="d-block w-100 object-fit-cover"
+                height={800}
+                style={{ height: 'auto', objectFit: 'cover' }}
               />
             </div>
           </div>

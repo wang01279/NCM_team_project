@@ -73,10 +73,9 @@ export default function CouponLink() {
       )}
 
       <Offcanvas show={show} onHide={handleClose} placement="start">
-        <Offcanvas.Header closeButton>
-          {/* <Offcanvas.Title className={`${styles.glowText}`}><strong>推薦優惠券</strong></Offcanvas.Title> */}
-        </Offcanvas.Header>
-        <Offcanvas.Body className='d-flex justify-content-center flex-column align-items-center'>
+      
+        <Offcanvas.Body className='d-flex justify-content-center flex-column align-items-center'
+        style={{backgroundColor: '#F4F1EA'}}>
           <h3><Offcanvas.Title className={`${styles.glowText}`}><strong>推薦優惠券</strong></Offcanvas.Title></h3>
           {couponList.map((coupon, idx) => (
             <div

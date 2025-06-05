@@ -5,6 +5,14 @@
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.6)),
     url(../../../public/images/e_bg.png);
+
+  h1{
+    font-size: 30px;
+  }
+  h6{
+    font-size: 15px;
+  }
+
 }
 
 .tab-menu {
@@ -35,6 +43,10 @@
   font-size: 24px;
   position: relative;
   transition: color 0.3s ease;
+
+  @media (max-width: 420px) {
+    font-size: 20px;
+  }
 }
 
 .tabItem:hover {

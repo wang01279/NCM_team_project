@@ -3,9 +3,11 @@
 
   button {
     animation: bounce 1s infinite;
+    
 
     &:hover {
       animation: none; // ✅ 滑鼠移上時可選擇停止搖動
+      transition: transform .5s ease; // ✅ 這行讓放大變得自然、平滑
       transform: scale(1.05);
     }
   }
@@ -24,6 +26,23 @@
 .scrollAnchor {
   position: relative;
 }
+
+// .gradientText {
+//   // background: linear-gradient(270deg, #ff8c00, #ff2d55, #8a2be2, #00bcd4, #ff8c00);
+//   background-size: 1000% 100%;
+//   -webkit-background-clip: text;
+//   -webkit-text-fill-color: transparent;
+//   animation: flowText 5s linear infinite;
+// }
+
+// @keyframes flowText {
+//   0% {
+//     background-position: 0% 50%;
+//   }
+//   100% {
+//     background-position: 100% 50%;
+//   }
+// }
 
 .gameSection {
   position: relative;
@@ -77,13 +96,13 @@
 
 .titleCover {
   background-image:
-    linear-gradient(to bottom, #F8F1E3 50%, #F8F1E3),
+    // radial-gradient(circle, rgba(248, 241, 227, 0.9), rgba(255, 255, 255, 0.3)),
     // url('../../../public/images/coupon_bg_transparent.png'); // 背景剪影圖案
-    url('../../../public/images/dust_only_transparent.png');
-  background-size: contain;
+  url('../../../public/images/c_bg_1.png');
+  background-size: cover;
   background-position: right;
-  background-repeat: no-repeat;
-  background-blend-mode: multiply;
+  background-repeat: repeat;
+  background-blend-mode: soft-light;
   height: 130px;
   padding-top: 20px;
   color: #1f1f1f;
@@ -101,8 +120,8 @@
 
 .scrollPrompt {
   position: fixed;
-  right: 1rem;
-  top: 50%;
+  right: 100px;
+  top: 40%;
   transform: translateY(-50%);
   // z-index: 1;
 
@@ -110,6 +129,11 @@
   .btn {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
-    padding: 30px;
+    // padding: 30px;
+  }
+
+  @media (max-width: 420px) {
+    right: 5px;
+    top: 50%;
   }
 }
