@@ -33,6 +33,7 @@ export const getChatHistory = async (userId, otherUserId) => {
     // created_at 只轉成 UTC ISO 字串（帶 Z），不要加 +08:00
     const messagesWithISO = messages.map(msg => ({
       ...msg,
+      image: msg.image_url, // 統一欄位名
       created_at: msg.created_at
         ? new Date(msg.created_at).toISOString()
         : null
