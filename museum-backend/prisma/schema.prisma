@@ -47,7 +47,7 @@ model chat_messages {
   sender_id                                  Int
   receiver_id                                Int
   content                                    String                      @db.Text
-  image_url                                  String?                     @db.Text
+  image_url                                  String?                     @db.LongText
   is_read                                    Boolean?                    @default(false)
   created_at                                 DateTime?                   @default(now()) @db.DateTime(0)
   updated_at                                 DateTime?                   @default(now()) @db.DateTime(0)
