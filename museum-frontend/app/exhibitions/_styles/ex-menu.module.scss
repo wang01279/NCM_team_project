@@ -59,7 +59,7 @@
   height: 100%;
   visibility: hidden;
   opacity: 0;
-  z-index: 50;
+  z-index: 9999;
   overflow: hidden;
 }
 
@@ -112,7 +112,7 @@
 
 .overlayMenu {
   position: relative;
-  z-index: 199;
+  z-index: 9999 !important;
   top: 50%;
   transform: translateY(-50%);
   text-align: center;
@@ -176,7 +176,7 @@
 }
 .overlayMenu {
   position: relative;
-  z-index: 2;
+  z-index: 9999;
   top: 50%;
   transform: translateY(-50%);
   text-align: center;

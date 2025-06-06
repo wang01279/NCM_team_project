@@ -1,32 +1,44 @@
 'use client'
-import { useEffect, useState } from 'react'
+
+import { useEffect } from 'react'
 import Image from 'next/image'
 
-export default function Carousel() {
-  const [exhibitions, setExhibitions] = useState([])
-
+export default function Carousel({ exhibitions = [] }) {
   useEffect(() => {
-    // 確保 Bootstrap JS 被正確加載
-    import('bootstrap/dist/js/bootstrap.bundle.min.js')
+    const timer = setTimeout(() => {
+      import('bootstrap/dist/js/bootstrap.bundle.min.js').then((module) => {
+        // ✅ 確保掛在 window 上，避免重複載入
+        if (!window.bootstrap) {
+          window.bootstrap = module
+        }
 
-    // 抓取當期展覽
-    fetch('http://localhost:3005/api/exhibitions?state=current')
-      .then((res) => res.json())
-      .then((res) => {
-        if (res?.data?.exhibitions) {
-          setExhibitions(res.data.exhibitions)
+        const el = document.getElementById('carouselExampleIndicators')
+        if (el && window.bootstrap?.Carousel) {
+          const instance = window.bootstrap.Carousel.getOrCreateInstance(el)
+          instance.pause()
+          instance.to(0) // 可選：切回第一張
+          instance.cycle()
         }
       })
-      .catch((err) => console.error('展覽取得失敗：', err))
-  }, [])
+    }, 100) // 延遲等待圖片載入完
+
+    return () => clearTimeout(timer)
+  }, [exhibitions])
+
+  if (!exhibitions || exhibitions.length === 0) {
+    return (
+      <div className="text-center my-5 text-muted">展覽輪播載入中...</div>
+    )
+  }
 
   return (
     <div
       id="carouselExampleIndicators"
-      className="carousel slide pt-0 "
+      className="carousel slide pt-0"
       data-bs-ride="carousel"
-      style={{ maxWidth: '1920px', width: '100%' }} // ← 控制整體寬度
+      style={{ maxWidth: '1920px', width: '100%' }}
     >
+      {/* Indicators */}
       <div className="carousel-indicators">
         {exhibitions.map((_, index) => (
           <button
@@ -41,11 +53,12 @@ export default function Carousel() {
         ))}
       </div>
 
+      {/* Slides */}
       <div className="carousel-inner">
         {exhibitions.map((e, index) => (
           <div
             key={e.id}
-            className={`carousel-item ${index === 0 ? 'active' : ''} `}
+            className={`carousel-item ${index === 0 ? 'active' : ''}`}
           >
             <div className="ratio ratio-16x9" style={{ maxHeight: '800px' }}>
               <Image
@@ -53,13 +66,16 @@ export default function Carousel() {
                 alt={e.title}
                 width={1000}
                 height={800}
-                style={{ height: 'auto', objectFit: 'cover' }}
+                className="d-block w-100"
+                style={{ objectFit: 'cover' }}
+                priority={index === 0} // 加快第一張載入速度
               />
             </div>
           </div>
         ))}
       </div>
 
+      {/* Controls */}
       <button
         className="carousel-control-prev"
         type="button"

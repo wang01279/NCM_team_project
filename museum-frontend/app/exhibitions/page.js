@@ -1,5 +1,6 @@
 'use client'
 
+import RedirectDefaultState from './_components/RedirectDefaultState'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import ExhibitionList from './_components/list'
@@ -9,41 +10,69 @@ import Carousel from './_components/carousel'
 import Menu from './_components/menu'
 import Footer from '../_components/footer3'
 import styles from '../exhibitions/_styles/ex-page.module.scss'
+import Loader from '../_components/load'
+
 
 // ✅ 引入動畫
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function ExhibitionPage() {
   const searchParams = useSearchParams()
-  const state = searchParams.get('state') || 'current'
-  const year = searchParams.get('year') || ''
 
-  const [selectedYear, setSelectedYear] = useState(year)
-  const [currentPage, setCurrentPage] = useState(1)
-  const pageSize = 6
+  // ✅ ❶：把 state 和 year 分別設為 state 狀態，避免初次讀不到值
+  const [state, setState] = useState(null)
+  const [year, setYear] = useState('')
+  const [selectedYear, setSelectedYear] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  const [carouselData, setCarouselData] = useState([])
 
+
+  // ✅ ❷：searchParams 變動時，重新抓取 state 與 year 值
   useEffect(() => {
-    setCurrentPage(1)
+    const newState = searchParams.get('state') || 'current'
+    const newYear = searchParams.get('year') || ''
+    setState(newState)
+    setYear(newYear)
+    setSelectedYear(newYear)
+  }, [searchParams])
+
+  // ✅ ❸：state 或 year 改變時啟動 loading 動畫
+  useEffect(() => {
+    setIsLoading(true)
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 300)
+    return () => clearTimeout(timer)
   }, [state, selectedYear])
 
   useEffect(() => {
-    setSelectedYear(year)
-  }, [year])
+    if (state === 'current') {
+      fetch('http://localhost:3005/api/exhibitions?state=current')
+        .then((res) => res.json())
+        .then((res) => {
+          if (res?.data?.exhibitions) {
+            setCarouselData(res.data.exhibitions)
+          }
+        })
+        .catch((err) => console.error('Carousel 資料錯誤：', err))
+    } else {
+      setCarouselData([]) // 切換到其他 tab 時清空資料
+    }
+  }, [state])
+
+
+  // ✅ ❹：等待 state 初始完成再 render
+  if (!state) return null
 
   return (
     <>
+      <RedirectDefaultState />
       <Navbar />
-      <div className={styles.customMargin} style={{ paddingBottom: '20px' }}>
-        <div className="d-flex justify-content-center align-items-center flex-column fw-bold">
-          <h1 className="mb-0 pb-0 fw-bolder" style={{ letterSpacing: '5px' }}>
-            展覽
-          </h1>
-          <h6 className="mt-2 pt-0 fw-bolder">Exhibition</h6>
-        </div>
-        <Tabs />
+
+      <div className={styles.customMargin} style={{ paddingTop: '30px', paddingBottom: '30px' }}>
+        <Tabs key={state} />
       </div>
 
-      {/* ✅ 將變動內容用 AnimatePresence 包起來 */}
       <AnimatePresence mode="wait">
         <motion.div
           key={state + selectedYear}
@@ -52,24 +81,32 @@ export default function ExhibitionPage() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          {state === 'current' && (
-            <section className="d-flex justify-content-center">
-              <Carousel />
-            </section>
-          )}
+          {isLoading ? (
+            <div className="text-center my-5">
+              <Loader />
+            </div>
+          ) : (
+            <>
+              {state === 'current' && (
+                <section className="d-flex justify-content-center">
+                  <Carousel exhibitions={carouselData} />
+                </section>
+              )}
 
-          {state === 'past' && (
-            <section className="mt-5 mb-1">
-              <Menu selectedYear={year} />
-            </section>
-          )}
 
-          <ExhibitionList
-            state={state}
-            year={state === 'past' ? selectedYear : ''}
-            page={currentPage}
-            pageSize={pageSize}
-          />
+              {state === 'past' && (
+                <section className="mt-5 mb-1">
+                  <Menu selectedYear={year} />
+                </section>
+              )}
+
+              <ExhibitionList
+                state={state}
+                year={state === 'past' ? selectedYear : ''}
+
+              />
+            </>
+          )}
         </motion.div>
       </AnimatePresence>
 

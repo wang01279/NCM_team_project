@@ -102,7 +102,7 @@ export default function CouponTable({
       <h5 className="fw-bold mb-3 d-flex align-items-center">
         {icon}
         <Link
-          href={typeName === '商品' ? '/products' : typeName === '課程' ? '/courses' : '#'}
+          href={typeName === '商品' ? '/products' : typeName === '課程' ? '/course' : '#'}
           className="ms-2 text-decoration-none text-dark"
           title='去逛逛'
         >
