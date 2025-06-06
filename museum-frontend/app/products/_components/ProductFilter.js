@@ -331,7 +331,7 @@ function getOptions(type) {
       { value: '矽瓷', label: '矽瓷' },
       { value: '花瓷', label: '花瓷' },
       { value: '電子書', label: '電子書' },
-      { value: '紙本套', label: '紙本套' },
+      { value: '紙本書', label: '紙本書' },
       { value: 'DVD', label: 'DVD' },
     ],
     origin: [

@@ -148,6 +148,9 @@ export default function ProductDetail({
 
           {/*商品資訊 */}
           <div className="product-right">
+            <p>
+              {product.category_name} / {product.subcategory_name}
+            </p>
             <div className="product-header-row">
               <h2 className="product-title">{product.name_zh}</h2>
               <AddToFavoritesButton

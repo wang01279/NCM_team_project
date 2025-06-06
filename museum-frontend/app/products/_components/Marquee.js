@@ -9,7 +9,7 @@ export default function Marquee() {
         <div className="marquee-track">
           <div className="marquee-content">
             <span>
-              📢 餐廚生活升級首選！質感陶瓷餐具/碗盤限時 8 折，錯過等明年～🎁
+              📢 餐廚生活升級首選！質感陶瓷餐具/碗盤期間限定 85 折，錯過等明年～🎁
               下單再送專屬好禮・滿千免運！
             </span>
             <span>
@@ -19,7 +19,7 @@ export default function Marquee() {
           </div>
           <div className="marquee-content">
             <span>
-              📢 餐廚生活升級首選！質感陶瓷餐具/碗盤限時 8 折，錯過等明年～🎁
+              📢 餐廚生活升級首選！質感陶瓷餐具/碗盤期間限定 85 折，錯過等明年～🎁
               下單再送專屬好禮・滿千免運！
             </span>
             <span>
