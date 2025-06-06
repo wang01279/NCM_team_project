@@ -8,12 +8,13 @@ import {
   FaUserFriends, FaShoppingBasket, FaPalette, FaTags,
   FaGraduationCap, FaSignOutAlt, FaMapPin, FaBook
 } from 'react-icons/fa'
-import { MdOutlineMuseum } from 'react-icons/md'
 import styles from '../_styles/AdminNavbar.module.scss'
 
 export default function AdminSidebar({ children }) {
   const [openSubmenu, setOpenSubmenu] = useState({})
   const pathname = usePathname()
+
+
 
   const sidebarItems = [
     {
@@ -123,28 +124,28 @@ export default function AdminSidebar({ children }) {
                 <div
                   className={`nav-link ${styles.customNavlink} text-white d-flex align-items-center justify-content-center text-decoration-none`}
                   onClick={() =>
-                    setOpenSubmenu(prev => ({
+                    setOpenSubmenu((prev) => ({
                       ...prev,
-                      [index]: !prev[index],
+                      [item.label]: !prev[item.label],
                     }))
                   }
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: 'pointer', marginTop: "5px" }}
                   title={item.label}
                 >
                   <div className={styles.iconWrapper}>{item.icon}</div>
-                  <span className="pt-2 ms-2">{item.label}</span>
+                  <span className=" ms-2" >{item.label}</span>
                 </div>
 
                 {/* Dropdown Items */}
-                {openSubmenu[index] && (
-                  <div className="d-flex flex-column justify-content-center align-items-start ps-3">
+                {openSubmenu[item.label] && (
+                  <div className={`ps-5 `}>
                     {item.children.map((sub, subIndex) => (
                       <Link
-                        key={subIndex}
+                        key={sub.label}
                         href={sub.href}
-                        className={`nav-link ${styles.customNavlink} text-white d-flex align-items-center text-decoration-none ${pathname === sub.href ? styles.active : ''}`}
+                        className={`nav-link text-white d-flex align-items-center text-decoration-none  ${styles.customNavlinkSub} ${pathname === sub.href ? styles.active : ''}`}
                       >
-                        <span className="ms-4">{sub.label}</span>
+                        <span className="ms-4" style={{ fontSize: "14px" }}>{sub.label}</span>
                       </Link>
                     ))}
                   </div>
@@ -164,19 +165,20 @@ export default function AdminSidebar({ children }) {
               }}
               title="返回前台網站"
             >
-              <MdOutlineMuseum className="fs-5 me-2" />
+
               <span>返回前台網站</span>
             </button>
           </Link>
           {/* 登出按鈕 */}
           <div className="mt-auto w-100 text-center">
-            <Link
-              href="/logout"
-              className="btn btn-primary w-100 d-flex align-items-center justify-content-center text-decoration-none"
-              title="登出"
-            >
-              <FaSignOutAlt />
-              <span className="ms-2">登出</span>
+            <Link href="/">
+              <button
+                className="btn btn-primary w-100 d-flex align-items-center justify-content-center text-decoration-none"
+                title="登出"
+              >
+                <FaSignOutAlt />
+                <span className="ms-2">登出</span>
+              </button>
             </Link>
           </div>
 

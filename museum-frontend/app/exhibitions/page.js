@@ -69,7 +69,7 @@ export default function ExhibitionPage() {
       <RedirectDefaultState />
       <Navbar />
 
-      <div className={styles.customMargin} style={{ paddingTop: '30px', paddingBottom: '30px' }}>
+      <div className={styles.customMargin} style={{ paddingTop: '10px', paddingBottom: '10px' }}>
         <Tabs key={state} />
       </div>
 
@@ -88,7 +88,7 @@ export default function ExhibitionPage() {
           ) : (
             <>
               {state === 'current' && (
-                <section className="d-flex justify-content-center">
+                <section className="d-flex justify-content-center my-5">
                   <Carousel exhibitions={carouselData} />
                 </section>
               )}

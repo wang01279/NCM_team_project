@@ -1,61 +1,66 @@
-.hoverGrow:hover {
-  transform: scale(1.1);
-  transition: transform 0.3s ease;
-}
-
 /* 圖示包裝優化 */
 .iconWrapper {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color:  #F5E3C3;
-    margin-right: 0.8rem !important;
-    transition: all 0.3s ease;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #f5e3c3;
+  margin-right: 0.8rem !important;
+  transition: all 0.3s ease;
 }
 
 .customNavlink {
   font-size: 1rem;
-  color: #F5E3C3;
+  color: #f5e3c3;
   transition: background-color 0.3s ease;
   // font-family: 'Courier New', Courier, monospace;
 
   &:hover {
     background: #9a3412d9;
     border-radius: 6px;
-    transform: scale(1.1);
+    // transform: scale(1.1);
   }
 
   &.active {
-    background: #9A3412;
+    background: #9a3412;
     border-radius: 6px;
     font-weight: bold;
-    transform: scale(1.1);
+    padding: 6px;
+    // transform: scale(1.1);
   }
 }
 
 .customNavlink:hover .iconWrapper {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: rotate(5deg);
+  // background-color: rgba(255, 255, 255, 0.2);
+  transform: rotate(5deg);
 }
 
 .customNavlink.active .iconWrapper {
-    background-color: #F5E3C3;
-    transform: scale(1.1);
+  background-color: #f5e3c3;
+  // transform: scale(1.1);
 }
 
 .customNavlink.active .iconWrapper {
-    color: #9A3412;
+  color: #9a3412;
 }
 
-// .submenu {
-//   overflow: hidden;
-//   max-height: 0;
-//   transition: max-height 0.3s ease;
-// }
-// .submenu.open {
-//   max-height: 500px; // 調整成符合你 submenu 的最大高度
-// }
+.customNavlinkSub {
+  font-size: 1rem;
+  color: #f5e3c3;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background: #9a3412d9;
+    border-radius: 6px;
+  }
+
+  &.active {
+    border-radius: 6px;
+    font-weight: bold;
+    background: #9a3412d9;
+    padding-top: 6px;
+  }
+}
