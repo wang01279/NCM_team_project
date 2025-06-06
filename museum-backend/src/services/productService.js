@@ -288,15 +288,31 @@ export async function fetchLatestProducts(limit = 5) {
 export async function fetchProductById(id) {
   const [rows] = await db.query(
     `SELECT
-      p.*,
-      m.name AS material_name,
-      o.name AS origin_name,
-      f.name AS function_name
-     FROM products p
-     LEFT JOIN product_materials m ON p.material_id = m.id
-     LEFT JOIN product_origins o ON p.origin_id = o.id
-     LEFT JOIN product_functions f ON p.function_id = f.id
-     WHERE p.id = ? AND p.deleted_at IS NULL`,
+  p.id,
+  p.name_zh,
+  p.name_en,
+  p.price,
+  p.discount_rate,
+  p.stock,
+  p.main_img,
+  p.description,
+  p.details,
+  p.product_story,
+  p.category_id,
+  p.subcategory_id,
+  c.name AS category_name,
+  s.name AS subcategory_name,
+  m.name AS material_name,
+  o.name AS origin_name,
+  f.name AS function_name
+FROM products p
+LEFT JOIN product_categories c ON p.category_id = c.id
+LEFT JOIN product_subcategories s ON p.subcategory_id = s.id
+LEFT JOIN product_materials m ON p.material_id = m.id
+LEFT JOIN product_origins o ON p.origin_id = o.id
+LEFT JOIN product_functions f ON p.function_id = f.id
+WHERE p.id = ? AND p.deleted_at IS NULL
+`,
     [id]
   );
   const product = rows[0] || null;
@@ -326,13 +342,29 @@ export async function fetchProductById(id) {
   return product;
 }
 
+/* 取得推薦商品 看評分高的*/
 export async function fetchRecommendedProducts(productId, categoryId) {
   const [rows] = await db.query(
-    `SELECT id, name_zh, price, discount_rate, stock, main_img
-     FROM products
-     WHERE category_id = ? AND id != ? AND deleted_at IS NULL
-     ORDER BY stock DESC
-     LIMIT 8`,
+    `
+    SELECT 
+      p.id, 
+      p.name_zh, 
+      p.price, 
+      p.discount_rate, 
+      p.stock, 
+      p.main_img,
+      AVG(r.rating) AS avg_rating
+    FROM products p
+    LEFT JOIN reviews r ON p.id = r.product_id
+    WHERE 
+      p.category_id = ? 
+      AND p.id != ? 
+      AND p.deleted_at IS NULL
+      AND p.stock > 0
+    GROUP BY p.id
+    ORDER BY avg_rating DESC
+    LIMIT 8
+    `,
     [categoryId, productId]
   );
   return rows;
@@ -410,8 +442,8 @@ export async function updateReview(
  */
 export async function fetchReviewsByProductId(productId) {
   try {
-const [reviews] = await db.query(
-  `SELECT
+    const [reviews] = await db.query(
+      `SELECT
     r.review_id AS id,
     r.product_id,
     r.member_id,
@@ -424,8 +456,8 @@ const [reviews] = await db.query(
   LEFT JOIN member_profiles mp ON r.member_id = mp.member_id
   WHERE r.product_id = ?
   ORDER BY r.created_at DESC`,
-  [productId]
-);
+      [productId]
+    );
     return reviews;
   } catch (error) {
     console.error("從資料庫取得評論失敗:", error.message);

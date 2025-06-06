@@ -57,7 +57,7 @@ export default function ProductTabs({
 
   const paragraphLines =
     typeof story === 'string' && story.trim()
-      ? story.split('\n')
+      ? story.split('\n').filter(Boolean)
       : ['暫無作品故事']
 
   return (
@@ -100,7 +100,7 @@ export default function ProductTabs({
                     className="story-border"
                     initial="hidden"
                     animate={inView ? 'show' : 'hidden'}
-                    variants={{}}
+                    // variants={lineVariants}
                   >
                     <div className="story-box">
                       <img
@@ -108,7 +108,8 @@ export default function ProductTabs({
                         className="story-icon"
                       />
                       <h3 className="story-heading">
-                        <span className="en fs-6">Story</span> <span>商品故事</span>
+                        <span className="en fs-6">Story</span>{' '}
+                        <span>商品故事</span>
                       </h3>
                       <div className="divider"></div>
                       <div className="story-paragraph">
@@ -135,7 +136,9 @@ export default function ProductTabs({
           <section id="desc" className="tab-section">
             <h4 className="fw-bold">商品說明</h4>
             <p className="mb-2">{product?.name_zh}</p>
-            <p className="desc-text">文物描述：{product?.details}</p>
+            <p className="desc-text">
+              文物描述：{product?.details?.trim() || '目前尚無商品說明'}
+            </p>
             <div className="row border-top border-1 text-center fw-bold py-2">
               <div className="col-4">材質</div>
               <div className="col-4">出產地</div>
@@ -175,9 +178,11 @@ export default function ProductTabs({
               </h4>
               <ul className="tips-list desc-text">
                 <li>台灣本島運送於付款後 3–7 個工作天可收到此商品</li>
-                <li>離島運送將無法納入免運優惠</li>
                 <li>
-                  若需將此商品配送至台灣以外地區，請透過下方聯繫資訊洽客服人員，我們將為您安排最佳的運送方式
+                  若有任何疑問，歡迎透過頁面下方聯絡方式洽詢，我們將盡快為您服務。
+                </li>
+                <li>
+                  若您對商品尺寸、風格、用途有疑慮，歡迎先透過訊息洽詢，以避免不必要的退換貨程序。
                 </li>
                 <li>
                   作品顏色僅供參考，色樣會因電腦螢幕設定不同而有誤差，顏色以實際作品為主。
