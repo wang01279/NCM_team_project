@@ -36,7 +36,7 @@ export default function Carousel({ exhibitions = [] }) {
       id="carouselExampleIndicators"
       className="carousel slide pt-0"
       data-bs-ride="carousel"
-      style={{ maxWidth: '1920px', width: '100%' }}
+      style={{ maxWidth: '1320px', width: '100%' }}
     >
       {/* Indicators */}
       <div className="carousel-indicators">
@@ -60,12 +60,12 @@ export default function Carousel({ exhibitions = [] }) {
             key={e.id}
             className={`carousel-item ${index === 0 ? 'active' : ''}`}
           >
-            <div className="ratio ratio-16x9" style={{ maxHeight: '800px' }}>
+            <div className="ratio ratio-16x9" style={{ maxHeight: '600px' }}>
               <Image
                 src={`/images/${e.image}`}
                 alt={e.title}
-                width={1000}
-                height={800}
+                width={900}
+                height={600}
                 className="d-block w-100"
                 style={{ objectFit: 'cover' }}
                 priority={index === 0} // 加快第一張載入速度

@@ -40,15 +40,15 @@
 
 .buttonContainer.active .top {
   transform: translateY(10px) rotate(45deg);
-  background: #fff;
+  background: #F4F1EA;
 }
 .buttonContainer.active .middle {
   opacity: 0;
-  background: #fff;
+  background: #F4F1EA;
 }
 .buttonContainer.active .bottom {
   transform: translateY(-10px) rotate(-45deg);
-  background: #fff;
+  background: #F4F1EA;
 }
 
 .overlay {
@@ -136,7 +136,7 @@
 .overlayMenu li {
   margin: 1rem 0;
   font-size: 2rem;
-  color: $sub-text;
+  color:$tertiary;
   opacity: 0;
   animation: fadeIn 0.6s ease forwards;
 }

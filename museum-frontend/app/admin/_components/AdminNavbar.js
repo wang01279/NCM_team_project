@@ -22,7 +22,7 @@ export default function AdminNavbar({ name = '管理員', pageTitle = '首頁' }
       navbar-scroll="true"
       style={{ backgroundColor: 'transparent' }}
     >
-      <div className="container-fluid py-2 px-2">
+      <div className="container-fluid py-2 px-2 ms-3">
         <div className="row w-100 align-items-center text-nowrap gx-3">
           {/* 左邊：麵包屑 */}
           <div className="col-12 col-md-4">

@@ -27,7 +27,6 @@
 .tabs {
   display: flex;
   justify-content: space-around;
-  // gap: 2rem;
   list-style: none;
   padding: 10px;
 }
@@ -40,7 +39,7 @@
   text-decoration: none;
   color: $info;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 19px;
   position: relative;
   transition: color 0.3s ease;
 
