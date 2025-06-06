@@ -31,7 +31,7 @@ $warning-color: #ffc107;
   width: 450px !important;
   height: 100vh;
   border-radius: 16px;
-  background: $bg-color;
+  background: #fffdfa;
   box-shadow: -2px 0 10px $shadow-color;
   display: flex;
   flex-direction: column;
@@ -232,7 +232,7 @@ $warning-color: #ffc107;
 
   // 輸入區域
   .message-input {
-    background: $bg-color;
+    background: #f7f5f1;
     padding: 1rem;
     border-top: 1px solid $border-color;
 
