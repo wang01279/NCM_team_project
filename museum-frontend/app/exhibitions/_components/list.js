@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import styles from '../_styles/ex-page.module.scss'
 
-export default function ExhibitionList({ state = 'current', year, page, pagesize }) {
+export default function ExhibitionList({ state = 'current', year}) {
   const query = new URLSearchParams({ state })
   if (year) query.append('year', year)
   const url = `http://localhost:3005/api/exhibitions?${query.toString()}`

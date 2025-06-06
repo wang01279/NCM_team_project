@@ -14,7 +14,7 @@ export default function Tabs() {
     <ul className={`${styles.tabs} ${styles['tab-menu']}`}>
       <li>
         <Link 
-          href="/exhibitions"
+          href="/exhibitions?state=current"
           className={`${styles.tabItem} ${state === 'current' ? styles.active : ''}`}
         >
           當期展覽

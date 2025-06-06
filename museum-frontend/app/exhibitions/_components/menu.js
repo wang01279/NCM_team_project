@@ -2,12 +2,16 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-
 import styles from '../_styles/ex-menu.module.scss'
+import { useSearchParams } from 'next/navigation'
+
 
 export default function Menu() {
   const [isOpen, setIsOpen] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
+  const searchParams = useSearchParams()
+  const selectedYear = searchParams.get('year')
+
 
   const toggleMenu = () => {
     if (isOpen) {
@@ -41,7 +45,7 @@ export default function Menu() {
     <>
       <div className="d-flex justify-content-center mt-3">
         <button className="btn btn-primary" onClick={toggleMenu}>
-          選擇年份 ▾
+          {selectedYear ? `已選擇：${selectedYear} ▾` : '選擇年份 ▾'}
         </button>
       </div>
 
