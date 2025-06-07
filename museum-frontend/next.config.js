@@ -11,6 +11,13 @@ const nextConfig = {
   sassOptions: {
     silenceDeprecations: ['legacy-js-api'],
   },
+
+  // devIndicators: false,
+  //------------> devIndicators: false <-----------------
+  //---------!!!!!關閉 Dev Tools 按鈕!!!!-----------------
+  //---------!!!!!關閉 Dev Tools 按鈕!!!!-----------------
+  //---------!!!!!關閉 Dev Tools 按鈕!!!!-----------------
+  //---------------怕有人找不到講三次----------------------
   images: {
     remotePatterns: [
       {

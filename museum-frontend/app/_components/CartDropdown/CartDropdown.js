@@ -12,7 +12,12 @@ export default function CartDropdown({ cartItems }) {
         </div>
       </div>
       {cartItems.length === 0 ? (
-        <div className="text-muted text-center">購物車是空的</div>
+        <div
+          className="text-muted text-center"
+          style={{ minHeight: '150px', alignContent: 'center' }}
+        >
+          購物車是空的
+        </div>
       ) : (
         <ul className="list-unstyled">
           {cartItems.map((item) => (

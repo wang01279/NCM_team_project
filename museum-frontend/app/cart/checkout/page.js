@@ -45,7 +45,6 @@ export default function CheckoutPage() {
     cardCVC: '',
     cardHolder: '',
   })
-  const shippingFee = shipping.shippingMethod === '超商' ? 45 : 50
 
   const [discountInfo, setDiscountInfo] = useState({
     productDiscount: 0,
@@ -53,6 +52,12 @@ export default function CheckoutPage() {
     selectedProductCoupon: null,
     selectedCourseCoupon: null,
   })
+  const hasProduct = cartItems.some((item) => item.type === 'product')
+  const shippingFee = hasProduct
+    ? shipping.shippingMethod === '超商'
+      ? 45
+      : 50
+    : 0 // 沒有商品，全是課程時，免運
 
   useEffect(() => {
     if (store711?.storename && store711?.storeaddress) {
@@ -145,13 +150,19 @@ export default function CheckoutPage() {
           const itemsStr = cleanedItems
             .map((item) => `${item.title || item.name}X${item.quantity}`)
             .join(',')
-          const totalPrice = cleanedItems.reduce(
+          const originalTotal = cleanedItems.reduce(
             (acc, item) => acc + item.price * item.quantity,
             0
           )
-          window.location.href = `http://localhost:3005/api/ecpay-test-only?amount=${totalPrice}&items=${encodeURIComponent(
-            itemsStr
-          )}`
+
+          const discountAmount =
+            (discountInfo.productDiscount || 0) +
+            (discountInfo.courseDiscount || 0)
+
+          const totalPrice = originalTotal - discountAmount + shippingFee
+          window.location.href = `http://localhost:3005/api/ecpay-test-only?amount=${Math.round(
+            totalPrice
+          )}&items=${encodeURIComponent(itemsStr)}`
         }
       } else {
         alert(`訂單建立失敗：${res.message}`)
@@ -211,6 +222,7 @@ export default function CheckoutPage() {
                           onChange={setShipping}
                           store711={store711}
                           openWindow={openWindow}
+                          hasProduct={hasProduct}
                         />
                         <Payment value={payment} onChange={setPayment} />
                       </div>
