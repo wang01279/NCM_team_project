@@ -7,7 +7,7 @@ import FavoriteCard from './_components/FavoriteCard'
 import Loader from '@/app/_components/load'
 import styles from './_styles/favoritesTab.module.scss'
 import { FaReply, FaTrashAlt } from 'react-icons/fa'
-import { FaEye } from "react-icons/fa6";
+import { FaEye } from 'react-icons/fa6'
 import { useToast } from '@/app/_components/ToastManager'
 import FavoriteCourseRowCard from '@/app/course/_components/FavoriteCourseRowCard'
 
@@ -157,38 +157,98 @@ export default function FavoritesTab({ type = 'menu', setType }) {
         <Loader />
       ) : data.length > 0 ? (
         type === 'product' ? (
-          <div className="table-responsive">
-            <table className={`table align-middle ${styles.favoriteTable}`}>
-              <thead className="text-start">
-                <tr>
-                  <th>圖片</th>
-                  <th>商品名稱</th>
-                  <th>分類</th>
-                  <th>子分類</th>
-                  <th>價格</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <img
-                        src={item.main_img}
-                        alt={item.name_zh}
-                        width={80}
-                        height={80}
-                        style={{ objectFit: 'contain' }}
-                      />
-                    </td>
-                    <td>{item.name_zh}</td>
-                    <td>{item.category_name}</td>
-                    <td>{item.subcategory_name}</td>
-                    <td>{`NT$${Math.round(item.price).toLocaleString()}`}</td>
-                    <td>
-                      <div className={styles.actionGroup}>
+          <>
+            {/*電腦版*/}
+            <div className="table-responsive d-none d-md-block">
+              <table className={`table align-middle ${styles.favoriteTable}`}>
+                <thead className="text-start">
+                  <tr>
+                    <th>圖片</th>
+                    <th>商品名稱</th>
+                    <th>分類</th>
+                    <th>子分類</th>
+                    <th>價格</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((item) => (
+                    <tr key={item.id}>
+                      <td>
+                        <img
+                          src={item.main_img}
+                          alt={item.name_zh}
+                          width={100}
+                          height={100}
+                          style={{ objectFit: 'contain' }}
+                        />
+                      </td>
+                      <td>{item.name_zh}</td>
+                      <td>{item.category_name}</td>
+                      <td>{item.subcategory_name}</td>
+                      <td>{`NT$${Math.round(item.price).toLocaleString()}`}</td>
+                      <td>
+                        <div className={styles.actionGroup}>
+                          <button
+                            className="btn btn-outline-primary btn-sm me-2"
+                            onClick={() =>
+                              window.open(
+                                `/products/details/${item.id}`,
+                                '_blank'
+                              )
+                            }
+                          >
+                            <FaEye />
+                          </button>
+                          <button
+                            className="btn btn-outline-danger btn-sm"
+                            onClick={() => handleRemove(item.id)}
+                          >
+                            <FaTrashAlt />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* 手機版*/}
+            <div className="d-block d-md-none">
+              {data.map((item) => (
+                <div
+                  key={item.id}
+                  className={`card mb-3 shadow-sm ${styles.cardMobile}`}
+                >
+                  <div className="card-body d-flex">
+                    <img
+                      src={item.main_img}
+                      alt={item.name_zh}
+                      className="img-thumbnail m-2 me-3"
+                      style={{
+                        width: '110px',
+                        height: '110px',
+                        objectFit: 'cover',
+                        borderRadius: '8px',
+                      }}
+                    />
+                    <div className="flex-grow-1">
+                      <div className="fw-bold">{item.name_zh}</div>
+                      <div className="text-muted">
+                        {item.category_name} / {item.subcategory_name}
+                      </div>
+                      <div className="text-danger mb-2">
+                        NT${Math.round(item.price).toLocaleString()}
+                      </div>
+                      <div className="d-flex gap-2">
                         <button
-                          className="btn btn-outline-primary btn-sm"
+                          className="btn btn-outline-primary btn-sm px-2 py-1"
+                          style={{
+                            fontSize: '0.875rem',
+                            width: '50px',
+                            height: '36px',
+                          }}
                           onClick={() =>
                             window.open(
                               `/products/details/${item.id}`,
@@ -199,18 +259,23 @@ export default function FavoritesTab({ type = 'menu', setType }) {
                           <FaEye />
                         </button>
                         <button
-                          className="btn btn-outline-danger btn-sm"
+                          className="btn btn-outline-danger btn-sm px-2 py-1"
+                          style={{
+                            fontSize: '0.875rem',
+                            width: '50px',
+                            height: '36px',
+                          }}
                           onClick={() => handleRemove(item.id)}
                         >
                           <FaTrashAlt />
                         </button>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         ) : type === 'course' ? (
           <div>
             {data.map((item) => (
