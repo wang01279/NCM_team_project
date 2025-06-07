@@ -95,7 +95,7 @@ export default function TabCoupons({ category, coupons = [], token, memberId }) 
     : sortedCoupons.filter((c) => c.source === 'normal')
 
   return (
-    <div className={`container my-4 ${styles.borderCustom} ${styles.fadeIn}`}>
+    <div className={`container ${styles.borderCustom} ${styles.fadeIn}`}>
       {/* ✅ Header */}
       <div className="row pt-3 px-3 mb-3 align-items-center">
         <div className="col-12 col-md-6 mb-2 mb-md-0">

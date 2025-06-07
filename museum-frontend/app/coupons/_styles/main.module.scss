@@ -1,14 +1,25 @@
+.challengeBox {
+  @media (max-width: 576px) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
 .scrollPrompt {
   text-align: center;
+  animation: bounce 1s infinite;
+  &:hover {
+    animation: none; // ✅ 滑鼠移上時可選擇停止搖動
+    transition: transform 0.5s ease; // ✅ 這行讓放大變得自然、平滑
+    transform: scale(1.05);
+  }
 
-  button {
-    animation: bounce 1s infinite;
-    
+  @media (max-width: 576px) {
+    margin: 0px;
+    padding: 5px;
 
-    &:hover {
-      animation: none; // ✅ 滑鼠移上時可選擇停止搖動
-      transition: transform .5s ease; // ✅ 這行讓放大變得自然、平滑
-      transform: scale(1.05);
+    h6 {
+      font-size: 14px;
     }
   }
 }
@@ -26,23 +37,6 @@
 .scrollAnchor {
   position: relative;
 }
-
-// .gradientText {
-//   // background: linear-gradient(270deg, #ff8c00, #ff2d55, #8a2be2, #00bcd4, #ff8c00);
-//   background-size: 1000% 100%;
-//   -webkit-background-clip: text;
-//   -webkit-text-fill-color: transparent;
-//   animation: flowText 5s linear infinite;
-// }
-
-// @keyframes flowText {
-//   0% {
-//     background-position: 0% 50%;
-//   }
-//   100% {
-//     background-position: 100% 50%;
-//   }
-// }
 
 .gameSection {
   position: relative;
@@ -98,7 +92,7 @@
   background-image:
     // radial-gradient(circle, rgba(248, 241, 227, 0.9), rgba(255, 255, 255, 0.3)),
     // url('../../../public/images/coupon_bg_transparent.png'); // 背景剪影圖案
-  url('../../../public/images/c_bg_1.png');
+    url('../../../public/images/c_bg_1.png');
   background-size: cover;
   background-position: right;
   background-repeat: repeat;
@@ -110,30 +104,13 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-}
 
-.button {
-  h5 {
-    font-size: 14px;
-  }
-}
-
-.scrollPrompt {
-  position: fixed;
-  right: 100px;
-  top: 40%;
-  transform: translateY(-50%);
-  // z-index: 1;
-
-  // 可選：加點陰影、背景等視覺強化
-  .btn {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    // padding: 30px;
-  }
-
-  @media (max-width: 420px) {
-    right: 5px;
-    top: 50%;
+  @media (max-width: 576px) {
+    h3 {
+      font-size: 20px;
+    }
+    h6 {
+      font-size: 14px;
+    }
   }
 }
