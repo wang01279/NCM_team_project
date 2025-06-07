@@ -2,9 +2,10 @@ import Image from 'next/image'
 import { FaRegCalendarPlus } from 'react-icons/fa'
 import Link from 'next/link'
 import styles from '../_styles/courseDetail.module.scss'
+import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 
 
-export default function FavoriteCourseRowCard({ course, onRemove }) {
+export default function FavoriteCourseRowCard({ course, isFavorite, onToggleFavorite }) {
   return (
     <div
       style={{
@@ -17,8 +18,28 @@ export default function FavoriteCourseRowCard({ course, onRemove }) {
         boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
         overflow: 'hidden',
         minHeight: 180,
+        position: 'relative',
       }}
     >
+      {/* 右上角收藏按鈕 */}
+      <div
+        className="product-actions ms-1 mb-0 p-0 d-flex align-items-center"
+        style={{
+          position: 'absolute',
+          top: 20,
+          right: 20,
+          zIndex: 2,
+          gap: '15px'
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        <AddToFavoritesButton
+          itemId={course.id}
+          itemType="course"
+          isFavorite={isFavorite(course.id)}
+          onToggleFavorite={onToggleFavorite}
+        />
+      </div>
       {/* 左圖＋右側介紹都可點擊 */}
       <Link
         href={`/course/${course.id}`}
@@ -63,13 +84,7 @@ export default function FavoriteCourseRowCard({ course, onRemove }) {
       {/* 右側功能區塊 */}
       <div style={{ flex: '0 0 220px', padding: '1.2rem 1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-          <button
-            className="btn btn-outline-danger btn-sm"
-            onClick={() => onRemove(course.id)}
-            style={{ marginLeft: 12 }}
-          >
-            移除收藏
-          </button>
+          {/* 空白，或可放其他功能 */}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 18 }}>
           <div style={{ fontWeight: 600, color: '#b85c00', fontSize: 18 }}>

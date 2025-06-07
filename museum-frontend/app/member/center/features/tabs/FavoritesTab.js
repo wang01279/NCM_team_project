@@ -96,6 +96,19 @@ export default function FavoritesTab({ type = 'menu', setType }) {
     </div>
   )
 
+  // 新增 isFavorite 函式
+  const isFavorite = (id) => data.some(item => item.id === id)
+
+  // 新增 onToggleFavorite 函式
+  const handleToggleFavorite = async (itemId, itemType, newState) => {
+    if (!newState) {
+      await handleRemove(itemId)
+      return true
+    }
+    // 若要支援重新收藏，可在這裡加上 addFavoriteByType
+    return false
+  }
+
   if (type === 'menu') {
     return (
       <div className="container-fluid p-0">
@@ -204,7 +217,8 @@ export default function FavoritesTab({ type = 'menu', setType }) {
               <FavoriteCourseRowCard
                 key={item.id}
                 course={item}
-                onRemove={handleRemove}
+                isFavorite={isFavorite}
+                onToggleFavorite={handleToggleFavorite}
               />
             ))}
           </div>
