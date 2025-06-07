@@ -177,10 +177,15 @@
 
 .actionGroup {
   display: flex;
-  gap: 0.5rem; // ✅ 間距設定
+  gap: 0.5rem; //間距設定
 
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
   }
+}
+.cardMobile {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #fff;
 }
