@@ -4,8 +4,11 @@ import Link from 'next/link'
 import styles from '../_styles/courseDetail.module.scss'
 import AddToFavoritesButton from '@/app/_components/AddToFavoritesButton'
 
-
-export default function FavoriteCourseRowCard({ course, isFavorite, onToggleFavorite }) {
+export default function FavoriteCourseRowCard({
+  course,
+  isFavorite,
+  onToggleFavorite,
+}) {
   return (
     <div
       style={{
@@ -29,9 +32,9 @@ export default function FavoriteCourseRowCard({ course, isFavorite, onToggleFavo
           top: 20,
           right: 20,
           zIndex: 2,
-          gap: '15px'
+          gap: '15px',
         }}
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         <AddToFavoritesButton
           itemId={course.id}
@@ -70,36 +73,94 @@ export default function FavoriteCourseRowCard({ course, isFavorite, onToggleFavo
             minWidth: 0,
           }}
         >
-          <h5 style={{ fontWeight: 700, fontSize: 20, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <h5
+            style={{
+              fontWeight: 700,
+              fontSize: 20,
+              margin: 0,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
             {course.title}
           </h5>
-          <div style={{ color: '#888', fontSize: 15, margin: '0.5rem 0 0.7rem 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <div
+            style={{
+              color: '#888',
+              fontSize: 15,
+              margin: '0.5rem 0 0.7rem 0',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
             ｜授課地點：{course.venue_name}
           </div>
-          <div style={{ fontSize: 15, color: '#444', marginBottom: 0, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+          <div
+            style={{
+              fontSize: 15,
+              color: '#444',
+              marginBottom: 0,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
             {course.description_intro}
           </div>
         </div>
       </Link>
       {/* 右側功能區塊 */}
-      <div style={{ flex: '0 0 220px', padding: '1.2rem 1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+      <div
+        style={{
+          flex: '0 0 220px',
+          padding: '1.2rem 1.5rem',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+          }}
+        >
           {/* 空白，或可放其他功能 */}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 18 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: 18,
+          }}
+        >
           <div style={{ fontWeight: 600, color: '#b85c00', fontSize: 18 }}>
             {course.price ? `${course.price} ntd` : ''}
           </div>
-          <div style={{ color: '#555', fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div
+            style={{
+              color: '#555',
+              fontSize: 15,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+            }}
+          >
             <FaRegCalendarPlus style={{ marginRight: 4 }} />
             {new Date(course.start_time).toLocaleDateString('zh-TW', {
               year: 'numeric',
               month: 'long',
-              day: 'numeric'
+              day: 'numeric',
             })}
           </div>
         </div>
       </div>
     </div>
   )
-} 
+}
