@@ -17,7 +17,7 @@ export default function ForgotPasswordForm({ formData, setFormData, setIsVerific
   const handleSendCode = async (e) => {
     e.preventDefault()
     if (!formData.email) {
-      showToast('error', '請輸入電子郵件')
+      showToast('danger', '請輸入電子郵件')
       return
     }
 
@@ -39,7 +39,7 @@ export default function ForgotPasswordForm({ formData, setFormData, setIsVerific
       setIsVerificationSent(true)
     } catch (err) {
       console.error('忘記密碼錯誤:', err)
-      showToast('error', err.message || '系統錯誤，請稍後再試')
+      showToast('danger', err.message || '系統錯誤，請稍後再試')
     } finally {
       setLoading(false)
     }
