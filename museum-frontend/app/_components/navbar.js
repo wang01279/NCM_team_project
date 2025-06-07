@@ -92,6 +92,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout()
+    showToast('secondary', '您已登出！謝謝光臨！')
     router.push('/')
   }
 
