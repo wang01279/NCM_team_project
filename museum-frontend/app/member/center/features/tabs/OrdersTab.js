@@ -73,6 +73,9 @@ export default function OrdersTab({ filter = 'processing' }) {
     window.addEventListener('resize', checkScreen)
     return () => window.removeEventListener('resize', checkScreen)
   }, [])
+  useEffect(() => {
+    setCurrentPage(1) // 篩選條件變更時，自動回到第一頁
+  }, [filter])
 
   return (
     <>
