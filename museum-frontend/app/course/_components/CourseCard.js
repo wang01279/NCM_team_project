@@ -36,7 +36,7 @@ export default function CourseCard({
             itemId={course.id}
             itemType="course"
             isFavorite={isFavorite(course.id)}
-            onToggleFavorite={onToggleFavorite}
+            onToggleFavorite={(itemId, _itemType, nextState) => onToggleFavorite(itemId, nextState)}
           />
         </div>
         <div className={styles.courseCardBodyContent}>
