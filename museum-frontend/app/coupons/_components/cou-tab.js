@@ -31,10 +31,10 @@ export default function CouTab({ token, memberId }) {
 
   return (
     <>
-      <ul className={`mt-5 ${styles.tabs} ${styles.tabMenu}`}>
+      <ul className={`${styles.tabs} ${styles.tabMenu}`}>
         <li>
           <div
-            className={`fs-5 d-flex align-items-center ${styles.tabItem} ${activeTab === 'products' ? styles.active : ''}`}
+            className={` d-flex align-items-center ${styles.tabItem} ${activeTab === 'products' ? styles.active : ''}`}
             onClick={() => setActiveTab('products')}
           >
             <FaGift className="me-2 p-0" /> 商品適用
@@ -42,7 +42,7 @@ export default function CouTab({ token, memberId }) {
         </li>
         <li>
           <div
-            className={`fs-5 d-flex align-items-center ${styles.tabItem} ms-2 ${activeTab === 'courses' ? styles.active : ''}`}
+            className={`d-flex align-items-center ${styles.tabItem} ms-2 ${activeTab === 'courses' ? styles.active : ''}`}
             onClick={() => setActiveTab('courses')}
           >
             <FaBookOpen className="me-2" /> 課程適用
@@ -50,7 +50,7 @@ export default function CouTab({ token, memberId }) {
         </li>
       </ul>
 
-      <div className="mt-4">
+      <div>
         {activeTab === 'products' && (
           <TabCoupons category="商品" coupons={productCoupons} token={token} memberId={memberId} />
         )}

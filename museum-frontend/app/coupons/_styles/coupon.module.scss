@@ -7,6 +7,12 @@
 }
 .borderCustom {
   min-height: 60vh;
+
+  @media (max-width: 576px) {
+    h5 {
+      font-size: 14px;
+    }
+  }
 }
 
 .tabMenu {
@@ -22,7 +28,8 @@
   justify-content: space-around;
   gap: 2rem;
   list-style: none;
-  margin-bottom: 2rem;
+  margin-top: 30px;
+  // margin-bottom: 2rem;
   padding: 10px;
 }
 
@@ -30,10 +37,14 @@
   text-decoration: none;
   color: $sub-text;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 20px;
   position: relative;
   transition: color 0.3s ease;
   font-family: 'Noto Serif TC', serif;
+
+  @media (max-width: 576px) {
+    font-size: 14px;
+  }
 }
 
 .tabItem:hover {
@@ -75,7 +86,7 @@
   // border: 0px solid !important;
 }
 
-.sortBtn{
+.sortBtn {
   background: $light !important;
   cursor: pointer;
 }
@@ -86,7 +97,6 @@
   width: 300px;
   overflow: hidden;
   border-radius: 12px;
-  // background-color: #E3DCD2;
   background-color: $light !important;
   box-shadow: 0 5px 6px rgba(0, 0, 0, 0.3);
   cursor: pointer;
@@ -95,6 +105,10 @@
 
   &:hover {
     transform: translateY(-4px);
+  }
+
+  @media (max-width:576px) {
+    font-size: 15px;
   }
 
   .overlay {
@@ -135,32 +149,10 @@
     color: $danger;
     z-index: 2;
   }
-}
 
-// 領取後灰階樣式
-.claimed {
-  filter: grayscale(100%);
-  opacity: 0.65;
-  pointer-events: none; // 讓使用者不能再點擊
-}
-
-.claimedLabel {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.9);
-  color: $light;
-  font-size: 0.85rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-}
-
-.verticleText {
-  writing-mode: sideways-rl; /* 垂直從右到左 */
-  transform: 'rotate(90deg)';
-  letter-spacing: 0.1em;
-  color: $main-text; 
+  @media (max-width: 576px) {
+    font-size: 14px;
+  }
 }
 
 // 加到主畫面容器

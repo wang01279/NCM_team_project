@@ -29,23 +29,21 @@ export default function CouponPage() {
         showByDefault={true}
       />
 
-      <div className={styles.titleCover} style={{ marginTop: '80px' }}>
+      <div className={styles.titleCover} style={{ marginTop: '50px' }}>
         <h3 className="mb-0 pb-0 fw-bold text-center" style={{ letterSpacing: '2px' }}>
           優惠券領取專區
         </h3>
         <h6 className="mt-2 pt-0 m-0 fw-bold text-center">Coupon Redemption Area</h6>
 
       </div>
-
+      <div className={`d-flex justify-content-end align-items-center ${styles.challengeBox}`}>
+        <button className={`btn btn-primary ${styles.scrollPrompt}`} style={{marginRight: '140px', marginTop: '20px'}} onClick={scrollToGame}>
+          <h6 className="m-auto p-1 text-light">
+            開始領券挑戰 <GiClick className="ms-1 p-0 my-0" />
+          </h6>
+        </button>
+      </div>
       <div className="container">
-        <div className={`${styles.scrollPrompt}`}>
-          <button className={`btn btn-primary ${styles.button}`} onClick={scrollToGame}>
-            <h5 className={`m-auto p-1 ${styles.gradientText}`}>
-              開始領券挑戰 <GiClick className="ms-1 p-0 my-0" />
-            </h5>
-          </button>
-        </div>
-
         {/* ✅ 傳入 token 和 memberId */}
         <CouTab token={token} memberId={memberId} />
       </div>
