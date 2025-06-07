@@ -345,7 +345,10 @@ export default function ProductPage() {
         <Loader />
       ) : (
         <>
-          <HeroSlider />
+         
+            <HeroSlider />
+      
+
           <CategoryShowcase onCategoryClick={handleCategoryClick} />
           <div id="category-menu">
             <CategoryMenu onCategoryClick={handleCategoryClick} />
