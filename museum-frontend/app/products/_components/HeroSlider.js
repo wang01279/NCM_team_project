@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
-import '../_styles/heroSlider.scss'
+import heroSliderStyles from '../_styles/heroSlider.module.scss'
 import Link from 'next/link'
 
 export default function HeroSlider() {
@@ -87,36 +87,39 @@ export default function HeroSlider() {
   }
 
   return (
-    <section className="hero-section py-5">
-      <div className="slider-container container">
-        {/* <div className="slider-title">
+    <section className={heroSliderStyles['hero-section'] + ' py-5'}>
+      <div className={heroSliderStyles['slider-container'] + ' container'}>
+        {/* <div className={heroSliderStyles['slider-title']}>
           <h1 className="text-center fw-bold">新品上市</h1>
           <h4 className="text-center">New Arrivals</h4>
         </div> */}
         {/* {isMobile && (
-          <div className="mobile-arrows d-flex justify-content-center gap-4 my-3">
-            <button className="btn-arrow btn-primary" onClick={handlePrev}>
+          <div className={heroSliderStyles['mobile-arrows'] + ' d-flex justify-content-center gap-4 my-3'}>
+            <button className={heroSliderStyles['btn-arrow'] + ' btn-primary'} onClick={handlePrev}>
               <FaArrowLeft />
             </button>
-            <button className="btn-arrow btn-primary" onClick={handleNext}>
+            <button className={heroSliderStyles['btn-arrow'] + ' btn-primary'} onClick={handleNext}>
               <FaArrowRight />
             </button>
           </div>
         )} */}
 
-        <div className="slider">
+        <div className={heroSliderStyles['slider']}>
           {bgImages.map((bg, index) => (
             <div
               key={index}
-              className={`slide ${index === current ? 'active' : ''}`}
+              className={
+                heroSliderStyles['slide'] +
+                (index === current ? ' ' + heroSliderStyles['active'] : '')
+              }
             >
-              <img src={bg} className="bg-img" alt={`背景${index + 1}`} />
+              <img src={bg} className={heroSliderStyles['bg-img']} alt={`背景${index + 1}`} />
             </div>
           ))}
 
-          <div className="click-zones">
+          <div className={heroSliderStyles['click-zones']}>
             <div
-              className="zone prev"
+              className={heroSliderStyles['zone'] + ' ' + heroSliderStyles['prev']}
               onClick={handlePrev}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') handlePrev()
@@ -125,13 +128,13 @@ export default function HeroSlider() {
               role="button"
               tabIndex="0"
             >
-              <div className="arrow" ref={leftArrowRef}>
+              <div className={heroSliderStyles['arrow']} ref={leftArrowRef}>
                 <FaArrowLeft />
               </div>
             </div>
 
             <div
-              className="zone next"
+              className={heroSliderStyles['zone'] + ' ' + heroSliderStyles['next']}
               onClick={handleNext}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') handleNext()
@@ -140,7 +143,7 @@ export default function HeroSlider() {
               role="button"
               tabIndex="0"
             >
-              <div className="arrow" ref={rightArrowRef}>
+              <div className={heroSliderStyles['arrow']} ref={rightArrowRef}>
                 <FaArrowRight />
               </div>
             </div>
@@ -148,19 +151,19 @@ export default function HeroSlider() {
         </div>
       </div>
 
-      <div className="product-container">
-        <div className="contents">
+      <div className={heroSliderStyles['product-container']}>
+        <div className={heroSliderStyles['contents']}>
           {products.map((product, index) => {
-            let className = 'content'
-            if (index === current) className += ' active'
-            if (index === prev) className += ' exit'
+            let className = heroSliderStyles['content']
+            if (index === current) className += ' ' + heroSliderStyles['active']
+            if (index === prev) className += ' ' + heroSliderStyles['exit']
 
             return (
               <Link key={product.id} href={`/products/details/${product.id}`}>
                 <div className={className}>
                   <img
                     src={product.main_img}
-                    className="main-product-img"
+                    className={heroSliderStyles['main-product-img']}
                     alt={product.name_zh}
                   />
                   <h4 className="fw-bold mt-2">{product.name_zh}</h4>
