@@ -57,7 +57,7 @@ export default function FavoriteCourseRowCard({
         <div style={{ flex: '0 0 220px', position: 'relative' }}>
           <Image
             src={course.main_image || '/default-course.jpg'}
-            alt={course.title}
+            alt={course.title || '課程圖片'}
             width={220}
             height={180}
             style={{ objectFit: 'cover', height: '100%' }}
