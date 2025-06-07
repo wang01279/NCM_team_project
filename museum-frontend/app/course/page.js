@@ -386,7 +386,7 @@ export default function CourseListPage() {
         />
       </section>
 
-      <main className="container mb-5 position-relative">
+      <main className="container position-relative">
         <div className="row">
           <div className="col-12 col-lg-10 mx-auto">
             <section ref={containerRef} className={styles.classContainer}>
@@ -525,33 +525,6 @@ export default function CourseListPage() {
               </div>
             </section>
 
-            {/* 駐村藝術家區塊 */}
-            <section className={styles.classContainer}>
-              <h3 className={styles.sectionTitle}>駐村藝術家</h3>
-              <section className={styles.artistWaveMinimalSection}>
-                <div className={styles.artistWaveIntroBox}>
-                  <TypingEffectText text="輸入中..." className={styles.artistWaveTyping} />
-                  <div className={styles.artistWaveIntroDesc}>
-                    與我們優秀的駐村藝術家一同譜寫生活的篇章
-                  </div>
-                </div>
-                {artists.map((artist, idx) => (
-                  <div className={styles.artistWaveBar} key={artist.id || idx}>
-                    <ArtistTypewriterName name={artist.name} />
-                    <img
-                      src={artist.avatar || '/default-avatar.jpg'}
-                      alt={artist.name}
-                      className={styles.artistWaveAvatar}
-                      draggable={false}
-                    />
-                  </div>
-                ))}
-              </section>
-            </section>
-
-            {/* 課程購買注意事項區塊（可折疊） */}
-            <CourseNotice />
-
             {/* Venue Map Section */}
             {/* <section>
               <h3 className={styles.sectionTitle}>場地配置圖</h3>
@@ -566,6 +539,36 @@ export default function CourseListPage() {
           </div>
         </div>
       </main>
+
+      {/* 駐村藝術家區塊 */}
+      <section className={`mb-5 ${styles.classContainer}`}>
+        <h3 className={styles.sectionTitle}>駐村藝術家</h3>
+        <section className={styles.artistWaveMinimalSection}>
+          <div className={`${styles.artistWaveIntroBox} mx-5`}>
+            <TypingEffectText text="輸入中..." className={styles.artistWaveTyping} />
+            <div className={styles.artistWaveIntroDesc}>
+              與我們優秀的駐村藝術家一同譜寫生活的篇章
+            </div>
+          </div>
+          {artists.map((artist, idx) => (
+            <div className={styles.artistWaveBar} key={artist.id || idx}>
+              <ArtistTypewriterName name={artist.name} />
+              <img
+                src={artist.avatar || '/default-avatar.jpg'}
+                alt={artist.name}
+                className={styles.artistWaveAvatar}
+                draggable={false}
+              />
+            </div>
+          ))}
+        </section>
+      </section>
+
+      <div className={styles.courseNoticeSection}>
+        <CourseNotice />
+      </div>
+
+    
 
       {/* Modal 彈窗 */}
       {modalOpen && selectedCourse && (

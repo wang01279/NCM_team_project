@@ -301,9 +301,8 @@ body :focus {
 
 .artistWaveIntroBox {
   position: absolute;
-  left: 0;
+  left: 10%;
   top: 0;
-  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -741,10 +740,6 @@ body {
   pointer-events: none;
 }
 
-.commentBubbleSection {
-  height: 650px;
-  // overflow: hidden;
-}
 
 .commentBubbleList {
   width: 100%;
@@ -1001,6 +996,11 @@ body {
 }
 
 .classContainer {
+  margin-top: 150px;
+  // margin-bottom: 150px;
+}
+
+.courseNoticeSection {
   margin-top: 150px;
   margin-bottom: 150px;
 }

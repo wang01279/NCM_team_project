@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
     let rows
     if (id) {
       [rows] = await db.query(
-        `SELECT c.*, m.email as member_email, p.name as member_name
+        `SELECT c.*, m.email as member_email, p.name as member_name, p.avatar as member_avatar
          FROM comment c
          LEFT JOIN members m ON c.member_id = m.id
          LEFT JOIN member_profiles p ON p.member_id = m.id
@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
       )
     } else {
       [rows] = await db.query(
-        `SELECT c.*, m.email as member_email, p.name as member_name
+        `SELECT c.*, m.email as member_email, p.name as member_name, p.avatar as member_avatar
          FROM comment c
          LEFT JOIN members m ON c.member_id = m.id
          LEFT JOIN member_profiles p ON p.member_id = m.id
@@ -31,6 +31,17 @@ router.get('/', async (req, res) => {
         [type]
       )
     }
+    // 處理 avatar 為完整 URL
+    const host = process.env.SERVER_ORIGIN || req.protocol + '://' + req.get('host')
+    rows = rows.map(row => {
+      let avatar = row.member_avatar
+      if (avatar) {
+        if (!avatar.startsWith('http://') && !avatar.startsWith('https://')) {
+          avatar = host + avatar
+        }
+      }
+      return { ...row, member_avatar: avatar }
+    })
     res.json(rows)
   } catch (err) {
     res.status(500).json({ message: '取得評論失敗' })
