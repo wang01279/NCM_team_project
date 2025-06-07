@@ -7,6 +7,8 @@ export default function OrderSummary2({
   discountInfo,
   shippingMethod,
 }) {
+  const hasProduct = cartItems.some((item) => item.type === 'product')
+  const shippingFee = hasProduct ? (shippingMethod === '超商' ? 45 : 50) : 0
   const productSubtotal = cartItems
     .filter((item) => item.type === 'product')
     .reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -14,14 +16,11 @@ export default function OrderSummary2({
   const courseSubtotal = cartItems
     .filter((item) => item.type === 'course')
     .reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const totalSubtotal = productSubtotal + courseSubtotal
+  // const totalSubtotal = productSubtotal + courseSubtotal
 
   const productDiscount = discountInfo?.productDiscount || 0
   const courseDiscount = discountInfo?.courseDiscount || 0
-  const totalDiscount = productDiscount + courseDiscount
-
-  // ✅ 根據運送方式決定運費
-  const shippingFee = shippingMethod === '超商' ? 45 : 50
+  // const totalDiscount = productDiscount + courseDiscount
 
   const finalTotal =
     productSubtotal +
@@ -71,10 +70,16 @@ export default function OrderSummary2({
               </>
             )}
 
-            <div className="d-flex justify-content-between">
+            {/* <div className="d-flex justify-content-between">
               <div>運費（{shippingMethod || '宅配'}）</div>
               <div>${shippingFee.toLocaleString()}</div>
-            </div>
+            </div> */}
+            {hasProduct && (
+              <div className="d-flex justify-content-between">
+                <div>運費（{shippingMethod}）</div>
+                <div>NT$ {shippingFee.toLocaleString()}</div>
+              </div>
+            )}
             <hr />
             <div className="d-flex justify-content-between fw-bold">
               <div>合計</div>

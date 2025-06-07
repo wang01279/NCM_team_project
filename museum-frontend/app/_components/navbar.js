@@ -65,7 +65,7 @@ export default function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false)
   // const cartItems = [] // 這裡可接
   // const [cartItems, setCartItems] = useState([])
-  const { cartItems } = useCart()
+  const { cartItems, clearCart } = useCart()
 
   /* -------------------- Effects ---------------------- */
   // 1. 監聽捲動：縮小／還原 Header
@@ -91,6 +91,7 @@ export default function Navbar() {
   }
 
   const handleLogout = () => {
+    clearCart()
     logout()
     router.push('/')
   }
@@ -205,11 +206,21 @@ export default function Navbar() {
 
           {/* Desktop nav ----------------------------------------------------------------*/}
           <div className="nav-menu desktop-menu">
-            <Link href="/" className={isActive('/') ? 'active' : ''}>首頁</Link>
-            <Link href="/exhibitions" className={isActive('/exhibitions') ? 'active' : ''} onClick={closeMenu}>
+            <Link href="/" className={isActive('/') ? 'active' : ''}>
+              首頁
+            </Link>
+            <Link
+              href="/exhibitions"
+              className={isActive('/exhibitions') ? 'active' : ''}
+              onClick={closeMenu}
+            >
               展覽
             </Link>
-            <Link href="/course" className={isActive('/course') ? 'active' : ''} onClick={closeMenu}>
+            <Link
+              href="/course"
+              className={isActive('/course') ? 'active' : ''}
+              onClick={closeMenu}
+            >
               課程
             </Link>
             <Link
@@ -224,9 +235,9 @@ export default function Navbar() {
             <div className="nav-right">
               {/* 客服 */}
               {isLoggedIn && (
-              <a href="#" className="nav-icon"  onClick={handleChatClick}>
-                <FaCommentDots className="icon" />
-              </a>
+                <a href="#" className="nav-icon" onClick={handleChatClick}>
+                  <FaCommentDots className="icon" />
+                </a>
               )}
               {/* 購物車 */}
               {/* <a href="/cart" className="nav-icon">
@@ -358,13 +369,25 @@ export default function Navbar() {
         {/* Mobile nav (side‑drawer) ----------------------------------------------------- */}
         <aside className={`mobile-nav ${menuOpen ? 'active' : ''}`}>
           <nav className="nav-menu">
-            <Link href="/exhibitions" className={isActive('/exhibitions') ? 'active' : ''} onClick={closeMenu}>
+            <Link
+              href="/exhibitions"
+              className={isActive('/exhibitions') ? 'active' : ''}
+              onClick={closeMenu}
+            >
               展覽
             </Link>
-            <Link href="/course" className={isActive('/course') ? 'active' : ''} onClick={closeMenu}>
+            <Link
+              href="/course"
+              className={isActive('/course') ? 'active' : ''}
+              onClick={closeMenu}
+            >
               課程
             </Link>
-            <Link href="/products" className={isActive('/products') ? 'active' : ''} onClick={closeMenu}>
+            <Link
+              href="/products"
+              className={isActive('/products') ? 'active' : ''}
+              onClick={closeMenu}
+            >
               故瓷電商
             </Link>
           </nav>
@@ -378,8 +401,16 @@ export default function Navbar() {
                     className="mobile-profile-header"
                     onClick={handleNavigateToMemberCenter}
                     tabIndex={0}
-                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleNavigateToMemberCenter() }}
-                    style={{ background: 'none', border: 'none', width: '100%', padding: 0 }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ')
+                        handleNavigateToMemberCenter()
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      width: '100%',
+                      padding: 0,
+                    }}
                   >
                     <img
                       src={member?.avatar || '/img/ncmLogo/logo-ncm.png'}
@@ -400,11 +431,18 @@ export default function Navbar() {
                   </button>
                   <div className="mobile-nav-actions">
                     {isLoggedIn && (
-                      <Link href="/cart" className="mobile-nav-icon" onClick={closeMenu}>
+                      <Link
+                        href="/cart"
+                        className="mobile-nav-icon"
+                        onClick={closeMenu}
+                      >
                         <FaShoppingCart className="icon" />
                         {cartItems.length > 0 && (
                           <span className="cart-count">
-                            {cartItems.reduce((total, item) => total + item.quantity, 0)}
+                            {cartItems.reduce(
+                              (total, item) => total + item.quantity,
+                              0
+                            )}
                           </span>
                         )}
                         {/* <span className="mobile-nav-label style={{ color: '#7b2d12' }}>購物車</span> */}
@@ -419,7 +457,10 @@ export default function Navbar() {
                           closeMenu()
                         }}
                       >
-                        <FaCommentDots className="icon" style={{ color: '#7b2d12' }} />
+                        <FaCommentDots
+                          className="icon"
+                          style={{ color: '#7b2d12' }}
+                        />
                         {/* <span className="mobile-nav-label" style={{ color: '#7b2d12' }}>客服中心</span> */}
                       </button>
                     )}
@@ -446,7 +487,9 @@ export default function Navbar() {
         onClick={closeMenu}
         role="button"
         tabIndex={0}
-        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') closeMenu() }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') closeMenu()
+        }}
       />
 
       {/* Login Modal */}

@@ -54,7 +54,8 @@ const OrderSchema = z
   )
   .refine(
     (data) => {
-      if (data.shippingMethod === "宅配") {
+      const hasProduct = data.cartItems.some((item) => item.type === "product");
+      if (hasProduct && data.shippingMethod === "宅配") {
         return (
           data.city?.trim() && data.district?.trim() && data.address?.trim()
         );
@@ -68,7 +69,8 @@ const OrderSchema = z
   )
   .refine(
     (data) => {
-      if (data.shippingMethod === "超商") {
+      const hasProduct = data.cartItems.some((item) => item.type === "product");
+      if (hasProduct && data.shippingMethod === "超商") {
         return data.store?.trim();
       }
       return true;
@@ -147,7 +149,7 @@ router.post("/", async (req, res) => {
         totalPrice,
         discount ?? 0,
         "處理中",
-        shippingMethod === "超商" ? store : null, 
+        shippingMethod === "超商" ? store : null,
       ]
     );
 

@@ -6,7 +6,13 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import twzipcode from 'twzipcode-data'
 import Image from 'next/image'
 
-export default function Shipping({ value, onChange, store711, openWindow }) {
+export default function Shipping({
+  value,
+  onChange,
+  store711,
+  openWindow,
+  hasProduct,
+}) {
   /* ---------- 區域／縣市下拉 ---------- */
   const [cities, setCities] = useState([])
   const [zipcodes, setZipcodes] = useState([])
@@ -60,11 +66,21 @@ export default function Shipping({ value, onChange, store711, openWindow }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store711])
 
+  if (!hasProduct) return null
+
   return (
     <div className="col-md-12">
       <h4 className="mb-4">取貨方式*</h4>
 
-      <Accordion defaultActiveKey="home" style={{ backgroundColor: '#f8f9fa' }}>
+      <Accordion
+        defaultActiveKey={
+          value.shippingMethod === '宅配'
+            ? 'home'
+            : value.shippingMethod === '超商'
+              ? 'store'
+              : null
+        }
+      >
         {/* ---------- 宅配 ---------- */}
         <Accordion.Item eventKey="home" className="accordion-item-shipping">
           <Accordion.Header

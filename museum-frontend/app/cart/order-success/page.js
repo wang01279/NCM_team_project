@@ -1,5 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
+import { useCart } from '@/app/_context/CartContext'
 import React, { useEffect } from 'react'
 import Image from 'next/image'
 import Navbar from '../../_components/navbar'
@@ -8,9 +9,10 @@ import './orderSuccess.scss'
 
 export default function CartSuccessPage() {
   const router = useRouter()
+  const { clearCart } = useCart()
 
   useEffect(() => {
-    localStorage.removeItem('cartItems')
+    clearCart()
     localStorage.removeItem('store711')
     localStorage.removeItem('cartDiscount')
   }, [])

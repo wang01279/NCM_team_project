@@ -126,9 +126,17 @@ export default function OrdersTab({ filter = 'processing' }) {
                         <div className="text-muted">
                           付款方式：{order.payment_method_name}
                         </div>
-                        <div className="text-muted">
-                          運送方式：{order.shipping_method}
-                        </div>
+                        {order.items.some(
+                          (item) => item.item_type === 'product'
+                        ) ? (
+                          <div className="text-muted">
+                            運送方式：{order.shipping_method}
+                          </div>
+                        ) : (
+                          <div className="text-muted">
+                            運送方式：此訂單為課程，無需運送
+                          </div>
+                        )}
                       </div>
 
                       <div
@@ -163,15 +171,23 @@ export default function OrdersTab({ filter = 'processing' }) {
                           transition={{ duration: 0.3 }}
                         >
                           <div className="mb-3">
-                            <div> 購買人：{order.recipient_name}</div>
-                            <div> 電話：{order.recipient_phone}</div>
-                            <div> 信箱：{order.recipient_email}</div>
-                            {order.shipping_method === '宅配' && (
-                              <div> 收件地址：{order.recipient_address}</div>
-                            )}
-                            {order.shipping_method === '超商' && (
-                              <div> 取貨門市：{order.store_name}</div>
-                            )}
+                            <div>購買人：{order.recipient_name}</div>
+                            <div>電話：{order.recipient_phone}</div>
+                            <div>信箱：{order.recipient_email}</div>
+
+                            {order.shipping_method === '宅配' &&
+                              (order.recipient_address ? (
+                                <div>收件地址：{order.recipient_address}</div>
+                              ) : null)}
+
+                            {order.shipping_method === '超商' &&
+                              (order.store_name ? (
+                                <div>取貨門市：{order.store_name}</div>
+                              ) : (
+                                <div className="text-muted">
+                                  （此筆訂單為課程，無超商門市）
+                                </div>
+                              ))}
                           </div>
 
                           <ul className="list-unstyled">
