@@ -68,7 +68,7 @@ export default function AdminNavbar({ name = '管理員', pageTitle = '首頁' }
                   marginLeft: '4px',
                 }}
               />
-              {name}
+              <h6>admin</h6>
             </span>
           </div>
         </div>
