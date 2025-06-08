@@ -14,11 +14,9 @@ export default function AdminSidebar({ children }) {
   const [openSubmenu, setOpenSubmenu] = useState({})
   const pathname = usePathname()
 
-
-
   const sidebarItems = [
     {
-      href: '/admin/coupon_upload',
+      href: '/admin/member_upload',
       icon: <FaUserFriends />,
       label: '會員管理',
       children: [
@@ -27,23 +25,23 @@ export default function AdminSidebar({ children }) {
       ],
     },
     {
-      href: '/admin/exhibition_upload',
+      href: '/admin/product_upload',
       icon: <FaShoppingBasket />,
       label: '商品管理',
       children: [
-        { href: '/admin/member', label: '商品列表' },
-        { href: '/admin/frozen', label: '新增商品' },
-        { href: '/admin/frozen', label: '已刪除商品' },
+        { href: '/admin/product', label: '商品列表' },
+        { href: '/admin/product/create', label: '新增商品' },
+        { href: '/admin/product/frozen', label: '已刪除商品' },
       ],
     },
     {
-      href: '/admin/member',
+      href: '/admin/teacher_upload',
       icon: <FaGraduationCap />,
       label: '師資管理',
       children: [
-        { href: '/admin/member', label: '師資列表' },
-        { href: '/admin/frozen', label: '新增師資' },
-        { href: '/admin/frozen', label: '停權師資' },
+        { href: '/admin/teacher_upload', label: '師資列表' },
+        { href: '/admin/teacher_upload', label: '新增師資' },
+        { href: '/admin/teacher_upload', label: '停權師資' },
       ],
     },
     {
@@ -60,9 +58,9 @@ export default function AdminSidebar({ children }) {
       icon: <FaMapPin />,
       label: '場地管理',
       children: [
-        { href: '/admin/member', label: '場地列表' },
-        { href: '/admin/frozen', label: '新增場地' },
-        { href: '/admin/frozen', label: '預約清單' },
+        { href: '/admin/course', label: '場地列表' },
+        { href: '/admin/course', label: '新增場地' },
+        { href: '/admin/course', label: '預約清單' },
       ],
     },
     {
@@ -76,8 +74,8 @@ export default function AdminSidebar({ children }) {
       icon: <FaBook />,
       label: '課程管理',
       children: [
-        { href: '/admin/member', label: '課程列表' },
-        { href: '/admin/frozen', label: '新增課程' },
+        { href: '/admin/venue', label: '課程列表' },
+        { href: '/admin/venue', label: '新增課程' },
       ],
     },
   ]
@@ -133,19 +131,19 @@ export default function AdminSidebar({ children }) {
                   title={item.label}
                 >
                   <div className={styles.iconWrapper}>{item.icon}</div>
-                  <span className=" ms-2" >{item.label}</span>
+                  <span>{item.label}</span>
                 </div>
 
                 {/* Dropdown Items */}
                 {openSubmenu[item.label] && (
-                  <div className={`ps-5 `}>
-                    {item.children.map((sub, subIndex) => (
+                  <div >
+                    {item.children.map((sub) => (
                       <Link
                         key={sub.label}
                         href={sub.href}
-                        className={`nav-link text-white d-flex align-items-center text-decoration-none  ${styles.customNavlinkSub} ${pathname === sub.href ? styles.active : ''}`}
+                        className={` ${styles.customNavlinkSub} nav-link text-white d-flex justify-content-center align-items-center text-decoration-none ${pathname === sub.href ? styles.active : ''}`}
                       >
-                        <span className="ms-4" style={{ fontSize: "14px" }}>{sub.label}</span>
+                        {sub.label}
                       </Link>
                     ))}
                   </div>
@@ -155,32 +153,21 @@ export default function AdminSidebar({ children }) {
           </nav>
         </div>
 
-        <div className='d-flex justify-content-center align-items-center flex-column'>
+        <div className='d-flex justify-content-center align-items-center flex-column '>
+
           <Link href="/">
             <button
-              className="btn btn-outline-light d-flex align-items-center justify-content-center mb-3"
+              className="btn btn-primary d-flex align-items-center justify-content-center text-decoration-none"
               style={{
                 width: '180px',
-                transition: 'width 0.3s ease',
               }}
-              title="返回前台網站"
+              title="登出"
             >
-
-              <span>返回前台網站</span>
+              <FaSignOutAlt />
+              <span className="ms-2">登出</span>
             </button>
           </Link>
-          {/* 登出按鈕 */}
-          <div className="mt-auto w-100 text-center">
-            <Link href="/">
-              <button
-                className="btn btn-primary w-100 d-flex align-items-center justify-content-center text-decoration-none"
-                title="登出"
-              >
-                <FaSignOutAlt />
-                <span className="ms-2">登出</span>
-              </button>
-            </Link>
-          </div>
+
 
         </div>
 
