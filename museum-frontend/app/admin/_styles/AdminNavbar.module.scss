@@ -16,31 +16,25 @@
   font-size: 1rem;
   color: #f5e3c3;
   transition: background-color 0.3s ease;
-  // font-family: 'Courier New', Courier, monospace;
 
   &:hover {
     background: #9a3412d9;
     border-radius: 6px;
-    // transform: scale(1.1);
   }
 
   &.active {
     background: #9a3412;
     border-radius: 6px;
     font-weight: bold;
-    padding: 6px;
-    // transform: scale(1.1);
   }
 }
 
 .customNavlink:hover .iconWrapper {
-  // background-color: rgba(255, 255, 255, 0.2);
   transform: rotate(5deg);
 }
 
 .customNavlink.active .iconWrapper {
   background-color: #f5e3c3;
-  // transform: scale(1.1);
 }
 
 .customNavlink.active .iconWrapper {
@@ -55,12 +49,13 @@
   &:hover {
     background: #9a3412d9;
     border-radius: 6px;
+
   }
 
   &.active {
     border-radius: 6px;
     font-weight: bold;
-    background: #9a3412d9;
-    padding-top: 6px;
+    background: #9a3412d9 !important;
+    
   }
 }
