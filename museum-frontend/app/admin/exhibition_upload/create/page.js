@@ -87,7 +87,7 @@ export default function ExhibitionCreatePage() {
   }
 
   return (
-    <div className="container">
+    <div className="container" style={{overflow: "hidden"}}>
       <h2 className="mb-4 text-center">新增展覽</h2>
       {error && <div className="alert alert-danger">{error}</div>}
       <form
