@@ -30,7 +30,6 @@ export default function BuyerInfo({ value, onChange }) {
             placeholder="請輸入真實姓名"
             value={value.name || ''}
             onChange={handleChange}
-            required
           />
         </FloatingLabel>
 
@@ -50,7 +49,6 @@ export default function BuyerInfo({ value, onChange }) {
             placeholder="輸入手機號碼"
             value={value.phone || ''}
             onChange={handleChange}
-            required
           />
         </FloatingLabel>
 
@@ -70,7 +68,6 @@ export default function BuyerInfo({ value, onChange }) {
             placeholder="輸入電子信箱"
             value={value.email || ''}
             onChange={handleChange}
-            required
           />
         </FloatingLabel>
       </div>
