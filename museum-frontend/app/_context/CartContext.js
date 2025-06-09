@@ -76,7 +76,8 @@ export function CartProvider({ children }) {
 
   // 清空購物車
   const clearCart = () => {
-    setCartItems([])
+    localStorage.removeItem('cartItems') // 清除 localStorage
+    setCartItems([]) // 清除 React 狀態
   }
 
   return (
