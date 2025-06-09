@@ -218,8 +218,9 @@ export default function CourseListPage() {
       const windowHeight = window.innerHeight;
       if (rect.bottom > 0 && rect.top < windowHeight) {
         let top = Math.max(rect.top, 0) + Math.min(rect.height, windowHeight, rect.bottom) / 2 - sidebarHeight / 2;
+       
         sidebar.style.position = 'fixed';
-        sidebar.style.left = '0';
+        sidebar.style.left = '-100px';
         sidebar.style.top = `${top}px`;
         sidebar.style.transform = 'none';
         sidebar.classList.remove('hide');

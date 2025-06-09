@@ -5,12 +5,11 @@ import styles from '../_styles/CourseList.module.scss'
 import { FaRegCalendarPlus } from 'react-icons/fa'
 import '@/app/_styles/components/productCard.scss'
 
-
 export default function CourseCard({
   course,
   isFavorite,
   onToggleFavorite,
-  onCalendarClick
+  onCalendarClick,
 }) {
   return (
     <div className={styles.courseCard}>
@@ -29,14 +28,16 @@ export default function CourseCard({
             top: 20,
             right: 20,
             zIndex: 2,
-            gap: '15px'
+            gap: '15px',
           }}
         >
           <AddToFavoritesButton
             itemId={course.id}
             itemType="course"
             isFavorite={isFavorite(course.id)}
-            onToggleFavorite={(itemId, _itemType, nextState) => onToggleFavorite(itemId, nextState)}
+            onToggleFavorite={(itemId, _itemType, nextState) =>
+              onToggleFavorite(itemId, nextState)
+            }
           />
         </div>
         <div className={styles.courseCardBodyContent}>
@@ -55,11 +56,12 @@ export default function CourseCard({
           <div className={styles.divider}></div>
           <div className={styles.courseDateFooter}>
             <p className={`col-6 ${styles.courseDateadd}`}>加入行事曆</p>
-            <p className={`col-6 ${styles.courseDate}`}
+            <p
+              className={`col-6 ${styles.courseDate}`}
               style={{ cursor: 'pointer' }}
               title="加入 Google 行事曆"
-              onClick={e => {
-                e.stopPropagation();
+              onClick={(e) => {
+                e.stopPropagation()
                 onCalendarClick && onCalendarClick(course)
               }}
             >
@@ -67,12 +69,12 @@ export default function CourseCard({
               {new Date(course.start_time).toLocaleDateString('zh-TW', {
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric'
+                day: 'numeric',
               })}
             </p>
           </div>
         </div>
       </div>
-    </div >
+    </div>
   )
-} 
+}

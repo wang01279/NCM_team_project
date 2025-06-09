@@ -58,6 +58,12 @@ export default function OrderSummary({
                 onChange={(selected) =>
                   onProductCouponChange(selected?.original || null)
                 }
+                menuPortalTarget={
+                  typeof window !== 'undefined' ? document.body : null
+                }
+                styles={{
+                  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                }}
               />
             </>
           )}
@@ -74,6 +80,12 @@ export default function OrderSummary({
                 onChange={(selected) =>
                   onCourseCouponChange(selected?.original || null)
                 }
+                menuPortalTarget={
+                  typeof window !== 'undefined' ? document.body : null
+                }
+                styles={{
+                  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                }}
               />
             </>
           )}

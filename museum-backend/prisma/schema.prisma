@@ -264,22 +264,7 @@ model members {
   chat_messages_chat_messages_receiver_idTomembers chat_messages[]   @relation("chat_messages_receiver_idTomembers")
   comment                                          comment[]
   member_profiles                                  member_profiles[]
-  messages_messages_from_user_idTomembers          messages[]        @relation("messages_from_user_idTomembers")
-  messages_messages_to_user_idTomembers            messages[]        @relation("messages_to_user_idTomembers")
   reviews                                          reviews[]
-}
-
-model messages {
-  id                                     Int      @id @default(autoincrement())
-  from_user_id                           Int
-  to_user_id                             Int
-  content                                String   @db.Text
-  timestamp                              DateTime @default(now()) @db.Timestamp(0)
-  members_messages_from_user_idTomembers members  @relation("messages_from_user_idTomembers", fields: [from_user_id], references: [id], onUpdate: Restrict, map: "messages_ibfk_1")
-  members_messages_to_user_idTomembers   members  @relation("messages_to_user_idTomembers", fields: [to_user_id], references: [id], onUpdate: Restrict, map: "messages_ibfk_2")
-
-  @@index([from_user_id], map: "from_user_id")
-  @@index([to_user_id], map: "to_user_id")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -486,8 +471,8 @@ model reviews {
 }
 
 enum coupons_category {
-  // 商品 @map("商品")
-  // 課程 @map("課程")
+   商品 @map("商品")
+   課程 @map("課程")
 }
 
 enum member_profiles_gender {
@@ -502,8 +487,8 @@ enum admins_role {
 }
 
 enum coupons_type {
-  // 百分比 @map("百分比")
-  // 現金 @map("現金")
+   百分比 @map("百分比")
+   現金 @map("現金")
 }
 
 enum teachers_status {
@@ -541,8 +526,8 @@ enum chat_messages_message_type {
 }
 
 enum coupons_status {
-  // 啟用 @map("啟用")
-  // 停用 @map("停用")
+   啟用 @map("啟用")
+   停用 @map("停用")
 }
 
 enum chat_messages_status {
@@ -552,13 +537,13 @@ enum chat_messages_status {
 }
 
 enum member_coupons_category {
-  // 商品 @map("商品")
-  // 課程 @map("課程")
+   商品 @map("商品")
+   課程 @map("課程")
 }
 
 enum member_coupons_type {
-  // 百分比 @map("百分比")
-  // 現金 @map("現金")
+    百分比 @map("百分比")
+    現金 @map("現金")
 }
 
 enum comment_comment_type {

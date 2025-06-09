@@ -13,6 +13,8 @@ body {
   font-family: "Noto Serif TC", serif;
   color: var(--text-color);
   // background-color: var(--light-bg);
+
+  overflow-x: hidden;
 }
 
 body :focus {
