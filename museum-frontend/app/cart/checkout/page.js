@@ -18,6 +18,7 @@ import BuyerInfo from '../_components/BuyerInfo'
 import Payment from '../_components/Payment'
 import OrderSummary2 from '../_components/OrderSummary2'
 import Loader from '../../_components/load'
+import ErrorModal from './../_components/ErrorModal'
 
 import './checkout.scss'
 
@@ -25,6 +26,8 @@ export default function CheckoutPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const { cartItems } = useCart()
+  const [showErrorModal, setShowErrorModal] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const { store711, openWindow } = useShip711StoreOpener(`${apiUrl}/cart/711`, {
     autoCloseMins: 3,
@@ -98,8 +101,16 @@ export default function CheckoutPage() {
       shippingFee,
     })
     if (!result.success) {
-      const errors = result.error.flatten().fieldErrors
-      alert('欄位錯誤：' + Object.values(errors)[0][0])
+      const fieldErrors = Object.values(
+        result.error.flatten().fieldErrors
+      ).flat()
+      const formErrors = result.error.flatten().formErrors
+      const allErrors = [...fieldErrors, ...formErrors]
+
+      const firstError = allErrors[0] || '表單驗證失敗'
+
+      setErrorMessage(firstError) // ❗只傳一條錯誤訊息
+      setShowErrorModal(true)
       return
     }
 
@@ -262,6 +273,12 @@ export default function CheckoutPage() {
           </div>
         </>
       )}
+      <ErrorModal
+        show={showErrorModal}
+        onClose={() => setShowErrorModal(false)}
+        message={errorMessage}
+      />
+
       <Footer3 />
     </>
   )

@@ -6,8 +6,12 @@ const hasProduct = (cartItems) =>
 export const OrderSchema = z
   .object({
     name: z.string().min(1, '請填寫姓名'),
-    email: z.string().email('Email 格式錯誤'),
-    phone: z.string().min(8, '請填寫電話'),
+    phone: z
+      .string()
+      .min(1, '請填寫電話')
+      .regex(/^09\d{8}$/, '請填寫正確的手機號碼'),
+
+    email: z.string().min(1, '請輸入電子信箱').email('Email 格式錯誤'),
 
     shippingMethod: z.enum(['宅配', '超商']).optional(),
     city: z.string().optional(),
