@@ -168,7 +168,7 @@ const initializeSocket = (server) => {
         }
 
         // 保存消息到數據庫
-        const message = await prisma.chatMessage.create({
+        const message = await prisma.chat_messages.create({
           data: {
             sender_id: senderId,
             receiver_id: receiver_id,
