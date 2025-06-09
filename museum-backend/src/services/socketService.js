@@ -168,7 +168,7 @@ const initializeSocket = (server) => {
         }
 
         // 保存消息到數據庫
-        const message = await prisma.chatMessage.create({
+        const message = await prisma.chat_messages.create({
           data: {
             sender_id: senderId,
             receiver_id: receiver_id,
@@ -232,11 +232,11 @@ const initializeSocket = (server) => {
     socket.on('markAsRead', async (messageId) => {
       try {
         // 先查出該訊息的 sender_id
-        const msg = await prisma.chatMessage.findUnique({
+        const msg = await prisma.chat_messages.findUnique({
           where: { id: messageId },
           select: { sender_id: true }
         })
-        await prisma.chatMessage.update({
+        await prisma.chat_messages.update({
           where: { id: messageId },
           data: { status: 'read' }
         })

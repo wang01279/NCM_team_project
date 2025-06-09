@@ -1,5 +1,7 @@
 'use client'
 
+import Select from 'react-select'
+
 export default function OrderSummary({
   items = [],
   productCoupons = [],
@@ -22,6 +24,18 @@ export default function OrderSummary({
   const finalTotal =
     productTotal - productDiscount + courseTotal - courseDiscount
 
+  const toSelectOptions = (coupons) =>
+    coupons.map((c) => ({
+      value: c.uuid_code,
+      label:
+        (c.type === '百分比'
+          ? `滿${c.minSpend} 享 ${c.discount}% 折扣`
+          : `滿${c.minSpend} 折 ${c.discount} 元`) +
+        (!c.isAvailable ? `（${c.reason}）` : ''),
+      isDisabled: !c.isAvailable,
+      original: c,
+    }))
+
   return (
     <div
       className="card sticky-top p-3 order-bg"
@@ -34,59 +48,33 @@ export default function OrderSummary({
         <div className="mb-3">
           {productTotal > 0 && (
             <>
-              <label className="form-label">商品優惠券</label>
-              <select
-                className="form-select mb-2"
-                onChange={(e) => {
-                  const code = e.target.value
-                  const coupon = productCoupons.find(
-                    (c) => c.uuid_code === code
-                  )
-                  onProductCouponChange(coupon || null)
-                }}
-              >
-                <option value="">請選擇商品優惠券</option>
-                {productCoupons.map((c) => (
-                  <option
-                    key={c.uuid_code}
-                    value={c.uuid_code}
-                    disabled={!c.isAvailable}
-                  >
-                    {c.type === '百分比'
-                      ? `滿${c.minSpend} 享 ${c.discount}% 折扣`
-                      : `滿${c.minSpend} 折 ${c.discount} 元`}
-                    {!c.isAvailable && `（${c.reason}）`}
-                  </option>
-                ))}
-              </select>
+              <label className="form-label mb-1">商品優惠券</label>
+              <Select
+                className="react-selectinput-container mb-2"
+                classNamePrefix="react-select"
+                options={toSelectOptions(productCoupons)}
+                isClearable
+                placeholder="請選擇商品優惠券"
+                onChange={(selected) =>
+                  onProductCouponChange(selected?.original || null)
+                }
+              />
             </>
           )}
 
           {courseTotal > 0 && (
             <>
-              <label className="form-label">課程優惠券</label>
-              <select
-                className="form-select"
-                onChange={(e) => {
-                  const code = e.target.value
-                  const coupon = courseCoupons.find((c) => c.uuid_code === code)
-                  onCourseCouponChange(coupon || null)
-                }}
-              >
-                <option value="">請選擇課程優惠券</option>
-                {courseCoupons.map((c) => (
-                  <option
-                    key={c.uuid_code}
-                    value={c.uuid_code}
-                    disabled={!c.isAvailable}
-                  >
-                    {c.type === '百分比'
-                      ? `滿${c.minSpend} 享 ${c.discount}% 折扣`
-                      : `滿${c.minSpend} 折 ${c.discount} 元`}
-                    {!c.isAvailable && `（${c.reason}）`}
-                  </option>
-                ))}
-              </select>
+              <label className="form-label mb-1">課程優惠券</label>
+              <Select
+                className="react-selectinput-container"
+                classNamePrefix="react-select"
+                options={toSelectOptions(courseCoupons)}
+                isClearable
+                placeholder="請選擇課程優惠券"
+                onChange={(selected) =>
+                  onCourseCouponChange(selected?.original || null)
+                }
+              />
             </>
           )}
         </div>

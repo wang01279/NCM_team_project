@@ -3,7 +3,22 @@
 // .cart-page {
 //   padding-top: 80px;
 // }
+@use '../_styles/foundation/palette' as *;
 
+:root {
+  --primary: #{$primary};
+  --secondary: #{$secondary};
+  --success: #{$success};
+  --danger: #{$danger};
+  --warning: #{$warning};
+  --info: #{$info};
+  --light: #{$light};
+  --dark: #{$dark};
+  --main-bg: #{$main-bg};
+  --sub-bg: #{$sub-bg};
+  --main-text: #{$main-text};
+  --sub-text: #{$sub-text};
+}
 .myCart {
   border-bottom: #383b3a 3px solid;
 }
@@ -248,5 +263,44 @@
 
   @media (max-width: 767.98px) {
     position: static;
+  }
+}
+
+.react-selectinput-container {
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 99999;
+}
+
+.react-select__control {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.react-select__menu {
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.react-select__menu-list {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.react-select__option {
+  padding: 8px 12px;
+  margin: 0 !important;
+  border: none;
+  color: #333;
+  background-color: white;
+
+  &--is-focused {
+    background-color: #f5f5f5 !important;
+  }
+
+  &--is-selected {
+    background-color: $primary !important;
+    color: white !important;
   }
 }
