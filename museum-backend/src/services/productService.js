@@ -417,7 +417,7 @@ export async function updateReview(
 ) {
   try {
     const [result] = await db.query(
-      `UPDATE reviews SET rating = ?, comment = ? WHERE review_id = ? AND member_id = ?`,
+      `UPDATE reviews SET rating = ?, comment = ?, created_at= NOW() WHERE review_id = ? AND member_id = ?`,
       [rating, comment, reviewId, memberIdFromAuth]
     );
 

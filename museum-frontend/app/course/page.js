@@ -220,7 +220,7 @@ export default function CourseListPage() {
         let top = Math.max(rect.top, 0) + Math.min(rect.height, windowHeight, rect.bottom) / 2 - sidebarHeight / 2;
        
         sidebar.style.position = 'fixed';
-        sidebar.style.left = '-100px';
+        sidebar.style.left = '0px';
         sidebar.style.top = `${top}px`;
         sidebar.style.transform = 'none';
         sidebar.classList.remove('hide');
