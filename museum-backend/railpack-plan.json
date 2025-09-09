@@ -1,0 +1,7 @@
+{
+  "copy": [
+    "/src",
+    "/package.json",
+    "/package-lock.json"
+  ]
+}
