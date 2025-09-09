@@ -3,67 +3,38 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// 初始化數據庫連接
-// ben粉在此使用 連線池
-const db = await mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  port: process.env.DB_PORT || 3306,
-  user: process.env.DB_USER || "admin",
-  password: process.env.DB_PASSWORD || "12345",
-  database: process.env.DB_NAME || "museum_db",
-
-  // 下面這行是關鍵：告訴 MySQL 「所有 TIMESTAMP 欄位都當成 +08:00 來操作」
-  timezone: "+08:00",
-
-  
-  waitForConnections: true,
-  connectionLimit: 5,
-  queueLimit: 0,
-});
+// 初始化數據庫連接池
+const db = process.env.DATABASE_URL
+  ? await mysql.createPool(process.env.DATABASE_URL)
+  : await mysql.createPool({
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      user: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
+      timezone: "+08:00",
+      waitForConnections: true,
+      connectionLimit: 5,
+      queueLimit: 0,
+    });
 
 // 測試數據庫連接
 const testConnection = async () => {
   try {
     const connection = await db.getConnection();
-    console.log('✅ 數據庫連接成功！');
+    console.log("✅ 數據庫連接成功！");
     connection.release();
     return true;
   } catch (error) {
-    console.error('❌ 數據庫連接失敗：', error.message);
+    console.error("❌ 數據庫連接失敗：", error.message);
     return false;
   }
 };
 
-// 立即執行測試
-testConnection();
-
-const createMessagesTable = `
-CREATE TABLE IF NOT EXISTS messages (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  from_user_id INT NOT NULL,
-  to_user_id INT NOT NULL,
-  content TEXT NOT NULL,
-  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (from_user_id) REFERENCES members(id),
-  FOREIGN KEY (to_user_id) REFERENCES members(id)
-)`;
-
-// 在初始化數據庫時執行
-const initDatabase = async () => {
-  try {
-    await db.query(createMessagesTable);
-    console.log('Messages table created or already exists');
-  } catch (error) {
-    console.error('Error creating messages table:', error);
-  }
-};
-
-initDatabase();
-
-// 創建數據庫表
+// 建立資料表
 const createTables = async () => {
   try {
-    // 創建會員表
+    // 先建立會員表
     await db.query(`
       CREATE TABLE IF NOT EXISTS members (
         id INT PRIMARY KEY AUTO_INCREMENT,
@@ -78,13 +49,33 @@ const createTables = async () => {
       )
     `);
 
-    // ... existing code ...
+    console.log("✅ Members table created or already exists");
+
+    // 再建立訊息表（依賴 members）
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS messages (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        from_user_id INT NOT NULL,
+        to_user_id INT NOT NULL,
+        content TEXT NOT NULL,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (from_user_id) REFERENCES members(id),
+        FOREIGN KEY (to_user_id) REFERENCES members(id)
+      )
+    `);
+
+    console.log("✅ Messages table created or already exists");
   } catch (error) {
-    console.error('創建數據庫表錯誤:', error);
+    console.error("❌ 建立資料表錯誤:", error);
     throw error;
   }
 };
 
-// ... existing code ...
+// 初始化
+(async () => {
+  await testConnection();
+  await createTables();
+})();
 
-export default db; 
+export default db;
+

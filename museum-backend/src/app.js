@@ -6,11 +6,11 @@ import { initializeSocket } from "./services/socketService.js";
 import memberRoutes from "./routes/memberRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import exhibitionsRoutes from "./routes/exhibitions/index.js";
-import exhibitionsUploadsRoutes from "./routes/exhibitionUploads/index.js"
+import exhibitionsUploadsRoutes from "./routes/exhibitionUploads/index.js";
 import couponsRoutes from "./routes/coupons/index.js";
 import couponsClaimRoutes from "./routes/couponsClaim/index.js";
 import memberCouponsRoutes from "./routes/memberCoupons/index.js";
-import couponUploadsRoutes from './routes/couponUploads/index.js'
+import couponUploadsRoutes from "./routes/couponUploads/index.js";
 import productFavRoutes from "./routes/favorites/products.js";
 import courseFavRoutes from "./routes/favorites/courses.js";
 import exhibitionFavRoutes from "./routes/favorites/exhibitions.js";
@@ -26,7 +26,7 @@ import productRoutes from "./routes/products/index.js";
 import orderRoutes from "./routes/orders/index.js";
 import shipmentRoutes from "./routes/cart/index.js";
 import ecpayTestInlyRoutes from "./routes/ecpay-test-only.js";
-import commentsRouter from './routes/comments.js'
+import commentsRouter from "./routes/comments.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,7 +39,12 @@ const server = http.createServer(app);
 // 中間件
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://museum-backend-production.up.railway.app",
+      "https://ncm-team-project.vercel.app/"
+    ],
+
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -145,7 +150,7 @@ app.use("/api/exhibitionUploads", exhibitionsUploadsRoutes);
 app.use("/api/coupons", couponsRoutes);
 app.use("/api/couponsClaim", couponsClaimRoutes);
 app.use("/api/memberCoupons", memberCouponsRoutes);
-app.use('/api/couponUploads', couponUploadsRoutes)
+app.use("/api/couponUploads", couponUploadsRoutes);
 app.use("/api/favorites/products", productFavRoutes);
 app.use("/api/favorites/courses", courseFavRoutes);
 app.use("/api/favorites/exhibitions", exhibitionFavRoutes);
@@ -153,7 +158,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/cart", shipmentRoutes);
 app.use("/api/ecpay-test-only", ecpayTestInlyRoutes);
-app.use('/api/comments', commentsRouter)
+app.use("/api/comments", commentsRouter);
 
 // Socket.IO 連接
 // io.use(async (socket, next) => {
